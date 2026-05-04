@@ -1307,11 +1307,46 @@ function timeAgo(ts){
 // ════════════════════════════════════════
 // ENTER APP
 // ════════════════════════════════════════
+function initMap(){
+  if(map) return; // already initialized
+  map = L.map('map',{
+    zoomControl:true,
+    maxBounds:CITY_BOUNDS,
+    maxBoundsViscosity:.6
+  }).setView([26.8467,80.9462],11);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+    attribution:'© OpenStreetMap © CARTO',
+    subdomains:'abcd',
+    maxZoom:20
+  }).addTo(map);
+
+  // Map click for pin mode
+  map.on('click', e=>{
+    if(!pinMode) return;
+    pinMode=false;
+    document.getElementById('map').classList.remove('cross');
+    document.getElementById('banner').style.display='none';
+    document.getElementById('banner').removeAttribute('style');
+    document.getElementById('banner').innerHTML='📍 Tap the map where your flat / PG is';
+    pendingLL=e.latlng;
+    document.getElementById('cloc').textContent=`${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`;
+    document.getElementById('modal').classList.add('open');
+    if(typeof showRentEstimate==='function') showRentEstimate(pendingLL.lat,pendingLL.lng,curType,'2');
+  });
+}
+
 function enterApp(){
   document.getElementById('splash').style.display='none';
   document.getElementById('app').classList.add('show');
   document.getElementById('how-modal').style.display='none';
-  setTimeout(()=>{map.invalidateSize(true);loadPins();},150);
+  // Initialize map NOW — #app is visible so #map has real dimensions
+  initMap();
+  setTimeout(()=>{
+    map.invalidateSize(true);
+    loadPins();
+    draw();
+  },300);
   const mbtn=document.getElementById('mob-filter-btn');
   const mov=document.getElementById('mob-overlay');
   const msh=document.getElementById('mob-sheet');
@@ -1338,15 +1373,15 @@ function enterApp(){
 // MAP
 // ════════════════════════════════════════
 const CITY_BOUNDS=[[26.70,80.75],[27.00,81.15]];
-const map=L.map('map',{zoomControl:true,maxBounds:CITY_BOUNDS,maxBoundsViscosity:.6}).setView([26.8467,80.9462],11);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:20}).addTo(map);
+let map; // initialized in enterApp() after #app is visible
+// tile layer added in initMap()
 
 const METRO_LINES=[
   {name:'North-South Corridor',color:'#e74c3c',points:[[26.9050,80.9462],[26.8800,80.9280],[26.8620,80.9228],[26.8316,80.9228],[26.8100,80.9200],[26.7800,80.9100]]},
   {name:'East-West Corridor',color:'#3498db',points:[[26.8530,80.8900],[26.8530,80.9100],[26.8530,80.9400],[26.8530,80.9700],[26.8530,80.9962]]},
 ];
 function initMetroLayer(){metroLayer=L.layerGroup(METRO_LINES.map(l=>L.polyline(l.points,{color:l.color,weight:4,opacity:.85,dashArray:'4 6'}).bindTooltip(l.name)));}
-function setMetroEnabled(e){metroEnabled=e;if(!metroLayer)initMetroLayer();if(e)metroLayer.addTo(map);else map.removeLayer(metroLayer);document.getElementById('metro-toggle')?.classList.toggle('on',e);document.getElementById('mob-metro-toggle')?.classList.toggle('on',e);const fv=document.getElementById('fv-metro');if(fv)fv.textContent=e?'On':'Off';}
+function setMetroEnabled(e){if(!map) return; metroEnabled=e;if(!metroLayer)initMetroLayer();if(e)metroLayer.addTo(map);else map.removeLayer(metroLayer);document.getElementById('metro-toggle')?.classList.toggle('on',e);document.getElementById('mob-metro-toggle')?.classList.toggle('on',e);const fv=document.getElementById('fv-metro');if(fv)fv.textContent=e?'On':'Off';}
 function toggleMetro(el){setMetroEnabled(!metroEnabled);}
 
 
@@ -1374,6 +1409,7 @@ function mkIcon(type,taken){
 // DRAW
 // ════════════════════════════════════════
 function draw(){
+  if(!map) return;
   markers.forEach(m=>map.removeLayer(m));markers=[];
   const basePins=(USE_SUPABASE&&window._dbPins&&window._dbPins.length)?window._dbPins:seed;
   const allStaticPGs=typeof PG_PINS!=='undefined'?PG_PINS:[];
@@ -1729,17 +1765,8 @@ function resetAll(){
 // ════════════════════════════════════════
 // PIN MODE
 // ════════════════════════════════════════
-function startPin(){pinMode=true;document.getElementById('map').classList.add('cross');document.getElementById('banner').style.display='block';}
-map.on('click',e=>{
-  if(!pinMode)return;
-  pinMode=false;document.getElementById('map').classList.remove('cross');
-  document.getElementById('banner').style.display='none';document.getElementById('banner').removeAttribute('style');
-  document.getElementById('banner').innerHTML='📍 Tap the map where your flat / PG is';
-  pendingLL=e.latlng;
-  document.getElementById('cloc').textContent=`${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`;
-  document.getElementById('modal').classList.add('open');
-  showRentEstimate(pendingLL.lat,pendingLL.lng,curType,'2');
-});
+function startPin(){if(!map){showToast('Map loading, please wait...');return;} pinMode=true;document.getElementById('map').classList.add('cross');document.getElementById('banner').style.display='block';}
+// map click handler moved into initMap()
 
 function seltype(el,t){document.querySelectorAll('.tbtn2').forEach(b=>b.classList.remove('on'));el.classList.add('on');curType=t;document.getElementById('bhkrow').style.display=t==='pg'?'none':'block';}
 function closeModal(){document.getElementById('modal').classList.remove('open');pendingLL=null;}
@@ -1833,6 +1860,7 @@ let heatmapEnabled = false;
 function fmt2(v){return v>=1000?'₹'+(v/1000).toFixed(1)+'K':'₹'+v;}
 
 function toggleHeatmap(){
+  if(!map) return;
   heatmapEnabled = !heatmapEnabled;
   const btn = document.getElementById('heat-toggle-btn');
   const legend = document.getElementById('heatmap-legend');
@@ -2043,6 +2071,7 @@ function nearMe(){
     function(pos){
       var lat=pos.coords.latitude;
       var lng=pos.coords.longitude;
+      if(!map) return;
       map.flyTo([lat,lng],15,{duration:1.2});
       if(window._myLocMarker) map.removeLayer(window._myLocMarker);
       window._myLocMarker=L.circleMarker([lat,lng],{
@@ -2265,6 +2294,10 @@ async function submitReport(){
   if(!_selectedReportReason){showToast('⚠️ Please select a reason.');return;}
   if(!activePinData){showToast('⚠️ No listing selected.');return;}
   const detail=document.getElementById('report-detail').value.trim();
+  // Track flag locally
+  const idx=String(activePinData.idx);
+  pinFlags[idx]=(pinFlags[idx]||0)+1;
+  localStorage.setItem('km_flags',JSON.stringify(pinFlags));
   try{
     await fetch(`${SUPABASE_URL}/rest/v1/reports`,{
       method:'POST',
@@ -2274,6 +2307,8 @@ async function submitReport(){
   }catch(e){}
   document.getElementById('report-modal').classList.remove('open');
   document.getElementById('report-detail').value='';
+  updateFlagBadge(activePinData.idx);
+  if(pinFlags[idx]>=3){draw();}
   showToast('🚩 Report submitted — thank you for keeping the map clean!',4000);
 }
 
@@ -2330,33 +2365,11 @@ function updateFlagBadge(idx){
   el.innerHTML=`<span class="${cls}">${msg}</span>`;
 }
 
-// Patch submitReport to also track locally + mark on map
-const _origSubmitReport = submitReport;
-async function submitReport(){
-  if(!_selectedReportReason){showToast('⚠️ Please select a reason.');return;}
-  if(!activePinData){showToast('⚠️ No listing selected.');return;}
-  const idx=String(activePinData.idx);
-  pinFlags[idx]=(pinFlags[idx]||0)+1;
-  localStorage.setItem('km_flags',JSON.stringify(pinFlags));
-  await _origSubmitReport();
-  updateFlagBadge(activePinData.idx);
-  // If 3+ reports, auto-dim the pin on map
-  if(pinFlags[idx]>=3){
-    showToast('🚩 This pin has been flagged multiple times. It will be reviewed.',4000);
-    draw(); // re-render so flagged pins appear differently
-  }
-}
-
-// Modify mkIcon to show flagged pins differently
-const _origMkIcon = mkIcon;
-function mkIcon(type, taken){
-  return _origMkIcon(type, taken);
-}
 
 syncTimer=setInterval(()=>{if(!document.hidden)loadPins();},15000);
 window.addEventListener('focus',()=>loadPins());
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadPins();});
-window.addEventListener('load',()=>{if(document.getElementById('app').classList.contains('show')){setTimeout(()=>{map.invalidateSize(true);loadPins();},200);}});
+window.addEventListener('load',()=>{if(document.getElementById('app').classList.contains('show')&&map){setTimeout(()=>{map.invalidateSize(true);loadPins();},200);}});
 </script>
 </body>
 </html>
