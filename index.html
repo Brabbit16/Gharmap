@@ -1013,7 +1013,11 @@
   </div>
 </div>
 
-<script>
+<script>const CITY_BOUNDS=[[26.70,80.75],[27.00,81.15]];
+let map=null;
+let markers=[];
+
+
 // ════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════
@@ -1278,10 +1282,9 @@ const ZONES=[
 // ════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════
-let userPins=[],markers=[],activeZones=new Set(),curType='flat',pendingLL=null,pinMode=false;
+let userPins=[],activeZones=new Set(),curType='flat',pendingLL=null,pinMode=false;
 let flt={type:'all',bhk:'all',fur:'all',minRent:2000,maxRent:50000};
 let selectedRole=null,activePinData=null,pinComments={},pinRatings={};
-let metroLayer=null,metroEnabled=false,syncTimer=null;
 
 // ════════════════════════════════════════
 // UTIL
@@ -1368,13 +1371,6 @@ function enterApp(){
   checkDeepLink();
   updateSavedCount();
 }
-
-// ════════════════════════════════════════
-// MAP
-// ════════════════════════════════════════
-const CITY_BOUNDS=[[26.70,80.75],[27.00,81.15]];
-let map; // initialized in enterApp() after #app is visible
-// tile layer added in initMap()
 
 const METRO_LINES=[
   {name:'North-South Corridor',color:'#e74c3c',points:[[26.9050,80.9462],[26.8800,80.9280],[26.8620,80.9228],[26.8316,80.9228],[26.8100,80.9200],[26.7800,80.9100]]},
@@ -1653,7 +1649,7 @@ async function geocode(q,localAlready){
     const data=await res.json();
     const dd=document.getElementById('dd');let html='';
     if(localAlready.length){html+='<div class="dd-sec"><div class="dd-lbl">Quick matches</div>';localAlready.forEach(r=>{html+=`<div class="dd-item" onclick="selectPlace(${r.lat},${r.lng},'${r.name.replace(/'/g,"\\'")}')"><span class="dd-ico">${r.icon}</span><div><div class="dd-name">${r.name}</div><div class="dd-sub">${r.sub}</div></div></div>`;});html+='</div><div class="dd-sep"></div>';}
-    if(data.length){html+='<div class="dd-sec"><div class='dd-lbl'>Places in Lucknow</div>';data.forEach(r=>{const name=r.display_name.split(',')[0];const sub=r.display_name.split(',').slice(1,3).join(',').trim();html+=`<div class="dd-item" onclick="selectPlace(${r.lat},${r.lon},'${name.replace(/'/g,"\\'")}')"><span class="dd-ico">📍</span><div><div class="dd-name">${name}</div><div class="dd-sub">${sub}</div></div></div>`;});html+='</div>';}
+    if(data.length){html+='<div class="dd-sec"><div class="dd-lbl">Places in Lucknow</div>';data.forEach(r=>{const name=r.display_name.split(',')[0];const sub=r.display_name.split(',').slice(1,3).join(',').trim();html+=`<div class="dd-item" onclick="selectPlace(${r.lat},${r.lon},'${name.replace(/'/g,"\\'")}')"><span class="dd-ico">📍</span><div><div class="dd-name">${name}</div><div class="dd-sub">${sub}</div></div></div>`;});html+='</div>';}
     if(!localAlready.length&&!data.length)html='<div style="padding:14px;font-size:13px;color:#999;text-align:center">No results found</div>';
     dd.innerHTML=html;dd.classList.add('open');
   }catch(e){}
