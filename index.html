@@ -1804,6 +1804,7 @@ body.dark .lv-card { background: var(--white); }
         <div class="type-grid">
           <button class="type-card on" data-t="all" onclick="selType(this,'all')"><span class="tc-ico">🗺</span><span class="tc-lbl">All</span><span class="tc-cnt" id="cnt-all">—</span></button>
           <button class="type-card" data-t="flat" onclick="selType(this,'flat')"><span class="tc-ico">🏠</span><span class="tc-lbl">Flat</span><span class="tc-cnt" id="cnt-flat">—</span></button>
+          <button class="type-card" data-t="commercial" onclick="selType(this,'commercial')"><span class="tc-ico">🏢</span><span class="tc-lbl">Commercial</span><span class="tc-cnt" id="cnt-commercial">—</span></button>
           <button class="type-card" data-t="pg" onclick="selType(this,'pg')"><span class="tc-ico">🛏</span><span class="tc-lbl">PG / Room</span><span class="tc-cnt" id="cnt-pg">—</span></button>
           <button class="type-card" data-t="flatmate" onclick="selType(this,'flatmate')"><span class="tc-ico">🤝</span><span class="tc-lbl">Flatmate</span><span class="tc-cnt" id="cnt-fm">—</span></button>
         </div>
@@ -2026,6 +2027,7 @@ body.dark .lv-card { background: var(--white); }
         <button class="ob-card" data-v="rent"><span class="ob-card-ico">🏠</span><span class="ob-card-lbl">Rent</span><span class="ob-card-sub">Flats & rooms</span></button>
         <button class="ob-card" data-v="sale"><span class="ob-card-ico">🔑</span><span class="ob-card-lbl">Buy</span><span class="ob-card-sub">Own a property</span></button>
         <button class="ob-card" data-v="pg"><span class="ob-card-ico">🛏</span><span class="ob-card-lbl">PG</span><span class="ob-card-sub">Single rooms</span></button>
+        <button class="ob-card" data-v="commercial"><span class="ob-card-ico">🏢</span><span class="ob-card-lbl">Commercial</span><span class="ob-card-sub">Office, shop, retail</span></button>
       </div>
       <div class="ob-actions">
         <button class="ob-next" onclick="obNext(1)">Continue →</button>
@@ -2090,6 +2092,7 @@ body.dark .lv-card { background: var(--white); }
     <div class="m-chips" id="mc-purpose">
       <button class="m-chip on" data-v="rent">Rent</button>
       <button class="m-chip" data-v="buy">Buy</button>
+      <button class="m-chip" data-v="commercial">Commercial</button>
       <button class="m-chip" data-v="pg">PG / Room</button>
     </div>
 
@@ -2527,7 +2530,7 @@ function openDetail(id){
   const p=all().find(x=>x.id===id);if(!p)return;
   activeDetail=p;
   const fl={furnished:'Furnished',semi:'Semi-Furnished',unfurnished:'Unfurnished'}[p.fur]||'';
-  const tl={flat:'VERIFIED FLAT',pg:'VERIFIED PG',flatmate:'FLATMATE NEEDED',house:'VERIFIED HOUSE'}[p.type]||'VERIFIED LISTING';
+  const tl={flat:'VERIFIED FLAT',pg:'VERIFIED PG',flatmate:'FLATMATE NEEDED',house:'VERIFIED HOUSE',commercial:'VERIFIED COMMERCIAL'}[p.type]||'VERIFIED LISTING';
   document.getElementById('dp-type-lbl').textContent=tl;
   document.getElementById('dp-price').textContent=fmtP(p.rent,p.mode);
   document.getElementById('dp-price-unit').textContent=p.mode==='rent'?'/month':'';
@@ -2578,7 +2581,7 @@ function openDetail(id){
   sb.classList.toggle('saved',savedIds.includes(p.id));
   // detail grid
   const dItems=[
-    ['Type',{flat:'Apartment',pg:'PG Room',flatmate:'Shared Room',house:'House'}[p.type]||p.type],
+    ['Type',{flat:'Apartment',pg:'PG Room',flatmate:'Shared Room',house:'House',commercial:'Commercial Space'}[p.type]||p.type],
     p.bhk&&p.type!=='pg'?['BHK',p.bhk+' BHK']:['Room','Single Room'],
     ['Furnishing',fl],
     p.sqft?['Area',p.sqft+' sqft']:null,
@@ -2689,7 +2692,7 @@ function buildSimilar(cur){
   const sec=document.getElementById('dp-sim-sec');
   if(!scored.length){sec.style.display='none';return;}
   sec.style.display='block';
-  const ico={flat:'🏠',pg:'🛏',flatmate:'🤝',house:'🏡'};
+  const ico={flat:'🏠',pg:'🛏',flatmate:'🤝',house:'🏡',commercial:'🏢'};
   document.getElementById('dp-sim-list').innerHTML=scored.map(p=>{
     const fl={furnished:'Furnished',semi:'Semi',unfurnished:'Bare'}[p.fur];
     const pct=Math.min(98,Math.round(p.score*1.5));
@@ -2712,7 +2715,7 @@ function updateSavedCount(){const n=savedIds.length;document.getElementById('sav
 function renderSaved(){
   const wrap=document.getElementById('saved-list-wrap');if(!wrap)return;
   if(!savedIds.length){wrap.innerHTML='<div style="font-size:13px;color:var(--ink3);text-align:center;padding:28px 0;">No saved listings yet.<br>Tap ☆ on any property.</div>';return;}
-  const ico={flat:'🏠',pg:'🛏',flatmate:'🤝',house:'🏡'};
+  const ico={flat:'🏠',pg:'🛏',flatmate:'🤝',house:'🏡',commercial:'🏢'};
   wrap.innerHTML=savedIds.map(id=>{
     const p=all().find(x=>x.id===id);if(!p)return'';
     const fl={furnished:'Furnished',semi:'Semi',unfurnished:'Bare'}[p.fur];
@@ -2781,39 +2784,111 @@ function nearMe(){
 
 // ══ SEARCH ══
 let sTimer=null;
+// ── FUZZY SEARCH — typo-tolerant, partial-word, area-aware ──
+// Levenshtein distance for typo detection
+function _editDist(a, b) {
+  if (a === b) return 0;
+  if (!a.length) return b.length;
+  if (!b.length) return a.length;
+  const m = []; for (let i = 0; i <= b.length; i++) m[i] = [i];
+  for (let i = 0; i <= a.length; i++) m[0][i] = i;
+  for (let i = 1; i <= b.length; i++)
+    for (let j = 1; j <= a.length; j++)
+      m[i][j] = b[i-1] === a[j-1] ? m[i-1][j-1] : Math.min(m[i-1][j-1], m[i][j-1], m[i-1][j]) + 1;
+  return m[b.length][a.length];
+}
+function _fuzzyScore(query, target) {
+  if (!query || !target) return 0;
+  const q = query.toLowerCase().trim();
+  const t = target.toLowerCase();
+  let score = 0;
+  // Exact match
+  if (t === q) return 100;
+  // Starts with query
+  if (t.startsWith(q)) score = Math.max(score, 70);
+  // Contains query
+  if (t.includes(q)) score = Math.max(score, 50);
+  // Word-boundary starts (helps "vk" find "Vibhuti Khand")
+  const tWords = t.split(/[\s,\-]+/);
+  for (const w of tWords) {
+    if (w.startsWith(q)) score = Math.max(score, 45);
+    if (q.length >= 2 && w.includes(q)) score = Math.max(score, 25);
+  }
+  // Acronym match — "vk" matches "Vibhuti Khand"
+  if (q.length >= 2 && q.length <= 4) {
+    const acronym = tWords.filter(w => w.length).map(w => w[0]).join('');
+    if (acronym === q) score = Math.max(score, 55);
+    if (acronym.startsWith(q)) score = Math.max(score, 35);
+  }
+  // Typo tolerance — short words within edit distance 1, longer within 2
+  if (q.length >= 4) {
+    const maxDist = q.length >= 6 ? 2 : 1;
+    for (const w of tWords) {
+      if (w.length >= q.length - 1 && Math.abs(w.length - q.length) <= 2) {
+        const d = _editDist(q, w.slice(0, q.length + 1));
+        if (d <= maxDist) score = Math.max(score, 30 - d * 5);
+      }
+    }
+  }
+  return score;
+}
+
 function onSearch(q){
   const clr=document.getElementById('s-clr');if(clr)clr.style.display=q?'block':'none';
   if(!q.trim()){closeDd();return;}
   const ql=q.toLowerCase().trim();
-  // INSTANT local search — runs every keystroke, no delay
-  const scored = PLACES.map(p => {
-    const n=p.n.toLowerCase();
-    const s=(p.sub||'').toLowerCase();
-    const k=(p.k||'').toLowerCase();
-    let score=0;
-    if(n===ql) score+=100;
-    else if(n.startsWith(ql)) score+=60;
-    else if(n.includes(ql)) score+=40;
-    if(k && k.split(' ').some(w=>w&&w.startsWith(ql))) score+=50;
-    if(k.includes(ql)) score+=20;
-    if(s.includes(ql)) score+=10;
-    return {p,score};
-  }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,7).map(x=>x.p);
-  // Render local hits IMMEDIATELY — no debounce
-  if(scored.length){
-    renderDd(scored);
-  } else if(ql.length<2){
+
+  // Score every place against name, sub, keywords
+  const placeResults = PLACES.map(p => {
+    const sName = _fuzzyScore(ql, p.n) * 1.5;       // name matters most
+    const sKey  = _fuzzyScore(ql, p.k || '') * 1.2; // keywords next
+    const sSub  = _fuzzyScore(ql, p.sub || '') * 0.6; // sub area lightest
+    return { p, score: Math.max(sName, sKey, sSub) };
+  }).filter(x => x.score >= 20)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 6);
+
+  // ALSO search current LISTINGS area names so users find your inventory
+  const listingMatches = [];
+  const seenAreas = new Set();
+  for (const lst of LISTINGS) {
+    if (seenAreas.has(lst.area)) continue;
+    const score = _fuzzyScore(ql, lst.area);
+    if (score >= 30) {
+      seenAreas.add(lst.area);
+      listingMatches.push({
+        p: { n: lst.area, lat: lst.lat, lng: lst.lng, ico: '🏠', sub: 'Verified property available' },
+        score: score + 10 // boost to surface inventory
+      });
+    }
+  }
+
+  // Combine, dedupe by name, sort
+  const combined = [...listingMatches, ...placeResults];
+  const seen = new Set();
+  const final = combined.filter(x => {
+    const key = x.p.n.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).sort((a, b) => b.score - a.score).slice(0, 7).map(x => x.p);
+
+  if (final.length) {
+    renderDd(final);
+  } else if (ql.length < 2) {
     closeDd();
     return;
+  } else {
+    // No local hit yet — wait for web geocoding
   }
-  // Only web geocoding gets debounced — and only if user pauses typing for 350ms
+
+  // Web geocoding only on pause and only if local hits are weak
   clearTimeout(sTimer);
-  if(ql.length>=3 && scored.length<4){
-    sTimer=setTimeout(()=>{
-      // Re-check current input — user may still be typing
-      const current=document.getElementById('search-input').value.toLowerCase().trim();
-      if(current===ql) geocode(q,scored);
-    },350);
+  if (ql.length >= 3 && final.length < 4) {
+    sTimer = setTimeout(() => {
+      const current = document.getElementById('search-input').value.toLowerCase().trim();
+      if (current === ql) geocode(q, final);
+    }, 350);
   }
 }
 function renderDd(res){
@@ -2896,7 +2971,7 @@ function selPlace(lat, lng, name) {
         const d = haversine(lat, lng, p.lat, p.lng);
         const km = d < 1 ? Math.round(d*1000)+'m' : d.toFixed(1)+'km';
         return `<div onclick="openDetail('${p.id}')" style="display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #eee;cursor:pointer;">
-          <span style="font-size:18px;">${({flat:'🏠',pg:'🛏',flatmate:'🤝',house:'🏡'})[p.type]||'📍'}</span>
+          <span style="font-size:18px;">${({flat:'🏠',pg:'🛏',flatmate:'🤝',house:'🏡',commercial:'🏢'})[p.type]||'📍'}</span>
           <div style="flex:1;min-width:0;">
             <div style="font-size:14px;font-weight:700;color:#1a3c34;">${fmtP(p.rent,p.mode)}${p.mode==='rent'?'<small style="font-size:10px;color:#888;font-weight:400;">/mo</small>':''}</div>
             <div style="font-size:11px;color:#888;">${p.bhk&&p.type!=='pg'?p.bhk+' BHK · ':''}${p.area} · ${km}</div>
