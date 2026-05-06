@@ -1614,27 +1614,16 @@ body.dark .lv-card { background: var(--white); }
 }
 
 
-/* ──── MOBILE LAYOUT v4 START ──── */
+/* ──── MOBILE v5 START ──── */
 /* ═══════════════════════════════════════════════════════════════
-   GHARMAP MOBILE LAYOUT v4 — full redesign for phones
-   Strategy: phone has ONE job — browse the map. Everything else is
-   tucked away into hamburger or a bottom-sheet filter.
-
-   Layout:
-     Row 1 (56px): Logo · [Rent│Sale] toggle · ⋮ menu
-     Row 2 (48px): Full-width search bar
-     Map: takes the rest
-     Floating: Near Me (left) · Filter FAB (right) · stats pill (centre, top of map)
-
-   Hidden on mobile:
-     - tb-search inline (we move search to row 2)
-     - List Property, Match Me, Saved, Share buttons (in menu)
-     - Map/List toggle (just map on phone — list view doesn't add value)
-     - Sat toggle, Compare FAB, Request FAB (in menu)
-     - WhatsApp chat float
+   GHARMAP MOBILE v5 — Apple-Maps-style draggable bottom sheet
+   The map fills the screen below a solid white header.
+   A bottom sheet floats above the map in 3 snap states:
+     PEEK (~120px), HALF (~52dvh), FULL (~92dvh)
+   All other UI lives inside the sheet or the hamburger.
 ═══════════════════════════════════════════════════════════════ */
 
-/* ── 0. Baseline ───────────────────────────────────────────── */
+/* baseline */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { overflow-x: hidden; }
 body { -webkit-text-size-adjust: 100%; }
@@ -1646,12 +1635,10 @@ body { -webkit-text-size-adjust: 100%; }
   }
 }
 
-/* Floating chat button — gone */
+/* kill the floating chat button site-wide */
 #wa-chat-btn { display: none !important; }
 
-/* ══════════════════════════════════════════════════════════════
-   SPLASH (mobile)
-═══════════════════════════════════════════════════════════════ */
+/* ══════════ SPLASH on mobile ══════════ */
 @media (max-width: 768px) {
   #splash {
     padding: max(20px, var(--safe-top)) 16px calc(20px + var(--safe-bot)) 16px;
@@ -1661,11 +1648,11 @@ body { -webkit-text-size-adjust: 100%; }
   }
   .sp { width: 100%; max-width: 100%; }
   .sp-logo { font-size: 22px; }
-  .sp-headline { font-size: 22px; line-height: 1.25; margin-bottom: 6px; }
-  .sp-sub { font-size: 13px; line-height: 1.5; margin-bottom: 10px; }
-  .sp-pills { gap: 5px; margin-bottom: 10px; }
+  .sp-headline { font-size: 22px; line-height: 1.25; }
+  .sp-sub { font-size: 13px; line-height: 1.5; }
+  .sp-pills { gap: 5px; }
   .sp-pill { font-size: 10.5px; padding: 4px 9px; }
-  .sp-trust { font-size: 11px; margin-bottom: 10px; }
+  .sp-trust { font-size: 11px; }
   .sp-share-box { padding: 8px 11px; }
   .sp-share-txt { font-size: 11.5px; line-height: 1.45; }
   .sp-btn-main { padding: 13px; font-size: 14px; min-height: 46px; }
@@ -1673,53 +1660,40 @@ body { -webkit-text-size-adjust: 100%; }
   .sp-footer { font-size: 10.5px; }
 }
 @media (max-width: 380px) {
-  #splash { padding-left: 12px; padding-right: 12px; }
-  .sp-logo { font-size: 20px; }
-  .sp-headline { font-size: 19px; }
   .sp-pills, .sp-ticker { display: none; }
+  .sp-headline { font-size: 19px; }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   APP ROOT — full-height phone
-═══════════════════════════════════════════════════════════════ */
+/* ══════════ APP SHELL ══════════ */
 @media (max-width: 768px) {
   #app { height: 100dvh; overflow: hidden; }
-
-  /* New header height = row1(56) + row2(48) = 104px */
-  :root, body { --top: 104px; }
+  :root, body { --top: 56px; }   /* single solid header, no second tier */
 }
 
-/* ══════════════════════════════════════════════════════════════
-   TOPBAR — Row 1 (56px)
-   Logo · Rent/Sale toggle · Hamburger
-   The whole .tb-search element is hidden on mobile;
-   we render an alternate search bar below in Row 2.
-═══════════════════════════════════════════════════════════════ */
+/* ══════════ HEADER (Row 1, solid white) ══════════
+   Logo · Rent/Sale toggle · search icon · hamburger
+   The desktop search input is HIDDEN on mobile.
+   Tap the search icon to open a full-width search overlay.
+*/
 @media (max-width: 768px) {
   #topbar {
     height: 56px !important;
     padding: 0 12px !important;
-    gap: 10px !important;
+    gap: 8px !important;
     align-items: center;
     background: var(--white);
     border-bottom: 1px solid var(--border);
   }
-
-  .tb-logo {
-    font-size: 17px;
-    flex-shrink: 0;
-  }
-
+  .tb-logo { font-size: 17px; flex-shrink: 0; }
   .tb-verified { display: none !important; }
 
-  /* The DESKTOP inline search hides — we use the row 2 bar instead */
+  /* Hide the desktop inline search; we show a search-icon button */
   .tb-search { display: none !important; }
 
-  /* Rent/Sale toggle stays in Row 1, centred */
+  /* Rent/Sale stays */
   .tb-mode {
     flex: 0 0 auto;
-    margin-left: auto;       /* pushes to the right of logo */
-    margin-right: 4px;
+    margin-left: auto;
     padding: 3px;
     border-radius: 22px;
   }
@@ -1729,233 +1703,371 @@ body { -webkit-text-size-adjust: 100%; }
     min-height: 32px;
   }
 
-  /* All other tb-right buttons — hidden, moved to hamburger */
-  .tb-right .tb-btn { display: none !important; }
+  /* Hide all other tb-right buttons + Map/List view-toggle */
+  .tb-right .tb-btn,
   .view-toggle { display: none !important; }
 
   .tb-right {
     margin-left: 0 !important;
-    gap: 0;
+    gap: 4px;
     flex-shrink: 0;
+    align-items: center;
   }
-  .tb-menu-btn {
+
+  .tb-menu-btn { width: 38px; height: 38px; }
+
+  /* New search-icon button — added by JS shim, lives inside .tb-right */
+  #m-search-icon {
     width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--ink2);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    transition: all .15s;
   }
+  #m-search-icon:hover { border-color: var(--green-mid); color: var(--green); }
 }
 
-/* very narrow */
 @media (max-width: 360px) {
   .tb-logo { font-size: 15px; }
-  .tb-mode-btn { padding: 5px 11px; font-size: 11.5px; }
-  #topbar { padding: 0 8px !important; gap: 6px !important; }
+  .tb-mode-btn { padding: 5px 10px; font-size: 11.5px; }
+  #m-search-icon { width: 36px; height: 36px; }
+  .tb-menu-btn { width: 36px; height: 36px; }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   ROW 2 — sticky search bar (mobile only)
-   We add a brand-new element via JS shim:
-      <div id="m-search-bar"> ... </div>
-   It hosts the real search input on mobile.
-   The desktop search input is still in the DOM (just hidden);
-   we mirror typing back to it so the existing JS keeps working.
-═══════════════════════════════════════════════════════════════ */
-#m-search-bar { display: none; }   /* hidden on desktop */
+/* ══════════ SEARCH OVERLAY (mobile) ══════════
+   Slides down from the header when the search icon is tapped.
+   Fills the top portion of the screen, holds the input + dropdown.
+*/
+#m-search-overlay { display: none; }
 
 @media (max-width: 768px) {
-  #m-search-bar {
-    display: flex;
+  #m-search-overlay {
+    display: block;
     position: fixed;
-    top: 56px;                   /* below row 1 */
+    top: -200px;          /* hidden above viewport */
     left: 0; right: 0;
-    height: 48px;
-    z-index: 1000;
+    z-index: 1300;
     background: var(--white);
     border-bottom: 1px solid var(--border);
-    align-items: center;
-    padding: 0 12px;
-    gap: 8px;
+    padding: 10px 12px 12px;
+    transition: top .25s ease;
+    box-shadow: 0 6px 24px rgba(0,0,0,.08);
   }
-  .ms-ico {
-    font-size: 14px;
-    color: var(--ink3);
+  #m-search-overlay.open { top: 0; padding-top: max(10px, var(--safe-top)); }
+
+  #m-search-row {
+    display: flex; align-items: center; gap: 8px;
+    height: 40px;
+  }
+  #m-search-back {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: none; background: transparent;
+    cursor: pointer;
+    color: var(--ink2);
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
+  #m-search-input-wrap {
+    flex: 1; position: relative;
+  }
   #m-search-input {
-    flex: 1;
-    height: 36px;
+    width: 100%;
+    height: 40px;
     border: 1px solid var(--border);
     background: var(--bg);
     border-radius: 22px;
-    padding: 0 14px 0 36px;
-    font-size: 16px !important;     /* prevents iOS zoom */
+    padding: 0 36px 0 36px;
+    font-size: 16px !important;
     color: var(--ink);
     font-family: var(--ff);
     outline: none;
-    width: 100%;
-    transition: border-color .2s, background .2s;
   }
   #m-search-input:focus {
     border-color: var(--green-mid);
     background: var(--white);
   }
-  /* search-icon overlap on the input */
-  #m-search-bar { position: fixed; }
-  #m-search-bar .ms-ico-abs {
+  #m-search-input-wrap .ms-ico {
     position: absolute;
-    left: 24px;
-    pointer-events: none;
+    left: 12px;
+    top: 50%; transform: translateY(-50%);
     color: var(--ink3);
     font-size: 14px;
+    pointer-events: none;
   }
   #m-search-clr {
     position: absolute;
-    right: 22px;
-    background: none;
-    border: none;
+    right: 10px;
+    top: 50%; transform: translateY(-50%);
+    background: none; border: none;
     cursor: pointer;
     color: var(--ink3);
     font-size: 14px;
     display: none;
-    line-height: 1;
+    padding: 4px;
   }
   #m-search-clr.show { display: block; }
+
+  /* When overlay open, host the dropdown inside it (CSS only repositions) */
+  #m-search-overlay.open #s-dd {
+    position: relative !important;
+    top: 8px !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-height: calc(100dvh - 90px - var(--safe-top));
+    border-radius: 12px;
+    box-shadow: none;
+    border: 1px solid var(--border);
+  }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   MAP AREA — fills the rest of the screen on mobile
-═══════════════════════════════════════════════════════════════ */
+/* ══════════ MAP ══════════ */
 @media (max-width: 768px) {
   #map-wrap {
     position: fixed !important;
-    top: 104px !important;          /* below row 1 + row 2 */
+    top: 56px !important;
     right: 0 !important;
     left: 0;
     bottom: 0;
     width: 100%;
   }
-  #fp { display: none !important; }     /* desktop right panel — hidden */
+  #fp { display: none !important; }
+  .leaflet-right { right: 8px !important; }
+  .leaflet-control-zoom { transform: scale(.92); transform-origin: top right; }
+  .leaflet-popup-content-wrapper { min-width: 180px; }
+
+  /* Sheet sits in front of the map and obscures the bottom controls,
+     so push leaflet's zoom buttons up into the visible map area */
+  .leaflet-bottom { bottom: calc(140px + var(--safe-bot)) !important; }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   SEARCH DROPDOWN — needs to anchor to mobile search bar
-   The original #s-dd is anchored inside .tb-search which is now
-   hidden. We re-target it under #m-search-bar via JS shim.
-═══════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  #s-dd {
-    position: fixed !important;
-    top: 100px !important;
-    left: 12px !important;
-    right: 12px !important;
-    max-height: 60dvh;
-    border-radius: 14px;
-    z-index: 1100 !important;
-  }
-  .dd-row { padding: 11px 14px; font-size: 13.5px; }
-}
-
-/* ══════════════════════════════════════════════════════════════
-   FLOATING BUTTONS — bottom row
-   Just two: Near Me (left), Filter FAB (right).
-   Stats pill sits ABOVE the buttons, centered.
-═══════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  /* Hide all the desktop floating extras */
-  #request-btn { display: none !important; }
-  #sat-toggle-btn { display: none !important; }
-  #compare-fab { display: none !important; }
-
-  /* Stats pill — lifted up so it doesn't collide with the FABs */
-  #stats {
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    bottom: calc(74px + var(--safe-bot)) !important;
-    font-size: 11px;
-    border-radius: 30px;
-    box-shadow: var(--sh-lg);
-  }
-  .st-item { padding: 6px 10px; }
-  .st-num { font-size: 12.5px; }
-  .st-lbl { font-size: 8.5px; letter-spacing: 0.2px; }
-
-  /* Near Me — bottom left */
-  #near-me-btn {
-    left: 14px !important;
-    right: auto !important;
-    bottom: calc(16px + var(--safe-bot)) !important;
-    padding: 10px 14px;
-    font-size: 12px;
-    border-radius: 24px;
-    background: var(--white);
-    box-shadow: 0 3px 14px rgba(0,0,0,.12);
-  }
-
-  /* Toast — above floating buttons */
-  #toast {
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    bottom: calc(120px + var(--safe-bot)) !important;
-    max-width: calc(100vw - 32px);
-    white-space: normal;
-    text-align: center;
-    font-size: 12.5px;
-    padding: 9px 16px;
-  }
-
-  /* Banner under topbar */
-  #banner {
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    top: 112px !important;
-    font-size: 11.5px;
-    padding: 7px 14px;
-    max-width: calc(100vw - 24px);
-    white-space: normal;
-    text-align: center;
-  }
-}
-
-/* ══════════════════════════════════════════════════════════════
-   FILTER FAB — new floating button, bottom right
-   Opens a bottom-sheet with all the filtering UI.
-   Element added by JS shim:
-     <button id="m-filter-fab">⚙ Filters</button>
-     <div id="m-filter-sheet">…</div>
-═══════════════════════════════════════════════════════════════ */
-#m-filter-fab,
-#m-filter-sheet,
-#m-filter-overlay { display: none; }   /* hidden on desktop */
+/* ══════════ THE BOTTOM SHEET ══════════
+   Three snap states:
+     peek : 130px tall
+     half : 52dvh
+     full : 92dvh
+   The wrapper element itself has `top` driven by JS (drag) plus a class
+   for snap states.  CSS only handles look + transitions.
+*/
+#m-sheet,
+#m-sheet-backdrop { display: none; }
 
 @media (max-width: 768px) {
-  #m-filter-fab {
+  /* The sheet */
+  #m-sheet {
     display: flex;
+    flex-direction: column;
     position: fixed;
-    right: 14px;
-    bottom: calc(16px + var(--safe-bot));
-    z-index: 700;
+    left: 0; right: 0;
+    top: calc(100dvh - 130px);   /* default = peek */
+    bottom: 0;
+    z-index: 900;
+    background: var(--white);
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -10px 30px rgba(0,0,0,.12);
+    transition: top .28s cubic-bezier(.32,.72,0,1);
+    overflow: hidden;
+    will-change: top;
+  }
+  #m-sheet.dragging { transition: none; }
+
+  /* Snap classes — mutated by JS */
+  #m-sheet.peek { top: calc(100dvh - 130px - var(--safe-bot)); }
+  #m-sheet.half { top: 48dvh; }
+  #m-sheet.full { top: 8dvh; }
+
+  /* Drag handle area — large hit target */
+  #m-sheet-handle {
+    flex-shrink: 0;
+    height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: grab;
+    touch-action: none;     /* JS owns the gesture */
+  }
+  #m-sheet-handle::before {
+    content: '';
+    width: 40px; height: 4px;
+    background: rgba(0,0,0,.18);
+    border-radius: 4px;
+  }
+  body.dark #m-sheet-handle::before { background: rgba(255,255,255,.22); }
+
+  /* Header inside sheet — count + filter */
+  #m-sheet-head {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 16px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  #m-sheet-count {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  #m-sheet-count small {
+    color: var(--ink3);
+    font-weight: 400;
+    margin-left: 4px;
+  }
+  #m-sheet-filter {
     background: var(--green);
     color: #fff;
     border: none;
-    border-radius: 24px;
-    padding: 10px 16px;
-    font-size: 12.5px;
+    border-radius: 18px;
+    padding: 7px 14px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     font-family: var(--ff);
-    box-shadow: 0 4px 18px rgba(45,106,90,.4);
-    align-items: center;
-    gap: 6px;
+    display: flex; align-items: center; gap: 5px;
+    height: 32px;
   }
 
+  /* Card list — scrollable */
+  #m-sheet-list {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 14px calc(20px + var(--safe-bot));
+    overscroll-behavior: contain;
+  }
+  #m-sheet-list.peek-mode {
+    /* In PEEK state, scroll horizontally instead */
+    display: flex;
+    overflow-y: hidden;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding: 12px 14px;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+  }
+
+  /* Property card */
+  .ms-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: border-color .15s, transform .15s;
+    margin-bottom: 10px;
+  }
+  .ms-card:hover { border-color: var(--green-mid); }
+  .ms-card.active {
+    border-color: var(--green);
+    border-width: 2px;
+    padding: 11px 13px;     /* compensate for thicker border */
+  }
+
+  /* In peek-mode, cards become horizontal cards */
+  #m-sheet-list.peek-mode .ms-card {
+    flex: 0 0 240px;
+    margin-bottom: 0;
+    scroll-snap-align: start;
+  }
+
+  .ms-card-row1 {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 4px;
+    gap: 8px;
+  }
+  .ms-card-price {
+    font-size: 18px; font-weight: 700; color: var(--ink);
+    line-height: 1.2;
+  }
+  .ms-card-price small {
+    font-size: 11px; font-weight: 400; color: var(--ink3);
+  }
+  .ms-card-badge {
+    font-size: 9.5px; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase;
+    color: var(--green);
+    background: var(--green-light);
+    padding: 2px 6px; border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .ms-card-area {
+    font-size: 12.5px; color: var(--ink2);
+    margin-bottom: 6px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .ms-card-tags {
+    display: flex; flex-wrap: wrap; gap: 5px;
+  }
+  .ms-card-tag {
+    font-size: 10.5px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2px 8px;
+    color: var(--ink2);
+    white-space: nowrap;
+  }
+
+  /* Backdrop — only when in FULL state */
+  #m-sheet-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0);
+    pointer-events: none;
+    transition: background .22s ease;
+    z-index: 850;
+  }
+  #m-sheet.full ~ #m-sheet-backdrop {
+    background: rgba(0,0,0,.18);
+    pointer-events: auto;
+  }
+
+  /* Empty state inside sheet */
+  .ms-empty {
+    text-align: center;
+    padding: 24px 16px;
+    color: var(--ink3);
+    font-size: 13px;
+  }
+}
+
+/* ══════════ HAMBURGER MENU on mobile ══════════ */
+@media (max-width: 768px) {
+  .tb-menu {
+    position: fixed !important;
+    top: 60px !important;
+    right: 8px !important;
+    left: 8px !important;
+    min-width: 0 !important;
+    border-radius: 14px;
+    max-height: calc(100dvh - 80px);
+    overflow-y: auto;
+    z-index: 1200 !important;
+  }
+}
+
+/* ══════════ FILTER BOTTOM-SHEET (separate from list sheet) ══════════ */
+#m-filter-overlay,
+#m-filter-sheet { display: none; }
+
+@media (max-width: 768px) {
   #m-filter-overlay {
-    display: none;
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,.45);
     backdrop-filter: blur(4px);
     z-index: 1700;
   }
-  #m-filter-overlay.open { display: block; animation: fadeIn .2s ease; }
-  @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+  #m-filter-overlay.open { display: block; animation: fadeInOv .2s ease; }
+  @keyframes fadeInOv { from { opacity: 0 } to { opacity: 1 } }
 
   #m-filter-sheet {
     display: block;
@@ -1964,10 +2076,10 @@ body { -webkit-text-size-adjust: 100%; }
     z-index: 1800;
     background: var(--white);
     border-radius: 18px 18px 0 0;
-    padding: 18px 18px calc(28px + var(--safe-bot));
+    padding: 16px 16px calc(24px + var(--safe-bot));
     max-height: 88dvh;
     overflow-y: auto;
-    transition: bottom .28s ease;
+    transition: bottom .28s cubic-bezier(.32,.72,0,1);
     box-shadow: 0 -8px 32px rgba(0,0,0,.18);
   }
   #m-filter-sheet.open { bottom: 0; }
@@ -1975,8 +2087,8 @@ body { -webkit-text-size-adjust: 100%; }
     content: '';
     position: absolute; top: 8px; left: 50%;
     transform: translateX(-50%);
-    width: 38px; height: 4px;
-    background: rgba(0,0,0,0.18);
+    width: 40px; height: 4px;
+    background: rgba(0,0,0,.18);
     border-radius: 4px;
   }
   body.dark #m-filter-sheet { background: #1a1a1a; }
@@ -1984,50 +2096,34 @@ body { -webkit-text-size-adjust: 100%; }
 
   .mfs-title {
     font-size: 16px; font-weight: 700;
-    margin: 6px 0 14px;
-    color: var(--ink);
+    margin: 8px 0 14px; color: var(--ink);
   }
-  .mfs-section { margin-bottom: 16px; }
+  .mfs-section { margin-bottom: 14px; }
   .mfs-label {
-    font-size: 11px;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--ink3);
-    font-weight: 600;
-    margin-bottom: 8px;
+    font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--ink3); font-weight: 600; margin-bottom: 8px;
   }
-  .mfs-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
+  .mfs-chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .mfs-chip {
-    padding: 8px 13px;
-    border-radius: 20px;
+    padding: 8px 13px; border-radius: 20px;
     border: 1px solid var(--border);
-    background: var(--white);
-    color: var(--ink2);
-    font-size: 12.5px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: var(--ff);
-    min-height: 36px;
-    transition: all .15s;
+    background: var(--white); color: var(--ink2);
+    font-size: 12.5px; font-weight: 500;
+    cursor: pointer; font-family: var(--ff);
+    min-height: 36px; transition: all .15s;
   }
-  .mfs-chip:hover { border-color: var(--green-mid); }
   .mfs-chip.on {
     background: var(--green);
     border-color: var(--green);
     color: #fff;
   }
   .mfs-foot {
-    display: flex; gap: 8px; margin-top: 18px;
-    position: sticky; bottom: 0; padding-top: 6px;
-    background: linear-gradient(to top, var(--white), var(--white) 70%, transparent);
+    display: flex; gap: 8px; margin-top: 14px;
+    position: sticky; bottom: 0;
+    padding-top: 8px;
+    background: linear-gradient(to top, var(--white) 70%, transparent);
   }
-  body.dark .mfs-foot {
-    background: linear-gradient(to top, #1a1a1a, #1a1a1a 70%, transparent);
-  }
+  body.dark .mfs-foot { background: linear-gradient(to top, #1a1a1a 70%, transparent); }
   .mfs-reset {
     flex: 1; padding: 12px; border-radius: 12px;
     border: 1px solid var(--border); background: transparent;
@@ -2042,9 +2138,39 @@ body { -webkit-text-size-adjust: 100%; }
   }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   DETAIL PANEL & SAVED DRAWER — full screen on mobile
-═══════════════════════════════════════════════════════════════ */
+/* ══════════ HIDE DESKTOP MAP-FAB BUTTONS ══════════ */
+@media (max-width: 768px) {
+  #request-btn,
+  #sat-toggle-btn,
+  #compare-fab,
+  #stats,
+  #near-me-btn { display: none !important; }    /* moved into sheet/menu */
+
+  /* Banner under header */
+  #banner {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: 64px !important;
+    font-size: 11.5px;
+    padding: 7px 14px;
+    max-width: calc(100vw - 24px);
+    white-space: normal;
+    text-align: center;
+  }
+  /* Toast above the sheet */
+  #toast {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    bottom: calc(150px + var(--safe-bot)) !important;
+    max-width: calc(100vw - 32px);
+    white-space: normal;
+    text-align: center;
+    font-size: 12.5px;
+    padding: 9px 16px;
+  }
+}
+
+/* ══════════ DETAIL PANEL & SAVED DRAWER on mobile ══════════ */
 @media (max-width: 768px) {
   #dp {
     top: 0 !important;
@@ -2076,26 +2202,7 @@ body { -webkit-text-size-adjust: 100%; }
   }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   HAMBURGER MENU — full-width below row 1+2 stack on mobile
-═══════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  .tb-menu {
-    position: fixed !important;
-    top: 60px !important;        /* just under row 1 */
-    right: 8px !important;
-    left: 8px !important;
-    min-width: 0 !important;
-    border-radius: 14px;
-    max-height: calc(100dvh - 80px);
-    overflow-y: auto;
-    z-index: 1200 !important;
-  }
-}
-
-/* ══════════════════════════════════════════════════════════════
-   MODALS — bottom sheet pattern on mobile
-═══════════════════════════════════════════════════════════════ */
+/* ══════════ MODALS = bottom sheets on mobile ══════════ */
 @media (max-width: 768px) {
   .dark-overlay,
   #share-modal,
@@ -2107,7 +2214,6 @@ body { -webkit-text-size-adjust: 100%; }
     padding: 0 !important;
     align-items: flex-end !important;
   }
-
   .dark-modal,
   .share-card,
   .ob-modal,
@@ -2127,7 +2233,6 @@ body { -webkit-text-size-adjust: 100%; }
     from { transform: translateY(40px); opacity: 0; }
     to   { transform: translateY(0); opacity: 1; }
   }
-
   .dark-modal::before,
   .ob-modal::before,
   #matchme-modal .modal::before,
@@ -2144,9 +2249,7 @@ body { -webkit-text-size-adjust: 100%; }
   body.dark .dark-modal::before { background: rgba(255,255,255,0.22); }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   FORM FIELDS — fix iOS zoom + tappable
-═══════════════════════════════════════════════════════════════ */
+/* ══════════ FORMS ══════════ */
 @media (max-width: 768px) {
   input[type="text"], input[type="email"], input[type="tel"],
   input[type="number"], input[type="search"], textarea, select {
@@ -2155,31 +2258,15 @@ body { -webkit-text-size-adjust: 100%; }
   button, .m-chip, .tb-btn, .tb-menu-item, .ob-card {
     min-height: 40px;
   }
-  .m-chip { padding: 9px 13px !important; }
-  .ob-card { padding: 14px 12px !important; }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   MAP STUFF — popups, controls
-═══════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  .leaflet-right { right: 8px !important; }
-  .leaflet-control-zoom { transform: scale(.92); transform-origin: top right; }
-  .leaflet-popup-content-wrapper { min-width: 200px; }
-  .pp-r { font-size: 17px; }
-}
-
-/* ── kill horizontal scroll ─────────────────────────────── */
+/* ══════════ kill horizontal scroll ══════════ */
 @media (max-width: 768px) {
   body { max-width: 100vw; overflow-x: hidden; }
   #app, #splash { max-width: 100vw; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   END MOBILE LAYOUT v4
-═══════════════════════════════════════════════════════════════ */
-
-/* ──── MOBILE LAYOUT v4 END ──── */
+/* ──── MOBILE v5 END ──── */
 
 </style>
 </head>
@@ -4550,104 +4637,135 @@ document.addEventListener('DOMContentLoaded',()=>{
 window.addEventListener('resize',()=>map&&map.invalidateSize());
 
 
-// ──── MOBILE LAYOUT v4 SHIM START ────
+// ──── MOBILE v5 SHIM START ────
 // ═══════════════════════════════════════════════════════════════
-// GHARMAP MOBILE LAYOUT v4 — JS shim
-// ═══════════════════════════════════════════════════════════════
-// Purpose:
-//   - On mobile, build a dedicated Row-2 search bar and a Filter FAB
-//   - Mirror typing between mobile bar and the original (hidden) input
-//     so existing onSearch/onSearchKey handlers keep working unmodified
-//   - Move List Property, Match Me, Saved, Share, Sat-toggle, Compare,
-//     Map/List view toggle into the hamburger menu
-//   - All elements self-clean and re-sync on viewport resize
+// GHARMAP MOBILE v5 — JS shim
+// Apple-Maps-style draggable bottom sheet
 // ═══════════════════════════════════════════════════════════════
 (function(){
   'use strict';
 
-  function isMobile(){
-    return window.matchMedia('(max-width: 768px)').matches;
-  }
+  function isMobile(){ return window.matchMedia('(max-width: 768px)').matches; }
+
+  // We expose a tiny namespace for debugging
+  window._gmMobile = {};
 
   // ─────────────────────────────────────────────────────────────
-  // 1. MOBILE SEARCH BAR (Row 2)
+  // 1. SEARCH OVERLAY (icon in topbar → fullwidth overlay slides down)
   // ─────────────────────────────────────────────────────────────
-  function buildMobileSearchBar(){
-    if (document.getElementById('m-search-bar')) return;
-    var topbar = document.getElementById('topbar');
-    if (!topbar) return;
+  function buildSearchOverlay(){
+    if (document.getElementById('m-search-icon')) return;
 
-    var bar = document.createElement('div');
-    bar.id = 'm-search-bar';
-    bar.innerHTML =
-      '<span class="ms-ico-abs">🔍</span>' +
-      '<input id="m-search-input" type="text" autocomplete="off" placeholder="Search area, building, landmark…">' +
-      '<button id="m-search-clr" type="button" aria-label="Clear">✕</button>';
-    // Insert AFTER #topbar
-    topbar.parentNode.insertBefore(bar, topbar.nextSibling);
+    var tbRight = document.querySelector('#topbar .tb-right');
+    var menuWrap = document.querySelector('#topbar .tb-right .tb-menu-wrap');
+    if (!tbRight || !menuWrap) return;
 
-    var mInput = bar.querySelector('#m-search-input');
-    var mClr   = bar.querySelector('#m-search-clr');
-    var dInput = document.getElementById('search-input'); // original
+    // Search icon button — placed just before the hamburger
+    var icon = document.createElement('button');
+    icon.id = 'm-search-icon';
+    icon.type = 'button';
+    icon.setAttribute('aria-label', 'Search');
+    icon.innerHTML = '🔍';
+    icon.addEventListener('click', openSearchOverlay);
+    tbRight.insertBefore(icon, menuWrap);
 
-    if (!dInput) return;
+    // Overlay
+    var ov = document.createElement('div');
+    ov.id = 'm-search-overlay';
+    ov.innerHTML =
+      '<div id="m-search-row">' +
+        '<button id="m-search-back" type="button" aria-label="Close">←</button>' +
+        '<div id="m-search-input-wrap">' +
+          '<span class="ms-ico">🔍</span>' +
+          '<input id="m-search-input" type="text" autocomplete="off" placeholder="Search area, building, landmark…">' +
+          '<button id="m-search-clr" type="button" aria-label="Clear">✕</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(ov);
 
-    // Mirror typing → original input → trigger original handler
-    mInput.addEventListener('input', function(){
-      dInput.value = mInput.value;
-      mClr.classList.toggle('show', !!mInput.value);
-      try {
-        if (typeof onSearch === 'function') onSearch(mInput.value);
-      } catch(e) { /* original handler missing */ }
-      // Re-anchor the dropdown if needed (CSS does the rest)
+    var mInp = ov.querySelector('#m-search-input');
+    var mClr = ov.querySelector('#m-search-clr');
+    var mBack = ov.querySelector('#m-search-back');
+    var dInp = document.getElementById('search-input');
+
+    if (!dInp) return;
+
+    // Mirror typing → original input → trigger original handlers
+    mInp.addEventListener('input', function(){
+      dInp.value = mInp.value;
+      mClr.classList.toggle('show', !!mInp.value);
+      try { if (typeof onSearch === 'function') onSearch(mInp.value); } catch(e){}
+      moveDropdownIntoOverlay();
     });
-
-    mInput.addEventListener('focus', function(){
+    mInp.addEventListener('focus', function(){
       try { if (typeof onSearchFocus === 'function') onSearchFocus(); } catch(e){}
+      moveDropdownIntoOverlay();
     });
-
-    mInput.addEventListener('keydown', function(e){
+    mInp.addEventListener('keydown', function(e){
       try { if (typeof onSearchKey === 'function') onSearchKey(e); } catch(e2){}
     });
-
     mClr.addEventListener('click', function(){
-      mInput.value = '';
-      dInput.value = '';
+      mInp.value = ''; dInp.value = '';
       mClr.classList.remove('show');
       try { if (typeof clearSearch === 'function') clearSearch(); } catch(e){}
-      mInput.focus();
+      mInp.focus();
     });
-
-    // Reverse-mirror: when other code sets dInput.value, copy to mInput
-    var lastSeen = dInput.value;
-    setInterval(function(){
-      if (!isMobile()) return;
-      if (dInput.value !== lastSeen) {
-        lastSeen = dInput.value;
-        if (mInput.value !== dInput.value) mInput.value = dInput.value;
-        mClr.classList.toggle('show', !!dInput.value);
-      }
-    }, 300);
+    mBack.addEventListener('click', closeSearchOverlay);
   }
 
+  function moveDropdownIntoOverlay(){
+    if (!isMobile()) return;
+    var dd = document.getElementById('s-dd');
+    var ov = document.getElementById('m-search-overlay');
+    if (!dd || !ov) return;
+    if (dd.parentNode !== ov) ov.appendChild(dd);
+  }
+
+  function moveDropdownBack(){
+    var dd = document.getElementById('s-dd');
+    var orig = document.querySelector('.tb-search');
+    if (!dd || !orig) return;
+    if (dd.parentNode !== orig) orig.appendChild(dd);
+  }
+
+  function openSearchOverlay(){
+    var ov = document.getElementById('m-search-overlay');
+    if (!ov) return;
+    ov.classList.add('open');
+    var inp = ov.querySelector('#m-search-input');
+    if (inp) {
+      moveDropdownIntoOverlay();
+      setTimeout(function(){ inp.focus(); }, 80);
+    }
+  }
+  function closeSearchOverlay(){
+    var ov = document.getElementById('m-search-overlay');
+    if (!ov) return;
+    ov.classList.remove('open');
+    document.activeElement && document.activeElement.blur && document.activeElement.blur();
+    moveDropdownBack();
+  }
+  window._gmMobile.openSearch = openSearchOverlay;
+  window._gmMobile.closeSearch = closeSearchOverlay;
+
   // ─────────────────────────────────────────────────────────────
-  // 2. HAMBURGER MENU — extra mobile-only items
+  // 2. HAMBURGER MENU EXTRAS
   // ─────────────────────────────────────────────────────────────
-  function injectMobileMenuItems(){
+  function injectMenuItems(){
     var menu = document.getElementById('tb-menu');
     if (!menu) return;
     if (menu.querySelector('[data-mobile-only="1"]')) return;
 
-    function makeItem(icon, label, fn){
-      var btn = document.createElement('button');
-      btn.className = 'tb-menu-item';
-      btn.setAttribute('data-mobile-only', '1');
-      btn.innerHTML = '<span class="tbm-ico">' + icon + '</span><span>' + label + '</span>';
-      btn.onclick = function(){
+    function item(icon, label, fn){
+      var b = document.createElement('button');
+      b.className = 'tb-menu-item';
+      b.setAttribute('data-mobile-only', '1');
+      b.innerHTML = '<span class="tbm-ico">'+icon+'</span><span>'+label+'</span>';
+      b.onclick = function(){
         try { if (typeof closeTbMenu === 'function') closeTbMenu(); } catch(e){}
-        try { fn(); } catch(e){ console.warn(e); }
+        try { fn(); } catch(e){}
       };
-      return btn;
+      return b;
     }
 
     var sep = document.createElement('div');
@@ -4655,118 +4773,285 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
     sep.setAttribute('data-mobile-only', '1');
 
     var items = [
-      makeItem('＋', 'List Property',   function(){ if (typeof openOwnerModal === 'function') openOwnerModal(); }),
-      makeItem('🔍', 'Match Me',         function(){ if (typeof openMatchMe === 'function') openMatchMe(); }),
-      makeItem('🛰', 'Toggle Satellite', function(){ if (typeof toggleSatellite === 'function') toggleSatellite(); }),
-      makeItem('⚖', 'Compare',          function(){ if (typeof openCompareModal === 'function') openCompareModal(); }),
+      item('＋', 'List Property',   function(){ if (typeof openOwnerModal === 'function') openOwnerModal(); }),
+      item('🔍', 'Match Me',         function(){ if (typeof openMatchMe === 'function') openMatchMe(); }),
+      item('📍', 'Near Me',          function(){ if (typeof nearMe === 'function') nearMe(); }),
+      item('🛰', 'Toggle Satellite', function(){ if (typeof toggleSatellite === 'function') toggleSatellite(); }),
+      item('⚖',  'Compare',           function(){ if (typeof openCompareModal === 'function') openCompareModal(); }),
     ];
 
     var first = menu.firstChild;
     menu.insertBefore(sep, first);
-    for (var i = items.length - 1; i >= 0; i--) {
-      menu.insertBefore(items[i], sep);
-    }
+    for (var i = items.length - 1; i >= 0; i--) menu.insertBefore(items[i], sep);
   }
-
-  function removeMobileMenuItems(){
+  function removeMenuItems(){
     var menu = document.getElementById('tb-menu');
     if (!menu) return;
-    menu.querySelectorAll('[data-mobile-only="1"]').forEach(function(el){
-      el.parentNode.removeChild(el);
+    menu.querySelectorAll('[data-mobile-only="1"]').forEach(function(el){ el.remove(); });
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 3. THE BOTTOM SHEET
+  // ─────────────────────────────────────────────────────────────
+  var sheetState = 'peek';   // 'peek' | 'half' | 'full'
+  var dragStartY = 0;
+  var dragStartTop = 0;
+  var dragging = false;
+
+  function buildSheet(){
+    if (document.getElementById('m-sheet')) return;
+
+    var sheet = document.createElement('div');
+    sheet.id = 'm-sheet';
+    sheet.className = 'peek';
+    sheet.innerHTML =
+      '<div id="m-sheet-handle" aria-label="Drag to expand"></div>' +
+      '<div id="m-sheet-head">' +
+        '<div id="m-sheet-count">— properties</div>' +
+        '<button id="m-sheet-filter" type="button">⚙ Filters</button>' +
+      '</div>' +
+      '<div id="m-sheet-list" class="peek-mode"></div>';
+    document.body.appendChild(sheet);
+
+    var bd = document.createElement('div');
+    bd.id = 'm-sheet-backdrop';
+    bd.addEventListener('click', function(){ snapTo('half'); });
+    document.body.appendChild(bd);
+
+    // Drag handlers — work on touch + mouse
+    var handle = document.getElementById('m-sheet-handle');
+    var head   = document.getElementById('m-sheet-head');
+
+    function onDragStart(e){
+      dragging = true;
+      var pt = (e.touches && e.touches[0]) || e;
+      dragStartY = pt.clientY;
+      dragStartTop = sheet.getBoundingClientRect().top;
+      sheet.classList.add('dragging');
+      e.preventDefault && e.preventDefault();
+    }
+    function onDragMove(e){
+      if (!dragging) return;
+      var pt = (e.touches && e.touches[0]) || e;
+      var delta = pt.clientY - dragStartY;
+      var newTop = dragStartTop + delta;
+      var minTop = window.innerHeight * 0.08;
+      var maxTop = window.innerHeight - 60;
+      newTop = Math.max(minTop, Math.min(maxTop, newTop));
+      sheet.style.top = newTop + 'px';
+    }
+    function onDragEnd(e){
+      if (!dragging) return;
+      dragging = false;
+      sheet.classList.remove('dragging');
+      var top = sheet.getBoundingClientRect().top;
+      var vh = window.innerHeight;
+      // Snap to nearest state
+      var dPeek = Math.abs(top - (vh - 130));
+      var dHalf = Math.abs(top - vh * 0.48);
+      var dFull = Math.abs(top - vh * 0.08);
+      var min = Math.min(dPeek, dHalf, dFull);
+      sheet.style.top = '';
+      if (min === dPeek) snapTo('peek');
+      else if (min === dHalf) snapTo('half');
+      else snapTo('full');
+    }
+
+    handle.addEventListener('touchstart', onDragStart, { passive: false });
+    handle.addEventListener('touchmove',  onDragMove,  { passive: false });
+    handle.addEventListener('touchend',   onDragEnd);
+    handle.addEventListener('mousedown',  onDragStart);
+    document.addEventListener('mousemove', onDragMove);
+    document.addEventListener('mouseup',   onDragEnd);
+
+    // Tap on handle/head with no drag → cycle states
+    handle.addEventListener('click', function(){
+      if (sheetState === 'peek') snapTo('half');
+      else if (sheetState === 'half') snapTo('full');
+      else snapTo('peek');
+    });
+
+    // Filter button
+    document.getElementById('m-sheet-filter').addEventListener('click', openFilterSheet);
+  }
+
+  function snapTo(state){
+    var sheet = document.getElementById('m-sheet');
+    if (!sheet) return;
+    sheet.classList.remove('peek', 'half', 'full');
+    sheet.classList.add(state);
+    sheetState = state;
+
+    // List orientation
+    var list = document.getElementById('m-sheet-list');
+    if (list) {
+      list.classList.toggle('peek-mode', state === 'peek');
+    }
+  }
+  window._gmMobile.snapTo = snapTo;
+
+  // ─────────────────────────────────────────────────────────────
+  // 4. CARD LIST — render + sync
+  // ─────────────────────────────────────────────────────────────
+  function fmtPriceSafe(v, mode){
+    try {
+      if (typeof fmtP === 'function') return fmtP(v, mode);
+    } catch(e){}
+    if (v >= 10000000) return '₹' + (v/10000000).toFixed(2) + ' Cr';
+    if (v >= 100000) return '₹' + (v/100000).toFixed(1) + ' L';
+    if (v >= 1000) return '₹' + (v/1000).toFixed(0) + 'K';
+    return '₹' + v;
+  }
+
+  function escapeHtml(s){
+    return String(s||'')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function getVisibleListings(){
+    // Use existing globals if present; otherwise fall back to LISTINGS
+    var data = (typeof LISTINGS !== 'undefined') ? LISTINGS : [];
+    if (!data.length) return [];
+    var f = (typeof flt !== 'undefined') ? flt : null;
+    var lm = (typeof listingMode !== 'undefined') ? listingMode : 'rent';
+
+    return data.filter(function(p){
+      if (p.mode !== lm) return false;
+      if (!f) return true;
+      if (f.type && f.type !== 'all' && p.type !== f.type) return false;
+      if (f.bhk && f.bhk !== 'all' && p.bhk !== f.bhk) return false;
+      if (f.fur && f.fur !== 'all' && p.fur !== f.fur) return false;
+      if (f.minP != null && p.rent < f.minP) return false;
+      if (f.maxP != null && p.rent > f.maxP) return false;
+      return true;
     });
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // 3. FILTER FAB + BOTTOM SHEET
-  // ─────────────────────────────────────────────────────────────
-  function buildFilterFAB(){
-    if (document.getElementById('m-filter-fab')) return;
+  function renderList(){
+    var listEl = document.getElementById('m-sheet-list');
+    var countEl = document.getElementById('m-sheet-count');
+    if (!listEl || !countEl) return;
 
-    // The FAB
-    var fab = document.createElement('button');
-    fab.id = 'm-filter-fab';
-    fab.type = 'button';
-    fab.innerHTML = '⚙ Filters';
-    fab.setAttribute('aria-label', 'Open filters');
-    fab.addEventListener('click', openFilterSheet);
+    var pins = getVisibleListings();
+    var count = pins.length;
+    var avgWord = '';
+    if (count) {
+      var avg = Math.round(pins.reduce(function(s,p){return s+p.rent;},0) / count);
+      avgWord = ' · avg ' + fmtPriceSafe(avg, pins[0].mode);
+    }
+    countEl.innerHTML = '<b>' + count + '</b> propert' + (count === 1 ? 'y' : 'ies') +
+      '<small>' + avgWord + '</small>';
 
-    // The overlay
-    var overlay = document.createElement('div');
-    overlay.id = 'm-filter-overlay';
-    overlay.addEventListener('click', closeFilterSheet);
+    if (!count) {
+      listEl.innerHTML = '<div class="ms-empty">No listings match — try adjusting filters</div>';
+      return;
+    }
 
-    // The sheet
-    var sheet = document.createElement('div');
-    sheet.id = 'm-filter-sheet';
-    sheet.innerHTML = renderFilterSheetHTML();
+    listEl.innerHTML = pins.map(function(p){
+      var furLabel = ({furnished:'Furnished', semi:'Semi', unfurnished:'Bare'})[p.fur] || '';
+      var modeSuffix = (p.mode === 'rent') ? '<small>/mo</small>' : '';
+      var bhkTag = (p.bhk && p.type !== 'pg') ? '<span class="ms-card-tag">' + escapeHtml(p.bhk) + ' BHK</span>' : '';
+      var furTag = furLabel ? '<span class="ms-card-tag">' + furLabel + '</span>' : '';
+      var sqftTag = p.sqft ? '<span class="ms-card-tag">' + p.sqft + ' sq.ft</span>' : '';
+      return '' +
+        '<div class="ms-card" data-id="' + escapeHtml(p.id) + '">' +
+          '<div class="ms-card-row1">' +
+            '<div class="ms-card-price">' + fmtPriceSafe(p.rent, p.mode) + modeSuffix + '</div>' +
+            '<span class="ms-card-badge">✓ Verified</span>' +
+          '</div>' +
+          '<div class="ms-card-area">📍 ' + escapeHtml(p.area) + '</div>' +
+          '<div class="ms-card-tags">' + bhkTag + furTag + sqftTag + '</div>' +
+        '</div>';
+    }).join('');
 
-    document.body.appendChild(fab);
-    document.body.appendChild(overlay);
-    document.body.appendChild(sheet);
-
-    wireFilterChips(sheet);
-
-    sheet.querySelector('.mfs-apply').addEventListener('click', applyFilterSheet);
-    sheet.querySelector('.mfs-reset').addEventListener('click', resetFilterSheet);
-  }
-
-  function renderFilterSheetHTML(){
-    return ''
-      + '<div class="mfs-title">Filter properties</div>'
-      + '<div class="mfs-section"><div class="mfs-label">Type</div><div class="mfs-chips" data-group="type">'
-      +   '<button class="mfs-chip on" data-v="all">All</button>'
-      +   '<button class="mfs-chip" data-v="flat">🏠 Flat</button>'
-      +   '<button class="mfs-chip" data-v="pg">🛏 PG</button>'
-      +   '<button class="mfs-chip" data-v="commercial">🏢 Commercial</button>'
-      +   '<button class="mfs-chip" data-v="house">🏡 House</button>'
-      + '</div></div>'
-      + '<div class="mfs-section"><div class="mfs-label">BHK</div><div class="mfs-chips" data-group="bhk">'
-      +   '<button class="mfs-chip on" data-v="all">Any</button>'
-      +   '<button class="mfs-chip" data-v="1">1 BHK</button>'
-      +   '<button class="mfs-chip" data-v="2">2 BHK</button>'
-      +   '<button class="mfs-chip" data-v="3">3 BHK</button>'
-      +   '<button class="mfs-chip" data-v="3+">3+ BHK</button>'
-      + '</div></div>'
-      + '<div class="mfs-section"><div class="mfs-label">Furnishing</div><div class="mfs-chips" data-group="fur">'
-      +   '<button class="mfs-chip on" data-v="all">Any</button>'
-      +   '<button class="mfs-chip" data-v="furnished">Furnished</button>'
-      +   '<button class="mfs-chip" data-v="semi">Semi</button>'
-      +   '<button class="mfs-chip" data-v="unfurnished">Bare</button>'
-      + '</div></div>'
-      + '<div class="mfs-foot">'
-      +   '<button class="mfs-reset" type="button">Reset</button>'
-      +   '<button class="mfs-apply" type="button">Apply Filters</button>'
-      + '</div>';
-  }
-
-  function wireFilterChips(root){
-    root.querySelectorAll('.mfs-chips').forEach(function(group){
-      group.addEventListener('click', function(e){
-        var chip = e.target.closest('.mfs-chip');
-        if (!chip) return;
-        group.querySelectorAll('.mfs-chip').forEach(function(c){ c.classList.remove('on'); });
-        chip.classList.add('on');
+    // Tap a card → open detail; also pan map to that pin
+    listEl.querySelectorAll('.ms-card').forEach(function(card){
+      card.addEventListener('click', function(){
+        var id = card.dataset.id;
+        var p = pins.find(function(x){ return x.id === id; });
+        if (p && typeof map !== 'undefined' && map && p.lat && p.lng) {
+          try { map.setView([p.lat, p.lng], Math.max(map.getZoom(), 15), { animate: true }); } catch(e){}
+        }
+        if (typeof openDetail === 'function') openDetail(id);
       });
     });
   }
 
-  function openFilterSheet(){
-    document.getElementById('m-filter-overlay').classList.add('open');
-    document.getElementById('m-filter-sheet').classList.add('open');
-    // Sync chip states from current global filter (best-effort)
-    syncSheetFromGlobalFilter();
-  }
-  function closeFilterSheet(){
-    document.getElementById('m-filter-overlay').classList.remove('open');
-    document.getElementById('m-filter-sheet').classList.remove('open');
+  // Public hook so original draw() can call us
+  window._gmMobile.renderList = renderList;
+
+  // Highlight a card when its pin is opened
+  window._gmMobile.highlightCard = function(id){
+    var listEl = document.getElementById('m-sheet-list');
+    if (!listEl) return;
+    listEl.querySelectorAll('.ms-card').forEach(function(c){
+      c.classList.toggle('active', c.dataset.id === id);
+    });
+    var active = listEl.querySelector('.ms-card.active');
+    if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  // 5. FILTER BOTTOM SHEET (separate from list sheet)
+  // ─────────────────────────────────────────────────────────────
+  function buildFilterSheet(){
+    if (document.getElementById('m-filter-sheet')) return;
+
+    var ov = document.createElement('div');
+    ov.id = 'm-filter-overlay';
+    ov.addEventListener('click', closeFilterSheet);
+
+    var sh = document.createElement('div');
+    sh.id = 'm-filter-sheet';
+    sh.innerHTML =
+      '<div class="mfs-title">Filter properties</div>' +
+      '<div class="mfs-section"><div class="mfs-label">Type</div><div class="mfs-chips" data-group="type">' +
+        '<button class="mfs-chip on" data-v="all">All</button>' +
+        '<button class="mfs-chip" data-v="flat">🏠 Flat</button>' +
+        '<button class="mfs-chip" data-v="pg">🛏 PG</button>' +
+        '<button class="mfs-chip" data-v="commercial">🏢 Commercial</button>' +
+        '<button class="mfs-chip" data-v="house">🏡 House</button>' +
+      '</div></div>' +
+      '<div class="mfs-section"><div class="mfs-label">BHK</div><div class="mfs-chips" data-group="bhk">' +
+        '<button class="mfs-chip on" data-v="all">Any</button>' +
+        '<button class="mfs-chip" data-v="1">1 BHK</button>' +
+        '<button class="mfs-chip" data-v="2">2 BHK</button>' +
+        '<button class="mfs-chip" data-v="3">3 BHK</button>' +
+        '<button class="mfs-chip" data-v="3+">3+ BHK</button>' +
+      '</div></div>' +
+      '<div class="mfs-section"><div class="mfs-label">Furnishing</div><div class="mfs-chips" data-group="fur">' +
+        '<button class="mfs-chip on" data-v="all">Any</button>' +
+        '<button class="mfs-chip" data-v="furnished">Furnished</button>' +
+        '<button class="mfs-chip" data-v="semi">Semi</button>' +
+        '<button class="mfs-chip" data-v="unfurnished">Bare</button>' +
+      '</div></div>' +
+      '<div class="mfs-foot">' +
+        '<button class="mfs-reset" type="button">Reset</button>' +
+        '<button class="mfs-apply" type="button">Apply Filters</button>' +
+      '</div>';
+
+    document.body.appendChild(ov);
+    document.body.appendChild(sh);
+
+    sh.querySelectorAll('.mfs-chips').forEach(function(g){
+      g.addEventListener('click', function(e){
+        var c = e.target.closest('.mfs-chip');
+        if (!c) return;
+        g.querySelectorAll('.mfs-chip').forEach(function(x){ x.classList.remove('on'); });
+        c.classList.add('on');
+      });
+    });
+    sh.querySelector('.mfs-apply').addEventListener('click', applyFilterSheet);
+    sh.querySelector('.mfs-reset').addEventListener('click', resetFilterSheet);
   }
 
-  function syncSheetFromGlobalFilter(){
+  function syncSheetFromFlt(){
     if (typeof flt === 'undefined') return;
-    var sheet = document.getElementById('m-filter-sheet');
-    if (!sheet) return;
+    var sh = document.getElementById('m-filter-sheet');
+    if (!sh) return;
     [['type', flt.type], ['bhk', flt.bhk], ['fur', flt.fur]].forEach(function(pair){
-      var grp = sheet.querySelector('.mfs-chips[data-group="' + pair[0] + '"]');
+      var grp = sh.querySelector('.mfs-chips[data-group="' + pair[0] + '"]');
       if (!grp) return;
       grp.querySelectorAll('.mfs-chip').forEach(function(c){
         c.classList.toggle('on', c.dataset.v === (pair[1] || 'all'));
@@ -4774,25 +5059,34 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
     });
   }
 
+  function openFilterSheet(){
+    var ov = document.getElementById('m-filter-overlay');
+    var sh = document.getElementById('m-filter-sheet');
+    if (!ov || !sh) return;
+    syncSheetFromFlt();
+    ov.classList.add('open');
+    sh.classList.add('open');
+  }
+  function closeFilterSheet(){
+    document.getElementById('m-filter-overlay').classList.remove('open');
+    document.getElementById('m-filter-sheet').classList.remove('open');
+  }
   function applyFilterSheet(){
-    if (typeof flt === 'undefined') {
-      closeFilterSheet();
-      return;
-    }
-    var sheet = document.getElementById('m-filter-sheet');
+    var sh = document.getElementById('m-filter-sheet');
+    if (!sh || typeof flt === 'undefined') { closeFilterSheet(); return; }
     ['type', 'bhk', 'fur'].forEach(function(g){
-      var on = sheet.querySelector('.mfs-chips[data-group="' + g + '"] .mfs-chip.on');
+      var on = sh.querySelector('.mfs-chips[data-group="' + g + '"] .mfs-chip.on');
       if (on) flt[g] = on.dataset.v;
     });
     try { if (typeof draw === 'function') draw(); } catch(e){}
+    renderList();
     closeFilterSheet();
     try { if (typeof showToast === 'function') showToast('✅ Filters applied'); } catch(e){}
   }
-
   function resetFilterSheet(){
-    var sheet = document.getElementById('m-filter-sheet');
-    sheet.querySelectorAll('.mfs-chips').forEach(function(grp){
-      grp.querySelectorAll('.mfs-chip').forEach(function(c){
+    var sh = document.getElementById('m-filter-sheet');
+    sh.querySelectorAll('.mfs-chips').forEach(function(g){
+      g.querySelectorAll('.mfs-chip').forEach(function(c){
         c.classList.toggle('on', c.dataset.v === 'all');
       });
     });
@@ -4800,37 +5094,82 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
       flt.type = 'all'; flt.bhk = 'all'; flt.fur = 'all';
       try { if (typeof draw === 'function') draw(); } catch(e){}
     }
+    renderList();
   }
 
   // ─────────────────────────────────────────────────────────────
-  // 4. SYNC on viewport change
+  // 6. WIRE INTO EXISTING APP
   // ─────────────────────────────────────────────────────────────
-  function sync(){
+  function wireHooks(){
+    // Re-render the list whenever existing draw() runs
+    if (typeof window.draw === 'function' && !window._gmMobile._wrappedDraw) {
+      var origDraw = window.draw;
+      window.draw = function(){
+        var r = origDraw.apply(this, arguments);
+        if (isMobile()) renderList();
+        return r;
+      };
+      window._gmMobile._wrappedDraw = true;
+    }
+    // Re-render when openDetail runs (highlight active card)
+    if (typeof window.openDetail === 'function' && !window._gmMobile._wrappedOpenDetail) {
+      var origOD = window.openDetail;
+      window.openDetail = function(id){
+        if (isMobile()) {
+          window._gmMobile.highlightCard(id);
+        }
+        return origOD.apply(this, arguments);
+      };
+      window._gmMobile._wrappedOpenDetail = true;
+    }
+    // Re-render when mode changes
+    if (typeof window.setMode === 'function' && !window._gmMobile._wrappedSetMode) {
+      var origSM = window.setMode;
+      window.setMode = function(){
+        var r = origSM.apply(this, arguments);
+        if (isMobile()) renderList();
+        return r;
+      };
+      window._gmMobile._wrappedSetMode = true;
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 7. INIT / SYNC
+  // ─────────────────────────────────────────────────────────────
+  function syncMobile(){
     if (isMobile()) {
-      buildMobileSearchBar();
-      injectMobileMenuItems();
-      buildFilterFAB();
+      buildSearchOverlay();
+      injectMenuItems();
+      buildSheet();
+      buildFilterSheet();
+      wireHooks();
+      // Initial render — wait a tick so app initialised
+      setTimeout(renderList, 100);
     } else {
-      removeMobileMenuItems();
-      // We leave the mobile-only elements in DOM (CSS hides them).
-      // They're cheap and re-show instantly if user resizes back.
+      removeMenuItems();
+      // Leave other elements; CSS hides them.
     }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', sync);
+    document.addEventListener('DOMContentLoaded', syncMobile);
   } else {
-    sync();
+    syncMobile();
   }
-
-  var resizeTimer;
+  // Re-sync on rotate / resize
+  var rt;
   window.addEventListener('resize', function(){
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(sync, 200);
+    clearTimeout(rt);
+    rt = setTimeout(syncMobile, 200);
+  });
+  // Also re-render after splash → app transition
+  window.addEventListener('load', function(){
+    setTimeout(function(){ if (isMobile()) { wireHooks(); renderList(); } }, 600);
   });
 })();
 
-// ──── MOBILE LAYOUT v4 SHIM END ────
+// ──── MOBILE v5 SHIM END ────
 </script>
 <!-- HOW IT WORKS MODAL -->
 <div class="dark-overlay" id="how-modal">
