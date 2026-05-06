@@ -1613,6 +1613,284 @@ body.dark .lv-card { background: var(--white); }
   .cmp-cell { padding:9px 10px; font-size:12px; }
 }
 
+
+/* ───────── MOBILE FIX PATCH START ───────── */
+/* GHARMAP MOBILE FIX PATCH — applied inline */
+
+/* ── 1. Safe-area & box-sizing baseline ────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: hidden; }
+
+@supports (padding: max(0px)) {
+  :root {
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bot: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+  }
+}
+
+/* ── 2. SPLASH — fix card spilling, scaling, vertical fit ─── */
+@media (max-width: 768px) {
+  #splash {
+    padding: 16px max(16px, var(--safe-left, 16px)) max(16px, var(--safe-bot, 16px)) max(16px, var(--safe-right, 16px));
+    align-items: flex-start; /* don't vertically center on tall content */
+    padding-top: max(20px, var(--safe-top, 20px));
+  }
+  .sp {
+    max-width: 100%;
+    width: 100%;
+  }
+  .sp-headline { font-size: 22px; line-height: 1.25; }
+  .sp-sub { font-size: 13px; }
+  .sp-pills { gap: 5px; }
+  .sp-pill { font-size: 10.5px; padding: 4px 9px; }
+  .sp-share-box { padding: 8px 11px; }
+  .sp-share-txt { font-size: 11.5px; }
+  .sp-btn-main { padding: 13px; font-size: 14px; min-height: 46px; }
+  .sp-btn-how, .sp-btn-sec { padding: 11px; min-height: 42px; }
+}
+
+/* very narrow phones (Galaxy Fold, older iPhones in 320px) */
+@media (max-width: 360px) {
+  #splash { padding-left: 12px; padding-right: 12px; }
+  .sp-logo { font-size: 22px; }
+  .sp-headline { font-size: 19px; }
+  .sp-pills { display: none; } /* save vertical space */
+}
+
+/* ── 3. TOPBAR — search and menu fit on phone ──────────────── */
+@media (max-width: 768px) {
+  #topbar {
+    padding: 0 12px;
+    gap: 8px;
+    height: 52px;
+  }
+  :root, body { --top: 52px; }
+  .tb-logo { font-size: 16px; }
+  .tb-verified { display: none; } /* free up space */
+  .tb-search { max-width: none; }
+  #search-input { font-size: 14px; padding: 9px 32px 9px 34px; } /* 14px = no iOS zoom-on-focus */
+  .tb-mode { display: none; } /* you already do this at 480px, push to 768 */
+  .tb-right { gap: 6px; }
+  .tb-btn:not(.pri) { display: none; } /* keep only "List Property" primary */
+  .tb-btn.pri { padding: 7px 12px; font-size: 12px; }
+  .tb-menu-btn { width: 38px; height: 38px; }
+  .tb-menu {
+    position: fixed;
+    top: 52px; right: 8px; left: 8px;
+    min-width: 0;
+    border-radius: 14px;
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
+  }
+}
+
+/* ── 4. APP SHELL — make map full-width on mobile ──────────── */
+@media (max-width: 768px) {
+  #app { height: 100dvh; } /* dynamic viewport — handles iOS toolbar */
+  #map-wrap { right: 0; top: 52px; }
+  #fp { display: none !important; } /* filter panel hidden, mobile uses bottom sheet */
+}
+
+/* ── 5. DETAIL PANEL (#dp) — proper full-screen on mobile ── */
+@media (max-width: 768px) {
+  #dp {
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 100dvh;
+    bottom: 0;
+    z-index: 1500; /* above topbar so close X is reachable */
+    box-shadow: none;
+  }
+  .dp-hd {
+    padding: 12px 14px 10px;
+    padding-top: max(12px, var(--safe-top, 12px));
+  }
+  .dp-price { font-size: 22px; }
+  .dp-actions { gap: 4px; }
+  .dp-btn, .dp-close { width: 34px; height: 34px; font-size: 13px; } /* tappable */
+}
+
+/* ── 6. SAVED DRAWER — same treatment ──────────────────────── */
+@media (max-width: 768px) {
+  #saved-drawer {
+    top: 52px; right: 0; left: 0; width: 100%;
+    z-index: 1400;
+    padding-bottom: calc(20px + var(--safe-bot, 0px));
+  }
+}
+
+/* ── 7. STATS BAR — recenter (no panel offset) ─────────────── */
+@media (max-width: 768px) {
+  #stats {
+    left: 50% !important;
+    transform: translateX(-50%);
+    bottom: calc(14px + var(--safe-bot, 0px));
+    font-size: 11px;
+  }
+  .st-item { padding: 7px 12px; }
+  .st-num { font-size: 13px; }
+  #toast {
+    left: 50% !important;
+    transform: translateX(-50%);
+    bottom: calc(76px + var(--safe-bot, 0px));
+    max-width: calc(100vw - 32px);
+    white-space: normal;
+    text-align: center;
+  }
+  #banner {
+    left: 50% !important;
+    transform: translateX(-50%);
+    top: 64px;
+    font-size: 12px;
+    padding: 8px 16px;
+    max-width: calc(100vw - 24px);
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+/* ── 8. FLOATING MAP BUTTONS — stack so they don't overlap ── */
+@media (max-width: 768px) {
+  /* row 1: above stats bar */
+  #near-me-btn {
+    bottom: calc(72px + var(--safe-bot, 0px));
+    left: 12px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  #sat-toggle-btn {
+    bottom: calc(72px + var(--safe-bot, 0px));
+    left: auto;
+    right: 12px; /* push to opposite side, no more overlap */
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  /* primary CTA — keep prominent, but lift it above stats */
+  #request-btn {
+    bottom: calc(120px + var(--safe-bot, 0px));
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 11px 18px;
+    font-size: 12.5px;
+  }
+}
+
+/* very narrow: shrink button labels further */
+@media (max-width: 380px) {
+  #near-me-btn, #sat-toggle-btn { padding: 7px 10px; font-size: 11px; }
+  #request-btn { padding: 10px 14px; font-size: 12px; }
+}
+
+/* ── 9. LEAFLET CONTROLS — clear of right edge on mobile ──── */
+@media (max-width: 768px) {
+  .leaflet-right { right: 8px !important; }
+  .leaflet-control-zoom { transform: scale(0.92); transform-origin: top right; }
+  .leaflet-popup-content { min-width: 150px; margin: 10px 12px !important; }
+}
+
+/* ── 10. MODALS — Match Me, List Property, Share, etc. ────── */
+@media (max-width: 768px) {
+  /* Generic full-screen overlays */
+  .dark-overlay,
+  #share-modal,
+  #matchme-modal,
+  #owner-modal,
+  #how-modal,
+  #privacy-modal,
+  #terms-modal {
+    padding: 0 !important;
+    align-items: flex-end !important; /* slide up from bottom — feels native */
+  }
+
+  .dark-modal,
+  .share-card,
+  #matchme-modal .modal,
+  #owner-modal .modal,
+  #how-modal .modal,
+  #privacy-modal .modal,
+  #terms-modal .modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 18px 18px 0 0 !important;
+    max-height: 92vh !important;
+    padding: 22px 18px calc(28px + var(--safe-bot, 0px)) 18px !important;
+    animation: slideUpSheet .28s ease both !important;
+  }
+  @keyframes slideUpSheet {
+    from { transform: translateY(40px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+
+  /* sheet handle on top of every modal (visual cue) */
+  .dark-modal::before,
+  #matchme-modal .modal::before,
+  #owner-modal .modal::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 50%; transform: translateX(-50%);
+    width: 40px; height: 4px;
+    background: rgba(0,0,0,0.18);
+    border-radius: 4px;
+  }
+  body.dark .dark-modal::before { background: rgba(255,255,255,0.18); }
+}
+
+/* ── 11. FORM FIELDS — fix iOS zoom & tap targets ──────────── */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 16px !important; /* prevents iOS Safari from zooming on focus */
+  }
+  button, .m-chip, .tb-btn, .tb-menu-item {
+    min-height: 40px; /* tappable */
+  }
+  .m-chip { padding: 9px 13px !important; }
+}
+
+/* ── 12. DROPDOWN SEARCH RESULTS — fit mobile width ────────── */
+@media (max-width: 768px) {
+  #s-dd {
+    max-height: 60vh;
+    border-radius: 14px;
+  }
+  .dd-row { padding: 11px 14px; }
+}
+
+/* ── 13. PROPERTY POPUPS on map — readable size ───────────── */
+@media (max-width: 768px) {
+  .leaflet-popup-content-wrapper {
+    min-width: 200px;
+  }
+  .pp-r { font-size: 18px; }
+}
+
+/* ── 14. DARK MODE — make sure mobile sheet looks right ──── */
+@media (max-width: 768px) {
+  body.dark .dark-modal,
+  body.dark #matchme-modal .modal,
+  body.dark #owner-modal .modal {
+    background: #1a1a1a;
+  }
+}
+
+/* ── 15. Prevent rubber-band scrolling on iOS over modals ── */
+.modal-open { overflow: hidden; position: fixed; width: 100%; }
+
+/* ═══════════════════════════════════════════════════════════════
+   END MOBILE FIX PATCH
+═══════════════════════════════════════════════════════════════ */
+
+/* ───────── MOBILE FIX PATCH END ───────── */
+
 </style>
 </head>
 <body>
@@ -2264,109 +2542,10 @@ const ZONES=[
 ];
 
 const PLACES=[
-  // ── Major neighbourhoods ──
-  {n:'Gomti Nagar',lat:26.8650,lng:80.9962,ico:'🏢',sub:'IT & Corporate Hub',k:'gomti gn'},
-  {n:'Gomti Nagar Extension',lat:26.8780,lng:81.0150,ico:'🏢',sub:'New IT Sectors',k:'gne'},
-  {n:'Vibhuti Khand',lat:26.8620,lng:80.9940,ico:'🏢',sub:'Gomti Nagar',k:'vk'},
-  {n:'Vipul Khand',lat:26.8580,lng:80.9920,ico:'🏢',sub:'Gomti Nagar',k:'vipul'},
-  {n:'Vinay Khand',lat:26.8600,lng:80.9870,ico:'🏢',sub:'Gomti Nagar',k:'vinay'},
-  {n:'Vivek Khand',lat:26.8640,lng:80.9890,ico:'🏢',sub:'Gomti Nagar',k:'vivek'},
-  {n:'Vishal Khand',lat:26.8680,lng:80.9920,ico:'🏢',sub:'Gomti Nagar',k:'vishal'},
-  {n:'Vikrant Khand',lat:26.8540,lng:80.9970,ico:'🏢',sub:'Gomti Nagar',k:'vikrant'},
-  {n:'Vijay Khand',lat:26.8650,lng:81.0030,ico:'🏢',sub:'Gomti Nagar',k:'vijay'},
-  {n:'Hazratganj',lat:26.8530,lng:80.9400,ico:'🏙',sub:'Central Lucknow',k:'ganj central mg marg'},
-  {n:'MG Road',lat:26.8530,lng:80.9430,ico:'🏙',sub:'Hazratganj',k:'mg marg'},
-  {n:'Kaiserbagh',lat:26.8560,lng:80.9350,ico:'🏛',sub:'Heritage Area',k:'kb'},
-  {n:'Lalbagh',lat:26.8500,lng:80.9320,ico:'🌳',sub:'Central Lucknow',k:''},
-  {n:'Ashiyana',lat:26.8200,lng:80.8900,ico:'🏘',sub:'West Lucknow',k:'aashiana'},
-  {n:'Aliganj',lat:26.8870,lng:80.9425,ico:'🏘',sub:'North Lucknow',k:''},
-  {n:'Mahanagar',lat:26.8480,lng:80.9600,ico:'🏘',sub:'Central-East',k:'mahanagar'},
-  {n:'Indira Nagar',lat:26.8700,lng:80.9700,ico:'🏘',sub:'East Lucknow',k:'in'},
-  {n:'Alambagh',lat:26.8100,lng:80.9200,ico:'🏘',sub:'South Lucknow',k:''},
-  {n:'Krishna Nagar',lat:26.8050,lng:80.9050,ico:'🏘',sub:'South Lucknow',k:''},
-  {n:'Rajajipuram',lat:26.8350,lng:80.8800,ico:'🏘',sub:'West Lucknow',k:'raja'},
-  {n:'Jankipuram',lat:26.8800,lng:80.9100,ico:'🏘',sub:'North-West',k:'jp'},
-  {n:'Jankipuram Extension',lat:26.8950,lng:80.9050,ico:'🏘',sub:'Far North-West',k:'jpe'},
-  {n:'Sitapur Road',lat:26.9000,lng:80.9300,ico:'🛣',sub:'North Corridor',k:''},
-  {n:'Faizabad Road',lat:26.8700,lng:81.0100,ico:'🛣',sub:'East Corridor',k:''},
-  {n:'Kanpur Road',lat:26.7800,lng:80.8900,ico:'🛣',sub:'South Corridor',k:''},
-  {n:'Hardoi Road',lat:26.8700,lng:80.8500,ico:'🛣',sub:'West Corridor',k:''},
-  {n:'Sushant Golf City',lat:26.7800,lng:80.9650,ico:'⛳',sub:'South Lucknow',k:'sgc golf'},
-  {n:'Raibareli Road',lat:26.7900,lng:80.9450,ico:'🛣',sub:'South Corridor',k:''},
-  {n:'Eldeco',lat:26.7920,lng:80.9700,ico:'🏢',sub:'Sushant Golf City',k:'aldeco'},
-  {n:'Bijnor',lat:26.7700,lng:80.9300,ico:'🏘',sub:'South Lucknow',k:''},
-  {n:'BBD',lat:26.8650,lng:81.0500,ico:'🎓',sub:'Babu Banarasi Das University',k:'bbdu'},
-  {n:'Nirala Nagar',lat:26.8780,lng:80.9550,ico:'🏘',sub:'North Lucknow',k:''},
-  {n:'Vikas Nagar',lat:26.8830,lng:80.9620,ico:'🏘',sub:'North Lucknow',k:''},
-  {n:'Madiyaon',lat:26.8950,lng:80.9450,ico:'🏘',sub:'North Lucknow',k:''},
-  {n:'IIM Road',lat:26.8500,lng:81.0050,ico:'🎓',sub:'East Lucknow',k:'iim'},
-
-  // ── Old City ──
-  {n:'Aminabad',lat:26.8390,lng:80.9290,ico:'🏛',sub:'Old City Market',k:''},
-  {n:'Chowk',lat:26.8450,lng:80.9250,ico:'🕌',sub:'Old City',k:''},
-  {n:'Yahiyaganj',lat:26.8420,lng:80.9220,ico:'🕌',sub:'Old City',k:''},
-  {n:'Nakhas',lat:26.8430,lng:80.9180,ico:'🕌',sub:'Old City',k:''},
-  {n:'Daliganj',lat:26.8650,lng:80.9180,ico:'🏘',sub:'Old City',k:''},
-
-  // ── Universities & Colleges ──
-  {n:'Lucknow University',lat:26.8390,lng:80.9290,ico:'🎓',sub:'University',k:'lu lucknow uni'},
-  {n:'IIM Lucknow',lat:26.8530,lng:81.0050,ico:'🎓',sub:'Prabandh Nagar',k:'iiml'},
-  {n:'BBAU',lat:26.7510,lng:80.9460,ico:'🎓',sub:'Babasaheb Ambedkar Univ',k:'bbau'},
-  {n:'Integral University',lat:26.9020,lng:80.9750,ico:'🎓',sub:'Kursi Road',k:''},
-  {n:'Amity University',lat:26.8210,lng:81.0070,ico:'🎓',sub:'Malhaur',k:''},
-
-  // ── Hospitals ──
-  {n:'KGMU',lat:26.8480,lng:80.9440,ico:'🏥',sub:'King George Medical Univ',k:'kgmc medical'},
-  {n:'SGPGI',lat:26.7440,lng:80.9460,ico:'🏥',sub:'Raibareli Road',k:'pgi'},
-  {n:'RML Hospital',lat:26.8580,lng:80.9920,ico:'🏥',sub:'Vibhuti Khand',k:'ram manohar'},
-  {n:'Sahara Hospital',lat:26.8590,lng:80.9990,ico:'🏥',sub:'Gomti Nagar',k:''},
-  {n:'Medanta',lat:26.8610,lng:81.0040,ico:'🏥',sub:'Gomti Nagar',k:''},
-  {n:'Apollo Hospital',lat:26.8420,lng:80.9320,ico:'🏥',sub:'Kanpur Road',k:''},
-
-  // ── Transport hubs ──
-  {n:'Charbagh Station',lat:26.8316,lng:80.9228,ico:'🚉',sub:'Lucknow Railway Station',k:'lko station railway'},
-  {n:'Lucknow Junction',lat:26.8316,lng:80.9228,ico:'🚉',sub:'Charbagh',k:'ne junction'},
-  {n:'Gomti Nagar Station',lat:26.8580,lng:81.0070,ico:'🚉',sub:'Gomti Nagar',k:''},
-  {n:'CCS Airport',lat:26.7606,lng:80.8893,ico:'✈️',sub:'Amausi',k:'amausi airport'},
-  {n:'Alambagh Bus Terminal',lat:26.8120,lng:80.9180,ico:'🚌',sub:'ISBT Alambagh',k:'isbt'},
-  {n:'Kaiserbagh Bus Stand',lat:26.8560,lng:80.9350,ico:'🚌',sub:'Central',k:''},
-
-  // ── Metro stations ──
-  {n:'Hazratganj Metro',lat:26.8520,lng:80.9430,ico:'🚇',sub:'Lucknow Metro',k:''},
-  {n:'Sachivalaya Metro',lat:26.8500,lng:80.9380,ico:'🚇',sub:'Lucknow Metro',k:''},
-  {n:'Charbagh Metro',lat:26.8316,lng:80.9228,ico:'🚇',sub:'Lucknow Metro',k:''},
-  {n:'Mawaiya Metro',lat:26.8190,lng:80.9180,ico:'🚇',sub:'Lucknow Metro',k:''},
-  {n:'Alambagh Metro',lat:26.8100,lng:80.9180,ico:'🚇',sub:'Lucknow Metro',k:''},
-  {n:'Krishna Nagar Metro',lat:26.8050,lng:80.9100,ico:'🚇',sub:'Lucknow Metro',k:''},
-  {n:'Munshipulia Metro',lat:26.8950,lng:80.9560,ico:'🚇',sub:'Lucknow Metro',k:''},
-
-  // ── Malls & Markets ──
-  {n:'Saharaganj Mall',lat:26.8550,lng:80.9460,ico:'🛍',sub:'Hazratganj',k:''},
-  {n:'Phoenix Palassio',lat:26.8570,lng:80.9790,ico:'🛍',sub:'Gomti Nagar',k:'phoenix mall'},
-  {n:'Lulu Mall',lat:26.7920,lng:80.9650,ico:'🛍',sub:'Sushant Golf City',k:''},
-  {n:'Wave Mall',lat:26.8480,lng:80.9620,ico:'🛍',sub:'Mahanagar',k:''},
-  {n:'Fun Republic Mall',lat:26.8490,lng:80.9540,ico:'🛍',sub:'Kapoorthala',k:''},
-  {n:'Riverside Mall',lat:26.8520,lng:80.9560,ico:'🛍',sub:'Hazratganj',k:''},
-
-  // ── Tech / IT ──
-  {n:'Wipro Office',lat:26.8590,lng:80.9990,ico:'💻',sub:'Sector B Gomti Nagar',k:''},
-  {n:'TCS Lucknow',lat:26.8550,lng:81.0050,ico:'💻',sub:'Vibhuti Khand',k:''},
-  {n:'HCL Lucknow',lat:26.8580,lng:80.9970,ico:'💻',sub:'Gomti Nagar',k:''},
-
-  // ── Heritage / Tourism ──
-  {n:'Bara Imambara',lat:26.8702,lng:80.9100,ico:'🕌',sub:'Old City',k:'imambara'},
-  {n:'Chota Imambara',lat:26.8740,lng:80.9080,ico:'🕌',sub:'Hussainabad',k:''},
-  {n:'Rumi Darwaza',lat:26.8690,lng:80.9090,ico:'🏛',sub:'Heritage',k:''},
-  {n:'Residency',lat:26.8615,lng:80.9320,ico:'🏛',sub:'Heritage',k:''},
-  {n:'Ambedkar Park',lat:26.8470,lng:80.9890,ico:'🏛',sub:'Gomti Nagar',k:'memorial'},
-  {n:'Janeshwar Mishra Park',lat:26.8650,lng:80.9870,ico:'🌳',sub:'Gomti Nagar',k:'jp park'},
-  {n:'Dr Ambedkar Memorial',lat:26.8470,lng:80.9890,ico:'🏛',sub:'Gomti Nagar',k:''},
-
-  // ── Localities ──
-  {n:'Butler Palace',lat:26.8520,lng:80.9520,ico:'🏘',sub:'Hazratganj',k:''},
-  {n:'Park Road',lat:26.8550,lng:80.9460,ico:'🏘',sub:'Hazratganj',k:''},
-  {n:'Vidhan Sabha Marg',lat:26.8430,lng:80.9430,ico:'🏛',sub:'Government Area',k:''},
+  // Empty by design — search now uses Photon API for accurate landmarks.
+  // Your inventory (LISTINGS) is always shown first via fuzzy area-name match.
 ];
+
 
 // ══ STATE ══
 let map=null,cluster=null,markers=[];
@@ -2838,17 +3017,7 @@ function onSearch(q){
   if(!q.trim()){closeDd();return;}
   const ql=q.toLowerCase().trim();
 
-  // Score every place against name, sub, keywords
-  const placeResults = PLACES.map(p => {
-    const sName = _fuzzyScore(ql, p.n) * 1.5;       // name matters most
-    const sKey  = _fuzzyScore(ql, p.k || '') * 1.2; // keywords next
-    const sSub  = _fuzzyScore(ql, p.sub || '') * 0.6; // sub area lightest
-    return { p, score: Math.max(sName, sKey, sSub) };
-  }).filter(x => x.score >= 20)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 6);
-
-  // ALSO search current LISTINGS area names so users find your inventory
+  // 1. INSTANT — search YOUR inventory first (fuzzy match on area names)
   const listingMatches = [];
   const seenAreas = new Set();
   for (const lst of LISTINGS) {
@@ -2856,62 +3025,149 @@ function onSearch(q){
     const score = _fuzzyScore(ql, lst.area);
     if (score >= 30) {
       seenAreas.add(lst.area);
+      const count = LISTINGS.filter(x => x.area === lst.area).length;
       listingMatches.push({
-        p: { n: lst.area, lat: lst.lat, lng: lst.lng, ico: '🏠', sub: 'Verified property available' },
-        score: score + 10 // boost to surface inventory
+        n: lst.area,
+        lat: lst.lat,
+        lng: lst.lng,
+        ico: '🏠',
+        sub: count + ' verified ' + (count === 1 ? 'property' : 'properties') + ' here',
+        isInventory: true
       });
     }
   }
 
-  // Combine, dedupe by name, sort
-  const combined = [...listingMatches, ...placeResults];
-  const seen = new Set();
-  const final = combined.filter(x => {
-    const key = x.p.n.toLowerCase();
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  }).sort((a, b) => b.score - a.score).slice(0, 7).map(x => x.p);
-
-  if (final.length) {
-    renderDd(final);
+  // Render inventory immediately
+  if (listingMatches.length) {
+    renderDd(listingMatches);
   } else if (ql.length < 2) {
     closeDd();
     return;
   } else {
-    // No local hit yet — wait for web geocoding
+    // Show loading hint while we wait for Photon
+    const dd = document.getElementById('s-dd');
+    dd.innerHTML = '<div style="padding:14px;font-size:13px;color:var(--ink3);text-align:center;">Searching Lucknow…</div>';
+    dd.classList.add('open');
   }
 
-  // Web geocoding only on pause and only if local hits are weak
+  // 2. Always also query Photon for accurate landmarks (debounced)
   clearTimeout(sTimer);
-  if (ql.length >= 3 && final.length < 4) {
+  if (ql.length >= 2) {
     sTimer = setTimeout(() => {
       const current = document.getElementById('search-input').value.toLowerCase().trim();
-      if (current === ql) geocode(q, final);
-    }, 350);
+      if (current === ql) photonSearch(q, listingMatches);
+    }, 250);
   }
 }
+
 function renderDd(res){
   const dd=document.getElementById('s-dd');
-  let h='<div class="dd-sec"><div class="dd-label">Suggestions</div>';
-  res.forEach(r=>h+='<div class="dd-row" onclick="selPlace('+r.lat+','+r.lng+',\''+r.n.replace(/'/g,"\\'")+'\')"><span style="font-size:15px;">'+r.ico+'</span><div><div class="dd-name">'+r.n+'</div><div class="dd-sub">'+r.sub+'</div></div></div>');
-  h+='</div>';dd.innerHTML=h;dd.classList.add('open');
+  const inventory = res.filter(r => r.isInventory);
+  const places = res.filter(r => !r.isInventory);
+  let h='';
+  if (inventory.length) {
+    h += '<div class="dd-sec"><div class="dd-label" style="color:var(--green-mid);">🏠 Your verified properties</div>';
+    inventory.forEach(r => {
+      const safeN = r.n.replace(/'/g,"\\'");
+      h += '<div class="dd-row" onclick="selPlace('+r.lat+','+r.lng+',\''+safeN+'\')" style="background:rgba(45,106,90,.04);"><span style="font-size:15px;">'+r.ico+'</span><div><div class="dd-name">'+r.n+'</div><div class="dd-sub" style="color:var(--green-mid);">'+r.sub+'</div></div></div>';
+    });
+    h += '</div>';
+    if (places.length) h += '<div class="dd-sep"></div>';
+  }
+  if (places.length) {
+    h += '<div class="dd-sec"><div class="dd-label">Lucknow places & landmarks</div>';
+    places.forEach(r => {
+      const safeN = r.n.replace(/'/g,"\\'");
+      h += '<div class="dd-row" onclick="selPlace('+r.lat+','+r.lng+',\''+safeN+'\')"><span style="font-size:15px;">'+r.ico+'</span><div><div class="dd-name">'+r.n+'</div><div class="dd-sub">'+r.sub+'</div></div></div>';
+    });
+    h += '</div>';
+  }
+  if (!h) {
+    h = '<div style="padding:14px;font-size:13px;color:var(--ink3);text-align:center;">No matches in Lucknow.<br>Try a different spelling or use Match Me.</div>';
+  }
+  dd.innerHTML=h;
+  dd.classList.add('open');
 }
-async function geocode(q,already){
-  try{
-    const res=await fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(q+', Lucknow')+'&limit=6&countrycodes=in&viewbox=80.75,26.70,81.20,27.00&bounded=1&addressdetails=1',{headers:{'Accept-Language':'en'}});
-    const data=await res.json();const dd=document.getElementById('s-dd');let h='';
-    if(already.length){h+='<div class="dd-sec"><div class="dd-label">Quick results</div>';already.forEach(r=>h+='<div class="dd-row" onclick="selPlace('+r.lat+','+r.lng+',\''+r.n.replace(/'/g,"\\'")+'\')"><span style="font-size:15px;">'+r.ico+'</span><div><div class="dd-name">'+r.n+'</div><div class="dd-sub">'+r.sub+'</div></div></div>');h+='</div><div class="dd-sep"></div>';}
-    if(data.length){h+='<div class="dd-sec"><div class="dd-label">Places</div>';data.forEach(r=>{
-      const n=r.display_name.split(',')[0];
-      const parts=r.display_name.split(',').slice(1,3).map(s=>s.trim()).filter(Boolean);
-      const s=parts.join(', ');
-      const safeN=n.replace(/'/g,"\\'");
-      h+='<div class="dd-row" onclick="selPlace('+r.lat+','+r.lon+',\''+safeN+'\')"><span style="font-size:15px;">📍</span><div><div class="dd-name">'+n+'</div><div class="dd-sub">'+s+'</div></div></div>';
-    });h+='</div>';}
-    if(!h)h='<div style="padding:14px;font-size:13px;color:var(--ink3);text-align:center;">No results found</div>';
-    dd.innerHTML=h;dd.classList.add('open');
-  }catch(e){}
+
+// Photon API — accurate, free, no key needed. Uses OpenStreetMap data.
+async function photonSearch(q, inventoryMatches){
+  try {
+    // Bias to Lucknow center, search globally but limit to India
+    const url = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(q + ', Lucknow') +
+                '&lat=26.8467&lon=80.9462&zoom=13&limit=8&lang=en';
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Photon error');
+    const data = await res.json();
+
+    // Filter to only Lucknow district / nearby (within ~50km of city center)
+    const LCK_LAT = 26.8467, LCK_LNG = 80.9462;
+    const places = [];
+    for (const f of (data.features || [])) {
+      const [lng, lat] = f.geometry.coordinates;
+      // Distance check — exclude things outside Lucknow region
+      const d = Math.sqrt(Math.pow(lat - LCK_LAT, 2) + Math.pow(lng - LCK_LNG, 2));
+      if (d > 0.6) continue; // ~60km bbox
+
+      const props = f.properties || {};
+      const name = props.name || '';
+      if (!name) continue;
+
+      // Build a meaningful subtitle
+      const subParts = [];
+      if (props.street) subParts.push(props.street);
+      if (props.district) subParts.push(props.district);
+      else if (props.suburb) subParts.push(props.suburb);
+      if (props.city && props.city !== name) subParts.push(props.city);
+      const sub = subParts.slice(0, 2).join(', ') || (props.state || 'Lucknow');
+
+      // Pick icon based on OSM category
+      let ico = '📍';
+      const k = (props.osm_key || '') + ':' + (props.osm_value || '');
+      if (props.osm_value === 'mall' || props.osm_value === 'department_store') ico = '🛍';
+      else if (props.osm_value === 'hospital' || props.osm_value === 'clinic') ico = '🏥';
+      else if (props.osm_value === 'university' || props.osm_value === 'college' || props.osm_value === 'school') ico = '🎓';
+      else if (props.osm_value === 'station' || props.osm_value === 'railway' || k.includes('railway')) ico = '🚉';
+      else if (props.osm_value === 'aerodrome' || props.osm_value === 'airport') ico = '✈️';
+      else if (props.osm_value === 'bus_station') ico = '🚌';
+      else if (props.osm_value === 'park' || props.osm_value === 'garden') ico = '🌳';
+      else if (props.osm_value === 'place_of_worship' || props.osm_value === 'mosque' || props.osm_value === 'temple') ico = '🕌';
+      else if (props.osm_value === 'restaurant' || props.osm_value === 'cafe') ico = '🍽';
+      else if (props.osm_value === 'hotel') ico = '🏨';
+      else if (props.osm_value === 'bank' || props.osm_value === 'atm') ico = '🏦';
+      else if (k.includes('place:')) ico = '🏘';
+      else if (k.includes('building')) ico = '🏢';
+
+      places.push({ n: name, lat, lng, sub, ico, isInventory: false });
+    }
+
+    // De-dupe by name
+    const seen = new Set();
+    const dedup = places.filter(p => {
+      const key = p.n.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).slice(0, 7);
+
+    // Combine inventory (top) + Photon places (below)
+    const combined = [...(inventoryMatches || []), ...dedup];
+    renderDd(combined);
+  } catch (e) {
+    console.log('Photon search failed:', e.message);
+    // If Photon fails, just show whatever inventory we already had
+    if (inventoryMatches && inventoryMatches.length) {
+      renderDd(inventoryMatches);
+    } else {
+      const dd = document.getElementById('s-dd');
+      dd.innerHTML = '<div style="padding:14px;font-size:13px;color:var(--ink3);text-align:center;">Search temporarily unavailable.<br>Try again in a moment.</div>';
+      dd.classList.add('open');
+    }
+  }
+}
+
+// Backwards compatibility — old code still calls geocode()
+async function geocode(q, already){
+  return photonSearch(q, already || []);
 }
 // Visual search pin that drops when a place is selected
 let _searchMarker = null;
@@ -2987,6 +3243,7 @@ function selPlace(lat, lng, name) {
         <button onclick="removeSearchPin()" title="Remove pin" style="background:rgba(192,71,42,.1);border:none;border-radius:50%;width:22px;height:22px;font-size:11px;color:#c0472a;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;">✕</button>
       </div>
       <div style="font-size:15px;font-weight:700;color:#1a3c34;">${name}</div>
+      <div style="font-size:10px;color:#999;margin-top:2px;margin-bottom:4px;">${lat.toFixed(5)}°N, ${lng.toFixed(5)}°E · <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" style="color:#2d6a5a;text-decoration:none;">Open in Maps ↗</a></div>
       ${nearbyHtml}
     </div>
   `, { maxWidth: 280, closeButton: false }).openPopup();
