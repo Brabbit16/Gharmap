@@ -1614,18 +1614,24 @@ body.dark .lv-card { background: var(--white); }
 }
 
 
-/* ──── MOBILE FIX v3 START ──── */
+/* ──── MOBILE LAYOUT v4 START ──── */
 /* ═══════════════════════════════════════════════════════════════
-   GHARMAP MOBILE FIX v3 — proper mobile layout redesign
-   Builds a real two-tier topbar instead of cramming desktop UI into a phone.
+   GHARMAP MOBILE LAYOUT v4 — full redesign for phones
+   Strategy: phone has ONE job — browse the map. Everything else is
+   tucked away into hamburger or a bottom-sheet filter.
 
-   Tier 1 (52px) : Logo · Search · Hamburger
-   Tier 2 (44px) : Rent/Sale toggle · Map/List toggle
-   Total topbar height on mobile : 96px (vs 52px on desktop)
+   Layout:
+     Row 1 (56px): Logo · [Rent│Sale] toggle · ⋮ menu
+     Row 2 (48px): Full-width search bar
+     Map: takes the rest
+     Floating: Near Me (left) · Filter FAB (right) · stats pill (centre, top of map)
 
-   Removes [chat button] (floating WhatsApp).
-   Hides extra map FABs (request, sat-toggle, compare) on mobile —
-   they live in the hamburger menu instead.
+   Hidden on mobile:
+     - tb-search inline (we move search to row 2)
+     - List Property, Match Me, Saved, Share buttons (in menu)
+     - Map/List toggle (just map on phone — list view doesn't add value)
+     - Sat toggle, Compare FAB, Request FAB (in menu)
+     - WhatsApp chat float
 ═══════════════════════════════════════════════════════════════ */
 
 /* ── 0. Baseline ───────────────────────────────────────────── */
@@ -1640,128 +1646,82 @@ body { -webkit-text-size-adjust: 100%; }
   }
 }
 
-/* ── 1. Kill floating chat button ──────────────────────────── */
+/* Floating chat button — gone */
 #wa-chat-btn { display: none !important; }
 
 /* ══════════════════════════════════════════════════════════════
-   2. SPLASH — fits properly on phone
+   SPLASH (mobile)
 ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   #splash {
-    padding: 18px 16px calc(20px + var(--safe-bot, 0px)) 16px;
+    padding: max(20px, var(--safe-top)) 16px calc(20px + var(--safe-bot)) 16px;
     align-items: flex-start;
-    padding-top: max(20px, var(--safe-top, 20px));
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
   .sp { width: 100%; max-width: 100%; }
-  .sp-logo { font-size: 22px; margin-bottom: 2px; }
-  .sp-tag { font-size: 9.5px; margin-bottom: 10px; }
-  .sp-ticker { height: 32px; margin-bottom: 12px; }
-  .sp-tick { font-size: 11px; padding-right: 14px; }
+  .sp-logo { font-size: 22px; }
   .sp-headline { font-size: 22px; line-height: 1.25; margin-bottom: 6px; }
   .sp-sub { font-size: 13px; line-height: 1.5; margin-bottom: 10px; }
   .sp-pills { gap: 5px; margin-bottom: 10px; }
   .sp-pill { font-size: 10.5px; padding: 4px 9px; }
   .sp-trust { font-size: 11px; margin-bottom: 10px; }
-  .sp-share-box { padding: 8px 11px; margin-bottom: 8px; }
+  .sp-share-box { padding: 8px 11px; }
   .sp-share-txt { font-size: 11.5px; line-height: 1.45; }
-  .sp-btn-main { padding: 13px; font-size: 14px; min-height: 46px; margin-bottom: 7px; }
+  .sp-btn-main { padding: 13px; font-size: 14px; min-height: 46px; }
   .sp-btn-how, .sp-btn-sec { padding: 11px; min-height: 42px; font-size: 12.5px; }
-  .sp-footer { font-size: 10.5px; line-height: 1.55; }
+  .sp-footer { font-size: 10.5px; }
 }
-
-/* very narrow phones */
 @media (max-width: 380px) {
-  #splash { padding: 14px 12px calc(16px + var(--safe-bot, 0px)) 12px; }
+  #splash { padding-left: 12px; padding-right: 12px; }
   .sp-logo { font-size: 20px; }
-  .sp-headline { font-size: 19px; line-height: 1.22; }
-  .sp-sub { font-size: 12.5px; margin-bottom: 8px; }
-  .sp-pills { display: none; }
-  .sp-trust { font-size: 10.5px; margin-bottom: 8px; }
-  .sp-ticker { display: none; }
+  .sp-headline { font-size: 19px; }
+  .sp-pills, .sp-ticker { display: none; }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   3. TWO-TIER TOPBAR for mobile
-
-   On desktop everything stays in one row.
-   On mobile we re-stack:
-     Row 1: logo · search · hamburger
-     Row 2: rent/sale toggle (left) · map/list toggle (right)
-   Hide: List Property button, Match Me button (move to hamburger)
-
-   The hamburger menu gets new entries inserted via JS (see end of file).
+   APP ROOT — full-height phone
 ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  :root, body { --top: 96px; }   /* total stacked topbar height */
+  #app { height: 100dvh; overflow: hidden; }
 
+  /* New header height = row1(56) + row2(48) = 104px */
+  :root, body { --top: 104px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TOPBAR — Row 1 (56px)
+   Logo · Rent/Sale toggle · Hamburger
+   The whole .tb-search element is hidden on mobile;
+   we render an alternate search bar below in Row 2.
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
   #topbar {
-    height: 96px !important;
-    padding: 0 !important;
-    flex-direction: column;
-    align-items: stretch !important;
-    gap: 0 !important;
+    height: 56px !important;
+    padding: 0 12px !important;
+    gap: 10px !important;
+    align-items: center;
     background: var(--white);
+    border-bottom: 1px solid var(--border);
   }
 
-  /* Row 1 — wraps logo + search + hamburger */
-  #topbar::before { content: ''; display: none; }  /* reset */
-
-  /* We use a flex trick: order the kids into rows. */
   .tb-logo {
-    order: 1;
-    align-self: center;
-    padding: 0 12px;
-    font-size: 16px;
-    height: 52px;
-    line-height: 52px;
+    font-size: 17px;
     flex-shrink: 0;
   }
+
   .tb-verified { display: none !important; }
 
-  .tb-search {
-    order: 2;
-    flex: 1 !important;
-    max-width: none !important;
-    min-width: 0;
-    align-self: center;
-    height: 36px;
-    margin: 8px 0;
-  }
-  #search-input {
-    font-size: 16px !important;       /* prevents iOS zoom on focus */
-    padding: 8px 30px 8px 32px;
-    height: 36px;
-  }
+  /* The DESKTOP inline search hides — we use the row 2 bar instead */
+  .tb-search { display: none !important; }
 
-  /* Hide buttons we're moving to the hamburger */
-  .tb-right .tb-btn { display: none !important; }
-
-  /* Right area: only hamburger */
-  .tb-right {
-    order: 3;
-    align-self: center;
-    padding: 0 8px;
-    margin-left: 0 !important;
-    gap: 0;
-    flex-shrink: 0;
-  }
-  .tb-menu-btn {
-    width: 38px; height: 38px;
-  }
-
-  /* Topbar uses flex-wrap so row-1 occupies full width, row-2 below */
-  #topbar { flex-wrap: wrap; }
-
-  /* Row 2 wrappers */
+  /* Rent/Sale toggle stays in Row 1, centred */
   .tb-mode {
-    order: 4;
     flex: 0 0 auto;
-    margin-left: 12px;
-    margin-bottom: 6px;
-    border-radius: 22px;
+    margin-left: auto;       /* pushes to the right of logo */
+    margin-right: 4px;
     padding: 3px;
+    border-radius: 22px;
   }
   .tb-mode-btn {
     padding: 6px 14px;
@@ -1769,61 +1729,321 @@ body { -webkit-text-size-adjust: 100%; }
     min-height: 32px;
   }
 
-  .view-toggle {
-    order: 5;
-    flex: 0 0 auto;
-    margin-left: auto;
-    margin-right: 12px;
-    margin-bottom: 6px;
-    height: 36px;
-  }
-  .view-tog-btn {
-    padding: 6px 12px !important;
-    font-size: 12.5px !important;
-    min-height: 32px;
-  }
+  /* All other tb-right buttons — hidden, moved to hamburger */
+  .tb-right .tb-btn { display: none !important; }
+  .view-toggle { display: none !important; }
 
-  /* Make sure Row 1 takes full width before Row 2 wraps */
-  .tb-search { flex-basis: calc(100% - 100px) !important; }
-
-  /* Hamburger menu drops below the new taller topbar */
-  .tb-menu {
-    position: fixed !important;
-    top: 100px !important;
-    right: 8px !important;
-    left: 8px !important;
-    min-width: 0 !important;
-    border-radius: 14px;
-    max-height: calc(100dvh - 110px);
-    overflow-y: auto;
+  .tb-right {
+    margin-left: 0 !important;
+    gap: 0;
+    flex-shrink: 0;
+  }
+  .tb-menu-btn {
+    width: 38px; height: 38px;
   }
 }
 
-/* Very narrow phones — keep two tiers but tighten further */
-@media (max-width: 380px) {
-  .tb-logo { padding: 0 10px; font-size: 15px; }
-  .tb-search { flex-basis: calc(100% - 92px) !important; }
+/* very narrow */
+@media (max-width: 360px) {
+  .tb-logo { font-size: 15px; }
   .tb-mode-btn { padding: 5px 11px; font-size: 11.5px; }
-  .view-tog-btn { padding: 5px 9px !important; font-size: 11.5px !important; }
+  #topbar { padding: 0 8px !important; gap: 6px !important; }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   4. APP / MAP shell
+   ROW 2 — sticky search bar (mobile only)
+   We add a brand-new element via JS shim:
+      <div id="m-search-bar"> ... </div>
+   It hosts the real search input on mobile.
+   The desktop search input is still in the DOM (just hidden);
+   we mirror typing back to it so the existing JS keeps working.
+═══════════════════════════════════════════════════════════════ */
+#m-search-bar { display: none; }   /* hidden on desktop */
+
+@media (max-width: 768px) {
+  #m-search-bar {
+    display: flex;
+    position: fixed;
+    top: 56px;                   /* below row 1 */
+    left: 0; right: 0;
+    height: 48px;
+    z-index: 1000;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .ms-ico {
+    font-size: 14px;
+    color: var(--ink3);
+    flex-shrink: 0;
+  }
+  #m-search-input {
+    flex: 1;
+    height: 36px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: 22px;
+    padding: 0 14px 0 36px;
+    font-size: 16px !important;     /* prevents iOS zoom */
+    color: var(--ink);
+    font-family: var(--ff);
+    outline: none;
+    width: 100%;
+    transition: border-color .2s, background .2s;
+  }
+  #m-search-input:focus {
+    border-color: var(--green-mid);
+    background: var(--white);
+  }
+  /* search-icon overlap on the input */
+  #m-search-bar { position: fixed; }
+  #m-search-bar .ms-ico-abs {
+    position: absolute;
+    left: 24px;
+    pointer-events: none;
+    color: var(--ink3);
+    font-size: 14px;
+  }
+  #m-search-clr {
+    position: absolute;
+    right: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink3);
+    font-size: 14px;
+    display: none;
+    line-height: 1;
+  }
+  #m-search-clr.show { display: block; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MAP AREA — fills the rest of the screen on mobile
 ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  #app { height: 100dvh; }
   #map-wrap {
+    position: fixed !important;
+    top: 104px !important;          /* below row 1 + row 2 */
     right: 0 !important;
-    top: 96px !important;     /* under the new two-tier topbar */
+    left: 0;
     bottom: 0;
+    width: 100%;
   }
-  #fp { display: none !important; }
-  .leaflet-right { right: 8px !important; }
-  .leaflet-control-zoom { transform: scale(.92); transform-origin: top right; }
+  #fp { display: none !important; }     /* desktop right panel — hidden */
 }
 
 /* ══════════════════════════════════════════════════════════════
-   5. DETAIL PANEL — full screen on mobile
+   SEARCH DROPDOWN — needs to anchor to mobile search bar
+   The original #s-dd is anchored inside .tb-search which is now
+   hidden. We re-target it under #m-search-bar via JS shim.
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #s-dd {
+    position: fixed !important;
+    top: 100px !important;
+    left: 12px !important;
+    right: 12px !important;
+    max-height: 60dvh;
+    border-radius: 14px;
+    z-index: 1100 !important;
+  }
+  .dd-row { padding: 11px 14px; font-size: 13.5px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FLOATING BUTTONS — bottom row
+   Just two: Near Me (left), Filter FAB (right).
+   Stats pill sits ABOVE the buttons, centered.
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Hide all the desktop floating extras */
+  #request-btn { display: none !important; }
+  #sat-toggle-btn { display: none !important; }
+  #compare-fab { display: none !important; }
+
+  /* Stats pill — lifted up so it doesn't collide with the FABs */
+  #stats {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    bottom: calc(74px + var(--safe-bot)) !important;
+    font-size: 11px;
+    border-radius: 30px;
+    box-shadow: var(--sh-lg);
+  }
+  .st-item { padding: 6px 10px; }
+  .st-num { font-size: 12.5px; }
+  .st-lbl { font-size: 8.5px; letter-spacing: 0.2px; }
+
+  /* Near Me — bottom left */
+  #near-me-btn {
+    left: 14px !important;
+    right: auto !important;
+    bottom: calc(16px + var(--safe-bot)) !important;
+    padding: 10px 14px;
+    font-size: 12px;
+    border-radius: 24px;
+    background: var(--white);
+    box-shadow: 0 3px 14px rgba(0,0,0,.12);
+  }
+
+  /* Toast — above floating buttons */
+  #toast {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    bottom: calc(120px + var(--safe-bot)) !important;
+    max-width: calc(100vw - 32px);
+    white-space: normal;
+    text-align: center;
+    font-size: 12.5px;
+    padding: 9px 16px;
+  }
+
+  /* Banner under topbar */
+  #banner {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: 112px !important;
+    font-size: 11.5px;
+    padding: 7px 14px;
+    max-width: calc(100vw - 24px);
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FILTER FAB — new floating button, bottom right
+   Opens a bottom-sheet with all the filtering UI.
+   Element added by JS shim:
+     <button id="m-filter-fab">⚙ Filters</button>
+     <div id="m-filter-sheet">…</div>
+═══════════════════════════════════════════════════════════════ */
+#m-filter-fab,
+#m-filter-sheet,
+#m-filter-overlay { display: none; }   /* hidden on desktop */
+
+@media (max-width: 768px) {
+  #m-filter-fab {
+    display: flex;
+    position: fixed;
+    right: 14px;
+    bottom: calc(16px + var(--safe-bot));
+    z-index: 700;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 10px 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--ff);
+    box-shadow: 0 4px 18px rgba(45,106,90,.4);
+    align-items: center;
+    gap: 6px;
+  }
+
+  #m-filter-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    backdrop-filter: blur(4px);
+    z-index: 1700;
+  }
+  #m-filter-overlay.open { display: block; animation: fadeIn .2s ease; }
+  @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+  #m-filter-sheet {
+    display: block;
+    position: fixed;
+    left: 0; right: 0; bottom: -100%;
+    z-index: 1800;
+    background: var(--white);
+    border-radius: 18px 18px 0 0;
+    padding: 18px 18px calc(28px + var(--safe-bot));
+    max-height: 88dvh;
+    overflow-y: auto;
+    transition: bottom .28s ease;
+    box-shadow: 0 -8px 32px rgba(0,0,0,.18);
+  }
+  #m-filter-sheet.open { bottom: 0; }
+  #m-filter-sheet::before {
+    content: '';
+    position: absolute; top: 8px; left: 50%;
+    transform: translateX(-50%);
+    width: 38px; height: 4px;
+    background: rgba(0,0,0,0.18);
+    border-radius: 4px;
+  }
+  body.dark #m-filter-sheet { background: #1a1a1a; }
+  body.dark #m-filter-sheet::before { background: rgba(255,255,255,.22); }
+
+  .mfs-title {
+    font-size: 16px; font-weight: 700;
+    margin: 6px 0 14px;
+    color: var(--ink);
+  }
+  .mfs-section { margin-bottom: 16px; }
+  .mfs-label {
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--ink3);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .mfs-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .mfs-chip {
+    padding: 8px 13px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--ink2);
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: var(--ff);
+    min-height: 36px;
+    transition: all .15s;
+  }
+  .mfs-chip:hover { border-color: var(--green-mid); }
+  .mfs-chip.on {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+  .mfs-foot {
+    display: flex; gap: 8px; margin-top: 18px;
+    position: sticky; bottom: 0; padding-top: 6px;
+    background: linear-gradient(to top, var(--white), var(--white) 70%, transparent);
+  }
+  body.dark .mfs-foot {
+    background: linear-gradient(to top, #1a1a1a, #1a1a1a 70%, transparent);
+  }
+  .mfs-reset {
+    flex: 1; padding: 12px; border-radius: 12px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--ink2); font-size: 13.5px; font-weight: 500;
+    cursor: pointer; font-family: var(--ff);
+  }
+  .mfs-apply {
+    flex: 2; padding: 12px; border-radius: 12px;
+    border: none; background: var(--green); color: #fff;
+    font-size: 13.5px; font-weight: 600;
+    cursor: pointer; font-family: var(--ff);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DETAIL PANEL & SAVED DRAWER — full screen on mobile
 ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   #dp {
@@ -1833,93 +2053,48 @@ body { -webkit-text-size-adjust: 100%; }
     width: 100% !important;
     height: 100dvh !important;
     bottom: 0 !important;
-    z-index: 1600 !important;
+    z-index: 1900 !important;
     box-shadow: none !important;
   }
   .dp-hd {
     padding: 12px 14px 10px;
-    padding-top: max(12px, var(--safe-top, 12px));
+    padding-top: max(12px, var(--safe-top));
   }
   .dp-price { font-size: 22px; }
   .dp-actions { gap: 4px; }
   .dp-btn, .dp-close { width: 34px; height: 34px; font-size: 13px; }
-}
 
-/* ══════════════════════════════════════════════════════════════
-   6. SAVED DRAWER
-═══════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
   #saved-drawer {
-    top: 96px !important;
+    top: 0 !important;
     right: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    z-index: 1500 !important;
-    padding-bottom: calc(20px + var(--safe-bot, 0px));
+    height: 100dvh !important;
+    z-index: 1850 !important;
+    padding-top: max(16px, var(--safe-top));
+    padding-bottom: calc(20px + var(--safe-bot));
   }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   7. MAP BOTTOM — declutter
-   Hide: request-btn, sat-toggle, compare-fab on mobile.
-   Keep: stats bar (centred) + Near Me (left).
+   HAMBURGER MENU — full-width below row 1+2 stack on mobile
 ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  #request-btn { display: none !important; }
-  #sat-toggle-btn { display: none !important; }
-  #compare-fab { display: none !important; }
-
-  #stats {
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    bottom: calc(14px + var(--safe-bot, 0px)) !important;
-    font-size: 11px;
+  .tb-menu {
+    position: fixed !important;
+    top: 60px !important;        /* just under row 1 */
+    right: 8px !important;
+    left: 8px !important;
+    min-width: 0 !important;
+    border-radius: 14px;
+    max-height: calc(100dvh - 80px);
+    overflow-y: auto;
+    z-index: 1200 !important;
   }
-  .st-item { padding: 7px 11px; }
-  .st-num { font-size: 13px; }
-  .st-lbl { font-size: 8.5px; }
-
-  #near-me-btn {
-    left: 12px !important;
-    right: auto !important;
-    bottom: calc(14px + var(--safe-bot, 0px)) !important;
-    padding: 8px 12px;
-    font-size: 11.5px;
-    border-radius: 22px;
-  }
-
-  #toast {
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    bottom: calc(70px + var(--safe-bot, 0px)) !important;
-    max-width: calc(100vw - 32px);
-    white-space: normal;
-    text-align: center;
-    font-size: 12.5px;
-    padding: 9px 16px;
-  }
-
-  #banner {
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    top: 104px !important;     /* below two-tier topbar */
-    font-size: 11.5px;
-    padding: 7px 14px;
-    max-width: calc(100vw - 24px);
-    white-space: normal;
-    text-align: center;
-  }
-}
-
-@media (max-width: 380px) {
-  #stats { font-size: 10.5px; }
-  .st-item { padding: 6px 9px; }
-  .st-num { font-size: 12px; }
-  #near-me-btn { padding: 7px 10px; font-size: 11px; }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   8. MODALS — bottom-sheet pattern on mobile
+   MODALS — bottom sheet pattern on mobile
 ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .dark-overlay,
@@ -1944,9 +2119,9 @@ body { -webkit-text-size-adjust: 100%; }
     max-width: 100% !important;
     border-radius: 18px 18px 0 0 !important;
     max-height: 92dvh !important;
-    padding: 22px 18px calc(28px + var(--safe-bot, 0px)) 18px !important;
-    animation: slideUpSheet .26s ease both !important;
+    padding: 22px 18px calc(28px + var(--safe-bot)) 18px !important;
     margin: 0 !important;
+    animation: slideUpSheet .26s ease both !important;
   }
   @keyframes slideUpSheet {
     from { transform: translateY(40px); opacity: 0; }
@@ -1960,8 +2135,7 @@ body { -webkit-text-size-adjust: 100%; }
   #compare-modal .modal::before {
     content: '';
     position: absolute;
-    top: 8px; left: 50%;
-    transform: translateX(-50%);
+    top: 8px; left: 50%; transform: translateX(-50%);
     width: 38px; height: 4px;
     background: rgba(0,0,0,0.18);
     border-radius: 4px;
@@ -1971,16 +2145,11 @@ body { -webkit-text-size-adjust: 100%; }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   9. FORMS — fix iOS zoom + tappable sizes
+   FORM FIELDS — fix iOS zoom + tappable
 ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  input[type="text"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="number"],
-  input[type="search"],
-  textarea,
-  select {
+  input[type="text"], input[type="email"], input[type="tel"],
+  input[type="number"], input[type="search"], textarea, select {
     font-size: 16px !important;
   }
   button, .m-chip, .tb-btn, .tb-menu-item, .ob-card {
@@ -1991,39 +2160,26 @@ body { -webkit-text-size-adjust: 100%; }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   10. SEARCH DROPDOWN
+   MAP STUFF — popups, controls
 ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  #s-dd {
-    max-height: 60dvh;
-    border-radius: 14px;
-    /* ensure it appears below the search bar in row 1 */
-    top: calc(100% + 4px) !important;
-  }
-  .dd-row { padding: 11px 14px; font-size: 13.5px; }
-}
-
-/* ══════════════════════════════════════════════════════════════
-   11. POPUPS on map
-═══════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
+  .leaflet-right { right: 8px !important; }
+  .leaflet-control-zoom { transform: scale(.92); transform-origin: top right; }
   .leaflet-popup-content-wrapper { min-width: 200px; }
   .pp-r { font-size: 17px; }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   12. Kill horizontal scroll absolutely
-═══════════════════════════════════════════════════════════════ */
+/* ── kill horizontal scroll ─────────────────────────────── */
 @media (max-width: 768px) {
   body { max-width: 100vw; overflow-x: hidden; }
   #app, #splash { max-width: 100vw; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   END MOBILE FIX v3
+   END MOBILE LAYOUT v4
 ═══════════════════════════════════════════════════════════════ */
 
-/* ──── MOBILE FIX v3 END ──── */
+/* ──── MOBILE LAYOUT v4 END ──── */
 
 </style>
 </head>
@@ -4394,63 +4550,122 @@ document.addEventListener('DOMContentLoaded',()=>{
 window.addEventListener('resize',()=>map&&map.invalidateSize());
 
 
-// ──── MOBILE MENU SHIM v3 ────
-// ─── MOBILE HAMBURGER ENHANCEMENT v3 ─────────────────────────
-// On mobile the topbar hides "Match Me" and "List Property" buttons.
-// Inject them into the hamburger menu so they're still reachable.
+// ──── MOBILE LAYOUT v4 SHIM START ────
+// ═══════════════════════════════════════════════════════════════
+// GHARMAP MOBILE LAYOUT v4 — JS shim
+// ═══════════════════════════════════════════════════════════════
+// Purpose:
+//   - On mobile, build a dedicated Row-2 search bar and a Filter FAB
+//   - Mirror typing between mobile bar and the original (hidden) input
+//     so existing onSearch/onSearchKey handlers keep working unmodified
+//   - Move List Property, Match Me, Saved, Share, Sat-toggle, Compare,
+//     Map/List view toggle into the hamburger menu
+//   - All elements self-clean and re-sync on viewport resize
+// ═══════════════════════════════════════════════════════════════
 (function(){
-  function isMobile(){ return window.matchMedia('(max-width: 768px)').matches; }
+  'use strict';
 
+  function isMobile(){
+    return window.matchMedia('(max-width: 768px)').matches;
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 1. MOBILE SEARCH BAR (Row 2)
+  // ─────────────────────────────────────────────────────────────
+  function buildMobileSearchBar(){
+    if (document.getElementById('m-search-bar')) return;
+    var topbar = document.getElementById('topbar');
+    if (!topbar) return;
+
+    var bar = document.createElement('div');
+    bar.id = 'm-search-bar';
+    bar.innerHTML =
+      '<span class="ms-ico-abs">🔍</span>' +
+      '<input id="m-search-input" type="text" autocomplete="off" placeholder="Search area, building, landmark…">' +
+      '<button id="m-search-clr" type="button" aria-label="Clear">✕</button>';
+    // Insert AFTER #topbar
+    topbar.parentNode.insertBefore(bar, topbar.nextSibling);
+
+    var mInput = bar.querySelector('#m-search-input');
+    var mClr   = bar.querySelector('#m-search-clr');
+    var dInput = document.getElementById('search-input'); // original
+
+    if (!dInput) return;
+
+    // Mirror typing → original input → trigger original handler
+    mInput.addEventListener('input', function(){
+      dInput.value = mInput.value;
+      mClr.classList.toggle('show', !!mInput.value);
+      try {
+        if (typeof onSearch === 'function') onSearch(mInput.value);
+      } catch(e) { /* original handler missing */ }
+      // Re-anchor the dropdown if needed (CSS does the rest)
+    });
+
+    mInput.addEventListener('focus', function(){
+      try { if (typeof onSearchFocus === 'function') onSearchFocus(); } catch(e){}
+    });
+
+    mInput.addEventListener('keydown', function(e){
+      try { if (typeof onSearchKey === 'function') onSearchKey(e); } catch(e2){}
+    });
+
+    mClr.addEventListener('click', function(){
+      mInput.value = '';
+      dInput.value = '';
+      mClr.classList.remove('show');
+      try { if (typeof clearSearch === 'function') clearSearch(); } catch(e){}
+      mInput.focus();
+    });
+
+    // Reverse-mirror: when other code sets dInput.value, copy to mInput
+    var lastSeen = dInput.value;
+    setInterval(function(){
+      if (!isMobile()) return;
+      if (dInput.value !== lastSeen) {
+        lastSeen = dInput.value;
+        if (mInput.value !== dInput.value) mInput.value = dInput.value;
+        mClr.classList.toggle('show', !!dInput.value);
+      }
+    }, 300);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 2. HAMBURGER MENU — extra mobile-only items
+  // ─────────────────────────────────────────────────────────────
   function injectMobileMenuItems(){
     var menu = document.getElementById('tb-menu');
     if (!menu) return;
-    if (menu.querySelector('[data-mobile-only="1"]')) return; // already done
+    if (menu.querySelector('[data-mobile-only="1"]')) return;
 
-    // Build the two extra items
-    var listBtn = document.createElement('button');
-    listBtn.className = 'tb-menu-item';
-    listBtn.setAttribute('data-mobile-only', '1');
-    listBtn.innerHTML =
-      '<span class="tbm-ico">＋</span>' +
-      '<span>List Property</span>';
-    listBtn.onclick = function(){
-      try { closeTbMenu(); } catch(e) {}
-      try { openOwnerModal(); } catch(e) {}
-    };
+    function makeItem(icon, label, fn){
+      var btn = document.createElement('button');
+      btn.className = 'tb-menu-item';
+      btn.setAttribute('data-mobile-only', '1');
+      btn.innerHTML = '<span class="tbm-ico">' + icon + '</span><span>' + label + '</span>';
+      btn.onclick = function(){
+        try { if (typeof closeTbMenu === 'function') closeTbMenu(); } catch(e){}
+        try { fn(); } catch(e){ console.warn(e); }
+      };
+      return btn;
+    }
 
-    var matchBtn = document.createElement('button');
-    matchBtn.className = 'tb-menu-item';
-    matchBtn.setAttribute('data-mobile-only', '1');
-    matchBtn.innerHTML =
-      '<span class="tbm-ico">🔍</span>' +
-      '<span>Match Me</span>';
-    matchBtn.onclick = function(){
-      try { closeTbMenu(); } catch(e) {}
-      try { openMatchMe(); } catch(e) {}
-    };
-
-    // Optional: Satellite & Compare too (since we hid those FABs)
-    var satBtn = document.createElement('button');
-    satBtn.className = 'tb-menu-item';
-    satBtn.setAttribute('data-mobile-only', '1');
-    satBtn.innerHTML =
-      '<span class="tbm-ico">🛰</span>' +
-      '<span>Toggle Satellite</span>';
-    satBtn.onclick = function(){
-      try { closeTbMenu(); } catch(e) {}
-      try { toggleSatellite(); } catch(e) {}
-    };
-
-    // Insert at the very top of the menu
-    var first = menu.firstChild;
     var sep = document.createElement('div');
     sep.className = 'tb-menu-sep';
     sep.setAttribute('data-mobile-only', '1');
 
+    var items = [
+      makeItem('＋', 'List Property',   function(){ if (typeof openOwnerModal === 'function') openOwnerModal(); }),
+      makeItem('🔍', 'Match Me',         function(){ if (typeof openMatchMe === 'function') openMatchMe(); }),
+      makeItem('🛰', 'Toggle Satellite', function(){ if (typeof toggleSatellite === 'function') toggleSatellite(); }),
+      makeItem('⚖', 'Compare',          function(){ if (typeof openCompareModal === 'function') openCompareModal(); }),
+    ];
+
+    var first = menu.firstChild;
     menu.insertBefore(sep, first);
-    menu.insertBefore(satBtn, sep);
-    menu.insertBefore(matchBtn, satBtn);
-    menu.insertBefore(listBtn, matchBtn);
+    for (var i = items.length - 1; i >= 0; i--) {
+      menu.insertBefore(items[i], sep);
+    }
   }
 
   function removeMobileMenuItems(){
@@ -4461,26 +4676,161 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
     });
   }
 
-  function syncMenu(){
-    if (isMobile()) injectMobileMenuItems();
-    else removeMobileMenuItems();
+  // ─────────────────────────────────────────────────────────────
+  // 3. FILTER FAB + BOTTOM SHEET
+  // ─────────────────────────────────────────────────────────────
+  function buildFilterFAB(){
+    if (document.getElementById('m-filter-fab')) return;
+
+    // The FAB
+    var fab = document.createElement('button');
+    fab.id = 'm-filter-fab';
+    fab.type = 'button';
+    fab.innerHTML = '⚙ Filters';
+    fab.setAttribute('aria-label', 'Open filters');
+    fab.addEventListener('click', openFilterSheet);
+
+    // The overlay
+    var overlay = document.createElement('div');
+    overlay.id = 'm-filter-overlay';
+    overlay.addEventListener('click', closeFilterSheet);
+
+    // The sheet
+    var sheet = document.createElement('div');
+    sheet.id = 'm-filter-sheet';
+    sheet.innerHTML = renderFilterSheetHTML();
+
+    document.body.appendChild(fab);
+    document.body.appendChild(overlay);
+    document.body.appendChild(sheet);
+
+    wireFilterChips(sheet);
+
+    sheet.querySelector('.mfs-apply').addEventListener('click', applyFilterSheet);
+    sheet.querySelector('.mfs-reset').addEventListener('click', resetFilterSheet);
   }
 
-  // Initial run after DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', syncMenu);
-  } else {
-    syncMenu();
+  function renderFilterSheetHTML(){
+    return ''
+      + '<div class="mfs-title">Filter properties</div>'
+      + '<div class="mfs-section"><div class="mfs-label">Type</div><div class="mfs-chips" data-group="type">'
+      +   '<button class="mfs-chip on" data-v="all">All</button>'
+      +   '<button class="mfs-chip" data-v="flat">🏠 Flat</button>'
+      +   '<button class="mfs-chip" data-v="pg">🛏 PG</button>'
+      +   '<button class="mfs-chip" data-v="commercial">🏢 Commercial</button>'
+      +   '<button class="mfs-chip" data-v="house">🏡 House</button>'
+      + '</div></div>'
+      + '<div class="mfs-section"><div class="mfs-label">BHK</div><div class="mfs-chips" data-group="bhk">'
+      +   '<button class="mfs-chip on" data-v="all">Any</button>'
+      +   '<button class="mfs-chip" data-v="1">1 BHK</button>'
+      +   '<button class="mfs-chip" data-v="2">2 BHK</button>'
+      +   '<button class="mfs-chip" data-v="3">3 BHK</button>'
+      +   '<button class="mfs-chip" data-v="3+">3+ BHK</button>'
+      + '</div></div>'
+      + '<div class="mfs-section"><div class="mfs-label">Furnishing</div><div class="mfs-chips" data-group="fur">'
+      +   '<button class="mfs-chip on" data-v="all">Any</button>'
+      +   '<button class="mfs-chip" data-v="furnished">Furnished</button>'
+      +   '<button class="mfs-chip" data-v="semi">Semi</button>'
+      +   '<button class="mfs-chip" data-v="unfurnished">Bare</button>'
+      + '</div></div>'
+      + '<div class="mfs-foot">'
+      +   '<button class="mfs-reset" type="button">Reset</button>'
+      +   '<button class="mfs-apply" type="button">Apply Filters</button>'
+      + '</div>';
   }
-  // Re-sync on viewport change (rotation, devtools resize)
+
+  function wireFilterChips(root){
+    root.querySelectorAll('.mfs-chips').forEach(function(group){
+      group.addEventListener('click', function(e){
+        var chip = e.target.closest('.mfs-chip');
+        if (!chip) return;
+        group.querySelectorAll('.mfs-chip').forEach(function(c){ c.classList.remove('on'); });
+        chip.classList.add('on');
+      });
+    });
+  }
+
+  function openFilterSheet(){
+    document.getElementById('m-filter-overlay').classList.add('open');
+    document.getElementById('m-filter-sheet').classList.add('open');
+    // Sync chip states from current global filter (best-effort)
+    syncSheetFromGlobalFilter();
+  }
+  function closeFilterSheet(){
+    document.getElementById('m-filter-overlay').classList.remove('open');
+    document.getElementById('m-filter-sheet').classList.remove('open');
+  }
+
+  function syncSheetFromGlobalFilter(){
+    if (typeof flt === 'undefined') return;
+    var sheet = document.getElementById('m-filter-sheet');
+    if (!sheet) return;
+    [['type', flt.type], ['bhk', flt.bhk], ['fur', flt.fur]].forEach(function(pair){
+      var grp = sheet.querySelector('.mfs-chips[data-group="' + pair[0] + '"]');
+      if (!grp) return;
+      grp.querySelectorAll('.mfs-chip').forEach(function(c){
+        c.classList.toggle('on', c.dataset.v === (pair[1] || 'all'));
+      });
+    });
+  }
+
+  function applyFilterSheet(){
+    if (typeof flt === 'undefined') {
+      closeFilterSheet();
+      return;
+    }
+    var sheet = document.getElementById('m-filter-sheet');
+    ['type', 'bhk', 'fur'].forEach(function(g){
+      var on = sheet.querySelector('.mfs-chips[data-group="' + g + '"] .mfs-chip.on');
+      if (on) flt[g] = on.dataset.v;
+    });
+    try { if (typeof draw === 'function') draw(); } catch(e){}
+    closeFilterSheet();
+    try { if (typeof showToast === 'function') showToast('✅ Filters applied'); } catch(e){}
+  }
+
+  function resetFilterSheet(){
+    var sheet = document.getElementById('m-filter-sheet');
+    sheet.querySelectorAll('.mfs-chips').forEach(function(grp){
+      grp.querySelectorAll('.mfs-chip').forEach(function(c){
+        c.classList.toggle('on', c.dataset.v === 'all');
+      });
+    });
+    if (typeof flt !== 'undefined') {
+      flt.type = 'all'; flt.bhk = 'all'; flt.fur = 'all';
+      try { if (typeof draw === 'function') draw(); } catch(e){}
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 4. SYNC on viewport change
+  // ─────────────────────────────────────────────────────────────
+  function sync(){
+    if (isMobile()) {
+      buildMobileSearchBar();
+      injectMobileMenuItems();
+      buildFilterFAB();
+    } else {
+      removeMobileMenuItems();
+      // We leave the mobile-only elements in DOM (CSS hides them).
+      // They're cheap and re-show instantly if user resizes back.
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', sync);
+  } else {
+    sync();
+  }
+
   var resizeTimer;
   window.addEventListener('resize', function(){
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(syncMenu, 200);
+    resizeTimer = setTimeout(sync, 200);
   });
 })();
 
-// ──── END MOBILE MENU SHIM ────
+// ──── MOBILE LAYOUT v4 SHIM END ────
 </script>
 <!-- HOW IT WORKS MODAL -->
 <div class="dark-overlay" id="how-modal">
