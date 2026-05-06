@@ -1614,12 +1614,18 @@ body.dark .lv-card { background: var(--white); }
 }
 
 
-/* ──── MOBILE FIX v2 START ──── */
+/* ──── MOBILE FIX v3 START ──── */
 /* ═══════════════════════════════════════════════════════════════
-   GHARMAP MOBILE FIX v2 — replaces v1 entirely
-   - removes [chat button] floating button
-   - dramatically declutters mobile bottom of screen
-   - fixes splash, topbar, modals to actually fit
+   GHARMAP MOBILE FIX v3 — proper mobile layout redesign
+   Builds a real two-tier topbar instead of cramming desktop UI into a phone.
+
+   Tier 1 (52px) : Logo · Search · Hamburger
+   Tier 2 (44px) : Rent/Sale toggle · Map/List toggle
+   Total topbar height on mobile : 96px (vs 52px on desktop)
+
+   Removes [chat button] (floating WhatsApp).
+   Hides extra map FABs (request, sat-toggle, compare) on mobile —
+   they live in the hamburger menu instead.
 ═══════════════════════════════════════════════════════════════ */
 
 /* ── 0. Baseline ───────────────────────────────────────────── */
@@ -1634,11 +1640,12 @@ body { -webkit-text-size-adjust: 100%; }
   }
 }
 
-/* ── 1. KILL [chat button] floating chat button entirely ── */
-/* (You can still re-enable on desktop by removing the first rule) */
+/* ── 1. Kill floating chat button ──────────────────────────── */
 #wa-chat-btn { display: none !important; }
 
-/* ── 2. SPLASH — make it actually fit on phone ─────────────── */
+/* ══════════════════════════════════════════════════════════════
+   2. SPLASH — fits properly on phone
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   #splash {
     padding: 18px 16px calc(20px + var(--safe-bot, 0px)) 16px;
@@ -1652,36 +1659,19 @@ body { -webkit-text-size-adjust: 100%; }
   .sp-tag { font-size: 9.5px; margin-bottom: 10px; }
   .sp-ticker { height: 32px; margin-bottom: 12px; }
   .sp-tick { font-size: 11px; padding-right: 14px; }
-  .sp-headline {
-    font-size: 22px;
-    line-height: 1.25;
-    margin-bottom: 6px;
-  }
-  .sp-sub {
-    font-size: 13px;
-    line-height: 1.5;
-    margin-bottom: 10px;
-  }
+  .sp-headline { font-size: 22px; line-height: 1.25; margin-bottom: 6px; }
+  .sp-sub { font-size: 13px; line-height: 1.5; margin-bottom: 10px; }
   .sp-pills { gap: 5px; margin-bottom: 10px; }
   .sp-pill { font-size: 10.5px; padding: 4px 9px; }
   .sp-trust { font-size: 11px; margin-bottom: 10px; }
   .sp-share-box { padding: 8px 11px; margin-bottom: 8px; }
   .sp-share-txt { font-size: 11.5px; line-height: 1.45; }
-  .sp-btn-main {
-    padding: 13px;
-    font-size: 14px;
-    min-height: 46px;
-    margin-bottom: 7px;
-  }
-  .sp-btn-how, .sp-btn-sec {
-    padding: 11px;
-    min-height: 42px;
-    font-size: 12.5px;
-  }
+  .sp-btn-main { padding: 13px; font-size: 14px; min-height: 46px; margin-bottom: 7px; }
+  .sp-btn-how, .sp-btn-sec { padding: 11px; min-height: 42px; font-size: 12.5px; }
   .sp-footer { font-size: 10.5px; line-height: 1.55; }
 }
 
-/* very narrow — Galaxy Fold etc. */
+/* very narrow phones */
 @media (max-width: 380px) {
   #splash { padding: 14px 12px calc(16px + var(--safe-bot, 0px)) 12px; }
   .sp-logo { font-size: 20px; }
@@ -1692,51 +1682,149 @@ body { -webkit-text-size-adjust: 100%; }
   .sp-ticker { display: none; }
 }
 
-/* ── 3. TOPBAR ─────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   3. TWO-TIER TOPBAR for mobile
+
+   On desktop everything stays in one row.
+   On mobile we re-stack:
+     Row 1: logo · search · hamburger
+     Row 2: rent/sale toggle (left) · map/list toggle (right)
+   Hide: List Property button, Match Me button (move to hamburger)
+
+   The hamburger menu gets new entries inserted via JS (see end of file).
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  :root, body { --top: 52px; }
+  :root, body { --top: 96px; }   /* total stacked topbar height */
+
   #topbar {
-    padding: 0 10px;
-    gap: 8px;
+    height: 96px !important;
+    padding: 0 !important;
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0 !important;
+    background: var(--white);
+  }
+
+  /* Row 1 — wraps logo + search + hamburger */
+  #topbar::before { content: ''; display: none; }  /* reset */
+
+  /* We use a flex trick: order the kids into rows. */
+  .tb-logo {
+    order: 1;
+    align-self: center;
+    padding: 0 12px;
+    font-size: 16px;
     height: 52px;
+    line-height: 52px;
+    flex-shrink: 0;
   }
-  .tb-logo { font-size: 16px; }
-  .tb-verified { display: none; }
-  .tb-search { max-width: none; flex: 1; min-width: 0; }
-  #search-input {
-    font-size: 16px !important;  /* prevents iOS zoom-on-focus */
-    padding: 8px 30px 8px 32px;
-  }
-  .tb-mode { display: none; }
-  .tb-right { gap: 5px; }
-  .tb-btn:not(.pri) { display: none; }
-  .tb-btn.pri { padding: 6px 10px; font-size: 11.5px; }
-  .tb-menu-btn { width: 36px; height: 36px; }
-  .tb-menu {
-    position: fixed;
-    top: 56px;
-    right: 8px;
-    left: 8px;
+  .tb-verified { display: none !important; }
+
+  .tb-search {
+    order: 2;
+    flex: 1 !important;
+    max-width: none !important;
     min-width: 0;
+    align-self: center;
+    height: 36px;
+    margin: 8px 0;
+  }
+  #search-input {
+    font-size: 16px !important;       /* prevents iOS zoom on focus */
+    padding: 8px 30px 8px 32px;
+    height: 36px;
+  }
+
+  /* Hide buttons we're moving to the hamburger */
+  .tb-right .tb-btn { display: none !important; }
+
+  /* Right area: only hamburger */
+  .tb-right {
+    order: 3;
+    align-self: center;
+    padding: 0 8px;
+    margin-left: 0 !important;
+    gap: 0;
+    flex-shrink: 0;
+  }
+  .tb-menu-btn {
+    width: 38px; height: 38px;
+  }
+
+  /* Topbar uses flex-wrap so row-1 occupies full width, row-2 below */
+  #topbar { flex-wrap: wrap; }
+
+  /* Row 2 wrappers */
+  .tb-mode {
+    order: 4;
+    flex: 0 0 auto;
+    margin-left: 12px;
+    margin-bottom: 6px;
+    border-radius: 22px;
+    padding: 3px;
+  }
+  .tb-mode-btn {
+    padding: 6px 14px;
+    font-size: 12.5px;
+    min-height: 32px;
+  }
+
+  .view-toggle {
+    order: 5;
+    flex: 0 0 auto;
+    margin-left: auto;
+    margin-right: 12px;
+    margin-bottom: 6px;
+    height: 36px;
+  }
+  .view-tog-btn {
+    padding: 6px 12px !important;
+    font-size: 12.5px !important;
+    min-height: 32px;
+  }
+
+  /* Make sure Row 1 takes full width before Row 2 wraps */
+  .tb-search { flex-basis: calc(100% - 100px) !important; }
+
+  /* Hamburger menu drops below the new taller topbar */
+  .tb-menu {
+    position: fixed !important;
+    top: 100px !important;
+    right: 8px !important;
+    left: 8px !important;
+    min-width: 0 !important;
     border-radius: 14px;
-    max-height: calc(100dvh - 80px);
+    max-height: calc(100dvh - 110px);
     overflow-y: auto;
   }
 }
+
+/* Very narrow phones — keep two tiers but tighten further */
 @media (max-width: 380px) {
-  .tb-btn.pri { display: none; }  /* leave only logo + search + menu */
+  .tb-logo { padding: 0 10px; font-size: 15px; }
+  .tb-search { flex-basis: calc(100% - 92px) !important; }
+  .tb-mode-btn { padding: 5px 11px; font-size: 11.5px; }
+  .view-tog-btn { padding: 5px 9px !important; font-size: 11.5px !important; }
 }
 
-/* ── 4. APP / MAP shell ────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   4. APP / MAP shell
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   #app { height: 100dvh; }
-  #map-wrap { right: 0; top: 52px; bottom: 0; }
+  #map-wrap {
+    right: 0 !important;
+    top: 96px !important;     /* under the new two-tier topbar */
+    bottom: 0;
+  }
   #fp { display: none !important; }
   .leaflet-right { right: 8px !important; }
   .leaflet-control-zoom { transform: scale(.92); transform-origin: top right; }
 }
 
-/* ── 5. DETAIL PANEL — full screen, top of stack ──────────── */
+/* ══════════════════════════════════════════════════════════════
+   5. DETAIL PANEL — full screen on mobile
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   #dp {
     top: 0 !important;
@@ -1757,10 +1845,12 @@ body { -webkit-text-size-adjust: 100%; }
   .dp-btn, .dp-close { width: 34px; height: 34px; font-size: 13px; }
 }
 
-/* ── 6. SAVED DRAWER ───────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   6. SAVED DRAWER
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   #saved-drawer {
-    top: 52px !important;
+    top: 96px !important;
     right: 0 !important;
     left: 0 !important;
     width: 100% !important;
@@ -1770,27 +1860,20 @@ body { -webkit-text-size-adjust: 100%; }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   7. MAP BOTTOM — RADICAL DECLUTTER
-   The original code stacks 7 things at the bottom: stats, near-me,
-   sat-toggle, request-btn, banner, toast, compare-fab. On mobile
-   they all collide. Strategy: ONE row of essentials. Hide the rest
-   or move into top-bar menu.
+   7. MAP BOTTOM — declutter
+   Hide: request-btn, sat-toggle, compare-fab on mobile.
+   Keep: stats bar (centred) + Near Me (left).
 ═══════════════════════════════════════════════════════════════ */
-
 @media (max-width: 768px) {
-  /* Hide non-essential bottom buttons on mobile.
-     Their functions live in the top-right hamburger menu instead. */
   #request-btn { display: none !important; }
   #sat-toggle-btn { display: none !important; }
   #compare-fab { display: none !important; }
 
-  /* The single row that remains: Stats bar (centred) + Near Me (left) */
   #stats {
     left: 50% !important;
     transform: translateX(-50%) !important;
     bottom: calc(14px + var(--safe-bot, 0px)) !important;
     font-size: 11px;
-    padding: 0;
   }
   .st-item { padding: 7px 11px; }
   .st-num { font-size: 13px; }
@@ -1805,7 +1888,6 @@ body { -webkit-text-size-adjust: 100%; }
     border-radius: 22px;
   }
 
-  /* Toast — float well above the stats row */
   #toast {
     left: 50% !important;
     transform: translateX(-50%) !important;
@@ -1817,11 +1899,10 @@ body { -webkit-text-size-adjust: 100%; }
     padding: 9px 16px;
   }
 
-  /* Banner stays at the top, well-fitted */
   #banner {
     left: 50% !important;
     transform: translateX(-50%) !important;
-    top: 60px !important;
+    top: 104px !important;     /* below two-tier topbar */
     font-size: 11.5px;
     padding: 7px 14px;
     max-width: calc(100vw - 24px);
@@ -1830,7 +1911,6 @@ body { -webkit-text-size-adjust: 100%; }
   }
 }
 
-/* very narrow phones — even more compact */
 @media (max-width: 380px) {
   #stats { font-size: 10.5px; }
   .st-item { padding: 6px 9px; }
@@ -1838,9 +1918,10 @@ body { -webkit-text-size-adjust: 100%; }
   #near-me-btn { padding: 7px 10px; font-size: 11px; }
 }
 
-/* ── 8. MODALS — bottom-sheet pattern on mobile ────────────── */
+/* ══════════════════════════════════════════════════════════════
+   8. MODALS — bottom-sheet pattern on mobile
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  /* Match all overlay modals */
   .dark-overlay,
   #share-modal,
   #matchme-modal,
@@ -1872,7 +1953,6 @@ body { -webkit-text-size-adjust: 100%; }
     to   { transform: translateY(0); opacity: 1; }
   }
 
-  /* Visual handle bar at top of sheet */
   .dark-modal::before,
   .ob-modal::before,
   #matchme-modal .modal::before,
@@ -1890,7 +1970,9 @@ body { -webkit-text-size-adjust: 100%; }
   body.dark .dark-modal::before { background: rgba(255,255,255,0.22); }
 }
 
-/* ── 9. FORMS — fix iOS zoom + tappable sizes ─────────────── */
+/* ══════════════════════════════════════════════════════════════
+   9. FORMS — fix iOS zoom + tappable sizes
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   input[type="text"],
   input[type="email"],
@@ -1899,7 +1981,7 @@ body { -webkit-text-size-adjust: 100%; }
   input[type="search"],
   textarea,
   select {
-    font-size: 16px !important;  /* IMPORTANT: stops iOS zoom on focus */
+    font-size: 16px !important;
   }
   button, .m-chip, .tb-btn, .tb-menu-item, .ob-card {
     min-height: 40px;
@@ -1908,32 +1990,40 @@ body { -webkit-text-size-adjust: 100%; }
   .ob-card { padding: 14px 12px !important; }
 }
 
-/* ── 10. SEARCH DROPDOWN ──────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   10. SEARCH DROPDOWN
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   #s-dd {
     max-height: 60dvh;
     border-radius: 14px;
+    /* ensure it appears below the search bar in row 1 */
+    top: calc(100% + 4px) !important;
   }
   .dd-row { padding: 11px 14px; font-size: 13.5px; }
 }
 
-/* ── 11. POPUPS on map ─────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   11. POPUPS on map
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .leaflet-popup-content-wrapper { min-width: 200px; }
   .pp-r { font-size: 17px; }
 }
 
-/* ── 12. Misc — kill horizontal scroll absolutely ─────────── */
+/* ══════════════════════════════════════════════════════════════
+   12. Kill horizontal scroll absolutely
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   body { max-width: 100vw; overflow-x: hidden; }
   #app, #splash { max-width: 100vw; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   END MOBILE FIX v2
+   END MOBILE FIX v3
 ═══════════════════════════════════════════════════════════════ */
 
-/* ──── MOBILE FIX v2 END ──── */
+/* ──── MOBILE FIX v3 END ──── */
 
 </style>
 </head>
@@ -4302,6 +4392,95 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Note: onboarding triggers inside enterApp() after splash
 });
 window.addEventListener('resize',()=>map&&map.invalidateSize());
+
+
+// ──── MOBILE MENU SHIM v3 ────
+// ─── MOBILE HAMBURGER ENHANCEMENT v3 ─────────────────────────
+// On mobile the topbar hides "Match Me" and "List Property" buttons.
+// Inject them into the hamburger menu so they're still reachable.
+(function(){
+  function isMobile(){ return window.matchMedia('(max-width: 768px)').matches; }
+
+  function injectMobileMenuItems(){
+    var menu = document.getElementById('tb-menu');
+    if (!menu) return;
+    if (menu.querySelector('[data-mobile-only="1"]')) return; // already done
+
+    // Build the two extra items
+    var listBtn = document.createElement('button');
+    listBtn.className = 'tb-menu-item';
+    listBtn.setAttribute('data-mobile-only', '1');
+    listBtn.innerHTML =
+      '<span class="tbm-ico">＋</span>' +
+      '<span>List Property</span>';
+    listBtn.onclick = function(){
+      try { closeTbMenu(); } catch(e) {}
+      try { openOwnerModal(); } catch(e) {}
+    };
+
+    var matchBtn = document.createElement('button');
+    matchBtn.className = 'tb-menu-item';
+    matchBtn.setAttribute('data-mobile-only', '1');
+    matchBtn.innerHTML =
+      '<span class="tbm-ico">🔍</span>' +
+      '<span>Match Me</span>';
+    matchBtn.onclick = function(){
+      try { closeTbMenu(); } catch(e) {}
+      try { openMatchMe(); } catch(e) {}
+    };
+
+    // Optional: Satellite & Compare too (since we hid those FABs)
+    var satBtn = document.createElement('button');
+    satBtn.className = 'tb-menu-item';
+    satBtn.setAttribute('data-mobile-only', '1');
+    satBtn.innerHTML =
+      '<span class="tbm-ico">🛰</span>' +
+      '<span>Toggle Satellite</span>';
+    satBtn.onclick = function(){
+      try { closeTbMenu(); } catch(e) {}
+      try { toggleSatellite(); } catch(e) {}
+    };
+
+    // Insert at the very top of the menu
+    var first = menu.firstChild;
+    var sep = document.createElement('div');
+    sep.className = 'tb-menu-sep';
+    sep.setAttribute('data-mobile-only', '1');
+
+    menu.insertBefore(sep, first);
+    menu.insertBefore(satBtn, sep);
+    menu.insertBefore(matchBtn, satBtn);
+    menu.insertBefore(listBtn, matchBtn);
+  }
+
+  function removeMobileMenuItems(){
+    var menu = document.getElementById('tb-menu');
+    if (!menu) return;
+    menu.querySelectorAll('[data-mobile-only="1"]').forEach(function(el){
+      el.parentNode.removeChild(el);
+    });
+  }
+
+  function syncMenu(){
+    if (isMobile()) injectMobileMenuItems();
+    else removeMobileMenuItems();
+  }
+
+  // Initial run after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncMenu);
+  } else {
+    syncMenu();
+  }
+  // Re-sync on viewport change (rotation, devtools resize)
+  var resizeTimer;
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(syncMenu, 200);
+  });
+})();
+
+// ──── END MOBILE MENU SHIM ────
 </script>
 <!-- HOW IT WORKS MODAL -->
 <div class="dark-overlay" id="how-modal">
