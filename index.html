@@ -1614,96 +1614,139 @@ body.dark .lv-card { background: var(--white); }
 }
 
 
-/* ───────── MOBILE FIX PATCH START ───────── */
-/* GHARMAP MOBILE FIX PATCH — applied inline */
+/* ──── MOBILE FIX v2 START ──── */
+/* ═══════════════════════════════════════════════════════════════
+   GHARMAP MOBILE FIX v2 — replaces v1 entirely
+   - removes [chat button] floating button
+   - dramatically declutters mobile bottom of screen
+   - fixes splash, topbar, modals to actually fit
+═══════════════════════════════════════════════════════════════ */
 
-/* ── 1. Safe-area & box-sizing baseline ────────────────────── */
+/* ── 0. Baseline ───────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { overflow-x: hidden; }
+body { -webkit-text-size-adjust: 100%; }
 
 @supports (padding: max(0px)) {
   :root {
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bot: env(safe-area-inset-bottom, 0px);
-    --safe-left: env(safe-area-inset-left, 0px);
-    --safe-right: env(safe-area-inset-right, 0px);
   }
 }
 
-/* ── 2. SPLASH — fix card spilling, scaling, vertical fit ─── */
+/* ── 1. KILL [chat button] floating chat button entirely ── */
+/* (You can still re-enable on desktop by removing the first rule) */
+#wa-chat-btn { display: none !important; }
+
+/* ── 2. SPLASH — make it actually fit on phone ─────────────── */
 @media (max-width: 768px) {
   #splash {
-    padding: 16px max(16px, var(--safe-left, 16px)) max(16px, var(--safe-bot, 16px)) max(16px, var(--safe-right, 16px));
-    align-items: flex-start; /* don't vertically center on tall content */
+    padding: 18px 16px calc(20px + var(--safe-bot, 0px)) 16px;
+    align-items: flex-start;
     padding-top: max(20px, var(--safe-top, 20px));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  .sp {
-    max-width: 100%;
-    width: 100%;
+  .sp { width: 100%; max-width: 100%; }
+  .sp-logo { font-size: 22px; margin-bottom: 2px; }
+  .sp-tag { font-size: 9.5px; margin-bottom: 10px; }
+  .sp-ticker { height: 32px; margin-bottom: 12px; }
+  .sp-tick { font-size: 11px; padding-right: 14px; }
+  .sp-headline {
+    font-size: 22px;
+    line-height: 1.25;
+    margin-bottom: 6px;
   }
-  .sp-headline { font-size: 22px; line-height: 1.25; }
-  .sp-sub { font-size: 13px; }
-  .sp-pills { gap: 5px; }
+  .sp-sub {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .sp-pills { gap: 5px; margin-bottom: 10px; }
   .sp-pill { font-size: 10.5px; padding: 4px 9px; }
-  .sp-share-box { padding: 8px 11px; }
-  .sp-share-txt { font-size: 11.5px; }
-  .sp-btn-main { padding: 13px; font-size: 14px; min-height: 46px; }
-  .sp-btn-how, .sp-btn-sec { padding: 11px; min-height: 42px; }
+  .sp-trust { font-size: 11px; margin-bottom: 10px; }
+  .sp-share-box { padding: 8px 11px; margin-bottom: 8px; }
+  .sp-share-txt { font-size: 11.5px; line-height: 1.45; }
+  .sp-btn-main {
+    padding: 13px;
+    font-size: 14px;
+    min-height: 46px;
+    margin-bottom: 7px;
+  }
+  .sp-btn-how, .sp-btn-sec {
+    padding: 11px;
+    min-height: 42px;
+    font-size: 12.5px;
+  }
+  .sp-footer { font-size: 10.5px; line-height: 1.55; }
 }
 
-/* very narrow phones (Galaxy Fold, older iPhones in 320px) */
-@media (max-width: 360px) {
-  #splash { padding-left: 12px; padding-right: 12px; }
-  .sp-logo { font-size: 22px; }
-  .sp-headline { font-size: 19px; }
-  .sp-pills { display: none; } /* save vertical space */
+/* very narrow — Galaxy Fold etc. */
+@media (max-width: 380px) {
+  #splash { padding: 14px 12px calc(16px + var(--safe-bot, 0px)) 12px; }
+  .sp-logo { font-size: 20px; }
+  .sp-headline { font-size: 19px; line-height: 1.22; }
+  .sp-sub { font-size: 12.5px; margin-bottom: 8px; }
+  .sp-pills { display: none; }
+  .sp-trust { font-size: 10.5px; margin-bottom: 8px; }
+  .sp-ticker { display: none; }
 }
 
-/* ── 3. TOPBAR — search and menu fit on phone ──────────────── */
+/* ── 3. TOPBAR ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
+  :root, body { --top: 52px; }
   #topbar {
-    padding: 0 12px;
+    padding: 0 10px;
     gap: 8px;
     height: 52px;
   }
-  :root, body { --top: 52px; }
   .tb-logo { font-size: 16px; }
-  .tb-verified { display: none; } /* free up space */
-  .tb-search { max-width: none; }
-  #search-input { font-size: 14px; padding: 9px 32px 9px 34px; } /* 14px = no iOS zoom-on-focus */
-  .tb-mode { display: none; } /* you already do this at 480px, push to 768 */
-  .tb-right { gap: 6px; }
-  .tb-btn:not(.pri) { display: none; } /* keep only "List Property" primary */
-  .tb-btn.pri { padding: 7px 12px; font-size: 12px; }
-  .tb-menu-btn { width: 38px; height: 38px; }
+  .tb-verified { display: none; }
+  .tb-search { max-width: none; flex: 1; min-width: 0; }
+  #search-input {
+    font-size: 16px !important;  /* prevents iOS zoom-on-focus */
+    padding: 8px 30px 8px 32px;
+  }
+  .tb-mode { display: none; }
+  .tb-right { gap: 5px; }
+  .tb-btn:not(.pri) { display: none; }
+  .tb-btn.pri { padding: 6px 10px; font-size: 11.5px; }
+  .tb-menu-btn { width: 36px; height: 36px; }
   .tb-menu {
     position: fixed;
-    top: 52px; right: 8px; left: 8px;
+    top: 56px;
+    right: 8px;
+    left: 8px;
     min-width: 0;
     border-radius: 14px;
-    max-height: calc(100vh - 70px);
+    max-height: calc(100dvh - 80px);
     overflow-y: auto;
   }
 }
-
-/* ── 4. APP SHELL — make map full-width on mobile ──────────── */
-@media (max-width: 768px) {
-  #app { height: 100dvh; } /* dynamic viewport — handles iOS toolbar */
-  #map-wrap { right: 0; top: 52px; }
-  #fp { display: none !important; } /* filter panel hidden, mobile uses bottom sheet */
+@media (max-width: 380px) {
+  .tb-btn.pri { display: none; }  /* leave only logo + search + menu */
 }
 
-/* ── 5. DETAIL PANEL (#dp) — proper full-screen on mobile ── */
+/* ── 4. APP / MAP shell ────────────────────────────────────── */
+@media (max-width: 768px) {
+  #app { height: 100dvh; }
+  #map-wrap { right: 0; top: 52px; bottom: 0; }
+  #fp { display: none !important; }
+  .leaflet-right { right: 8px !important; }
+  .leaflet-control-zoom { transform: scale(.92); transform-origin: top right; }
+}
+
+/* ── 5. DETAIL PANEL — full screen, top of stack ──────────── */
 @media (max-width: 768px) {
   #dp {
-    top: 0;
-    right: 0;
-    left: 0;
-    width: 100%;
-    height: 100dvh;
-    bottom: 0;
-    z-index: 1500; /* above topbar so close X is reachable */
-    box-shadow: none;
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    bottom: 0 !important;
+    z-index: 1600 !important;
+    box-shadow: none !important;
   }
   .dp-hd {
     padding: 12px 14px 10px;
@@ -1711,135 +1754,143 @@ html, body { overflow-x: hidden; }
   }
   .dp-price { font-size: 22px; }
   .dp-actions { gap: 4px; }
-  .dp-btn, .dp-close { width: 34px; height: 34px; font-size: 13px; } /* tappable */
+  .dp-btn, .dp-close { width: 34px; height: 34px; font-size: 13px; }
 }
 
-/* ── 6. SAVED DRAWER — same treatment ──────────────────────── */
+/* ── 6. SAVED DRAWER ───────────────────────────────────────── */
 @media (max-width: 768px) {
   #saved-drawer {
-    top: 52px; right: 0; left: 0; width: 100%;
-    z-index: 1400;
+    top: 52px !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 1500 !important;
     padding-bottom: calc(20px + var(--safe-bot, 0px));
   }
 }
 
-/* ── 7. STATS BAR — recenter (no panel offset) ─────────────── */
+/* ══════════════════════════════════════════════════════════════
+   7. MAP BOTTOM — RADICAL DECLUTTER
+   The original code stacks 7 things at the bottom: stats, near-me,
+   sat-toggle, request-btn, banner, toast, compare-fab. On mobile
+   they all collide. Strategy: ONE row of essentials. Hide the rest
+   or move into top-bar menu.
+═══════════════════════════════════════════════════════════════ */
+
 @media (max-width: 768px) {
+  /* Hide non-essential bottom buttons on mobile.
+     Their functions live in the top-right hamburger menu instead. */
+  #request-btn { display: none !important; }
+  #sat-toggle-btn { display: none !important; }
+  #compare-fab { display: none !important; }
+
+  /* The single row that remains: Stats bar (centred) + Near Me (left) */
   #stats {
     left: 50% !important;
-    transform: translateX(-50%);
-    bottom: calc(14px + var(--safe-bot, 0px));
+    transform: translateX(-50%) !important;
+    bottom: calc(14px + var(--safe-bot, 0px)) !important;
     font-size: 11px;
+    padding: 0;
   }
-  .st-item { padding: 7px 12px; }
+  .st-item { padding: 7px 11px; }
   .st-num { font-size: 13px; }
+  .st-lbl { font-size: 8.5px; }
+
+  #near-me-btn {
+    left: 12px !important;
+    right: auto !important;
+    bottom: calc(14px + var(--safe-bot, 0px)) !important;
+    padding: 8px 12px;
+    font-size: 11.5px;
+    border-radius: 22px;
+  }
+
+  /* Toast — float well above the stats row */
   #toast {
     left: 50% !important;
-    transform: translateX(-50%);
-    bottom: calc(76px + var(--safe-bot, 0px));
+    transform: translateX(-50%) !important;
+    bottom: calc(70px + var(--safe-bot, 0px)) !important;
     max-width: calc(100vw - 32px);
     white-space: normal;
     text-align: center;
+    font-size: 12.5px;
+    padding: 9px 16px;
   }
+
+  /* Banner stays at the top, well-fitted */
   #banner {
     left: 50% !important;
-    transform: translateX(-50%);
-    top: 64px;
-    font-size: 12px;
-    padding: 8px 16px;
+    transform: translateX(-50%) !important;
+    top: 60px !important;
+    font-size: 11.5px;
+    padding: 7px 14px;
     max-width: calc(100vw - 24px);
     white-space: normal;
     text-align: center;
   }
 }
 
-/* ── 8. FLOATING MAP BUTTONS — stack so they don't overlap ── */
-@media (max-width: 768px) {
-  /* row 1: above stats bar */
-  #near-me-btn {
-    bottom: calc(72px + var(--safe-bot, 0px));
-    left: 12px;
-    padding: 8px 12px;
-    font-size: 12px;
-  }
-  #sat-toggle-btn {
-    bottom: calc(72px + var(--safe-bot, 0px));
-    left: auto;
-    right: 12px; /* push to opposite side, no more overlap */
-    padding: 8px 12px;
-    font-size: 12px;
-  }
-  /* primary CTA — keep prominent, but lift it above stats */
-  #request-btn {
-    bottom: calc(120px + var(--safe-bot, 0px));
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 11px 18px;
-    font-size: 12.5px;
-  }
-}
-
-/* very narrow: shrink button labels further */
+/* very narrow phones — even more compact */
 @media (max-width: 380px) {
-  #near-me-btn, #sat-toggle-btn { padding: 7px 10px; font-size: 11px; }
-  #request-btn { padding: 10px 14px; font-size: 12px; }
+  #stats { font-size: 10.5px; }
+  .st-item { padding: 6px 9px; }
+  .st-num { font-size: 12px; }
+  #near-me-btn { padding: 7px 10px; font-size: 11px; }
 }
 
-/* ── 9. LEAFLET CONTROLS — clear of right edge on mobile ──── */
+/* ── 8. MODALS — bottom-sheet pattern on mobile ────────────── */
 @media (max-width: 768px) {
-  .leaflet-right { right: 8px !important; }
-  .leaflet-control-zoom { transform: scale(0.92); transform-origin: top right; }
-  .leaflet-popup-content { min-width: 150px; margin: 10px 12px !important; }
-}
-
-/* ── 10. MODALS — Match Me, List Property, Share, etc. ────── */
-@media (max-width: 768px) {
-  /* Generic full-screen overlays */
+  /* Match all overlay modals */
   .dark-overlay,
   #share-modal,
   #matchme-modal,
   #owner-modal,
-  #how-modal,
-  #privacy-modal,
-  #terms-modal {
+  #onboard-overlay,
+  #compare-modal,
+  .overlay {
     padding: 0 !important;
-    align-items: flex-end !important; /* slide up from bottom — feels native */
+    align-items: flex-end !important;
   }
 
   .dark-modal,
   .share-card,
+  .ob-modal,
   #matchme-modal .modal,
   #owner-modal .modal,
-  #how-modal .modal,
-  #privacy-modal .modal,
-  #terms-modal .modal {
+  #compare-modal .modal,
+  .overlay > .modal {
     width: 100% !important;
     max-width: 100% !important;
     border-radius: 18px 18px 0 0 !important;
-    max-height: 92vh !important;
+    max-height: 92dvh !important;
     padding: 22px 18px calc(28px + var(--safe-bot, 0px)) 18px !important;
-    animation: slideUpSheet .28s ease both !important;
+    animation: slideUpSheet .26s ease both !important;
+    margin: 0 !important;
   }
   @keyframes slideUpSheet {
     from { transform: translateY(40px); opacity: 0; }
     to   { transform: translateY(0); opacity: 1; }
   }
 
-  /* sheet handle on top of every modal (visual cue) */
+  /* Visual handle bar at top of sheet */
   .dark-modal::before,
+  .ob-modal::before,
   #matchme-modal .modal::before,
-  #owner-modal .modal::before {
+  #owner-modal .modal::before,
+  #compare-modal .modal::before {
     content: '';
     position: absolute;
-    top: 8px; left: 50%; transform: translateX(-50%);
-    width: 40px; height: 4px;
+    top: 8px; left: 50%;
+    transform: translateX(-50%);
+    width: 38px; height: 4px;
     background: rgba(0,0,0,0.18);
     border-radius: 4px;
+    z-index: 10;
   }
-  body.dark .dark-modal::before { background: rgba(255,255,255,0.18); }
+  body.dark .dark-modal::before { background: rgba(255,255,255,0.22); }
 }
 
-/* ── 11. FORM FIELDS — fix iOS zoom & tap targets ──────────── */
+/* ── 9. FORMS — fix iOS zoom + tappable sizes ─────────────── */
 @media (max-width: 768px) {
   input[type="text"],
   input[type="email"],
@@ -1848,48 +1899,41 @@ html, body { overflow-x: hidden; }
   input[type="search"],
   textarea,
   select {
-    font-size: 16px !important; /* prevents iOS Safari from zooming on focus */
+    font-size: 16px !important;  /* IMPORTANT: stops iOS zoom on focus */
   }
-  button, .m-chip, .tb-btn, .tb-menu-item {
-    min-height: 40px; /* tappable */
+  button, .m-chip, .tb-btn, .tb-menu-item, .ob-card {
+    min-height: 40px;
   }
   .m-chip { padding: 9px 13px !important; }
+  .ob-card { padding: 14px 12px !important; }
 }
 
-/* ── 12. DROPDOWN SEARCH RESULTS — fit mobile width ────────── */
+/* ── 10. SEARCH DROPDOWN ──────────────────────────────────── */
 @media (max-width: 768px) {
   #s-dd {
-    max-height: 60vh;
+    max-height: 60dvh;
     border-radius: 14px;
   }
-  .dd-row { padding: 11px 14px; }
+  .dd-row { padding: 11px 14px; font-size: 13.5px; }
 }
 
-/* ── 13. PROPERTY POPUPS on map — readable size ───────────── */
+/* ── 11. POPUPS on map ─────────────────────────────────────── */
 @media (max-width: 768px) {
-  .leaflet-popup-content-wrapper {
-    min-width: 200px;
-  }
-  .pp-r { font-size: 18px; }
+  .leaflet-popup-content-wrapper { min-width: 200px; }
+  .pp-r { font-size: 17px; }
 }
 
-/* ── 14. DARK MODE — make sure mobile sheet looks right ──── */
+/* ── 12. Misc — kill horizontal scroll absolutely ─────────── */
 @media (max-width: 768px) {
-  body.dark .dark-modal,
-  body.dark #matchme-modal .modal,
-  body.dark #owner-modal .modal {
-    background: #1a1a1a;
-  }
+  body { max-width: 100vw; overflow-x: hidden; }
+  #app, #splash { max-width: 100vw; }
 }
-
-/* ── 15. Prevent rubber-band scrolling on iOS over modals ── */
-.modal-open { overflow: hidden; position: fixed; width: 100%; }
 
 /* ═══════════════════════════════════════════════════════════════
-   END MOBILE FIX PATCH
+   END MOBILE FIX v2
 ═══════════════════════════════════════════════════════════════ */
 
-/* ───────── MOBILE FIX PATCH END ───────── */
+/* ──── MOBILE FIX v2 END ──── */
 
 </style>
 </head>
@@ -2279,13 +2323,7 @@ html, body { overflow-x: hidden; }
   <div id="loading"><div class="spinner"></div><div class="loading-txt" id="loading-txt">Loading…</div></div>
   <div id="toast">✅ Done!</div>
   <div id="empty-state"><div class="es-ico">🔍</div><div class="es-t">No verified listings match</div><div class="es-s">Try adjusting your filters</div></div>
-
-  <!-- WHATSAPP FLOATING CHAT -->
-  <button id="wa-chat-btn" onclick="openWhatsAppChat()" title="Chat with our team">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-    Ask us anything
-  </button>
-</div>
+  </div>
 
 <!-- ONBOARDING MODAL -->
 <div id="onboard-overlay">
