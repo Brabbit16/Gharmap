@@ -1614,11 +1614,14 @@ body.dark .lv-card { background: var(--white); }
 }
 
 
-/* ──── v6 SHRINK-DESKTOP START ──── */
+/* ──── MOBILE v7 START ──── */
 /* ═══════════════════════════════════════════════════════════════
-   GHARMAP v6 — desktop layout on mobile, just smaller.
-   No reflow. No bottom sheets. No new patterns.
-   Same DOM, same positions, smaller numbers.
+   GHARMAP MOBILE v7 — built to user's spec
+   Row 1 (52px): Logo · [Rent│Sale] · ＋ · ⋮
+   Row 2 (44px): Full-width search bar
+   Top of map: small "Don't see your area?" pill (under search)
+   Bottom: stats pill (centered), Near Me (left), ⚙ Filter (right)
+   Filter sheet: bottom sheet w/ Type, BHK, Budget, Furnishing chips
 ═══════════════════════════════════════════════════════════════ */
 
 /* baseline */
@@ -1626,191 +1629,22 @@ body.dark .lv-card { background: var(--white); }
 html, body { overflow-x: hidden; }
 body { -webkit-text-size-adjust: 100%; }
 
+@supports (padding: max(0px)) {
+  :root {
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bot: env(safe-area-inset-bottom, 0px);
+  }
+}
+
 /* kill the floating chat button */
 #wa-chat-btn { display: none !important; }
 
 /* ══════════════════════════════════════════════════════════════
-   Phone: shrink the desktop layout proportionally.
-   We change ONLY:
-     - panel width: 320 → 220px
-     - topbar height: 56 → 50px
-     - font sizes: small reductions
-     - paddings: tightened
-   We KEEP:
-     - all elements visible
-     - all positions
-     - desktop topbar (with horizontal scroll if needed)
-     - desktop filter panel on the right
-     - desktop stats bar at bottom
-     - floating buttons
+   SPLASH
 ═══════════════════════════════════════════════════════════════ */
-
 @media (max-width: 768px) {
-  :root, body {
-    --panel: 220px;
-    --top: 50px;
-  }
-  #app { height: 100dvh; }
-
-  /* ── TOPBAR — same elements, scroll horizontally if too wide ── */
-  #topbar {
-    height: 50px;
-    padding: 0 10px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  #topbar::-webkit-scrollbar { display: none; }
-  #topbar > * { flex-shrink: 0; }   /* keep all elements at intrinsic size */
-
-  .tb-logo { font-size: 16px; }
-  .tb-verified { font-size: 9px; padding: 2px 5px; }
-
-  /* search bar slightly smaller but visible */
-  .tb-search { max-width: 200px; min-width: 140px; }
-  #search-input {
-    font-size: 16px !important;   /* prevents iOS zoom-on-focus */
-    padding: 6px 28px 6px 28px;
-    height: 32px;
-  }
-  .si-ico, #si-clr { font-size: 12px; }
-
-  .tb-mode { padding: 2px; }
-  .tb-mode-btn { padding: 5px 10px; font-size: 11px; min-height: 28px; }
-
-  .view-toggle { height: 32px; }
-  .view-tog-btn { padding: 4px 9px !important; font-size: 11px !important; min-height: 28px; }
-
-  .tb-btn { padding: 6px 10px; font-size: 11px; }
-  .tb-menu-btn { width: 32px; height: 32px; font-size: 14px; }
-
-  .tb-right { gap: 5px; }
-
-  /* ── MAP & FILTER PANEL — same positions, just smaller panel ── */
-  /* (handled by --panel CSS variable above; map-wrap and #fp already use it) */
-
-  /* ── FILTER PANEL — tighten internals so it's usable at 220px ── */
-  #fp { font-size: 12px; }
-  .fp-section { padding: 12px 12px 10px; }
-  .fp-lbl {
-    font-size: 9px;
-    letter-spacing: .8px;
-    margin-bottom: 8px;
-  }
-
-  .tcards { gap: 4px; }
-  .tcard { padding: 7px 9px; gap: 7px; }
-  .tcard-ico { font-size: 14px; }
-  .tcard-lbl { font-size: 11px; }
-  .tcard-sub { font-size: 9px; }
-  .tcard-cnt { font-size: 9px; padding: 1px 5px; }
-
-  .fd-trigger { padding: 9px 12px; font-size: 11px; }
-  .fd-val { font-size: 10px; }
-  .fd-arrow { font-size: 9px; }
-  .fd-body { padding: 0 12px 10px; }
-
-  .chips { gap: 4px; }
-  .chip { padding: 5px 10px !important; font-size: 11px !important; min-height: 28px !important; }
-
-  .fopts { gap: 3px; }
-  .fopt { padding: 5px 3px !important; font-size: 10px !important; }
-
-  .bp { padding: 3px 9px; font-size: 11px; }
-  .blbls { font-size: 9px; }
-
-  .zi { padding: 6px 7px; gap: 7px; }
-  .zcb { width: 13px; height: 13px; font-size: 8px; }
-  .z-lbl { font-size: 11px; }
-  .z-sub { font-size: 9px; }
-
-  .fp-foot { padding: 9px 12px; gap: 5px; }
-  .btn-reset, .btn-apply { padding: 8px; font-size: 11px; }
-
-  /* ── STATS BAR — keep bottom-centred; just smaller ── */
-  #stats {
-    bottom: max(12px, calc(env(safe-area-inset-bottom) + 6px));
-  }
-  .st-item { padding: 6px 10px; }
-  .st-num { font-size: 12px; }
-  .st-lbl { font-size: 8px; letter-spacing: 0.2px; }
-
-  /* ── FLOATING BUTTONS — keep same desktop positions, just smaller ── */
-  #near-me-btn,
-  #sat-toggle-btn,
-  #request-btn,
-  #compare-fab {
-    font-size: 11px !important;
-    padding: 7px 11px !important;
-    border-radius: 20px !important;
-  }
-
-  /* ── BANNER / TOAST — fit phone width ── */
-  #banner {
-    font-size: 11px;
-    padding: 6px 12px;
-    max-width: calc(100vw - 16px);
-    white-space: normal;
-    text-align: center;
-  }
-  #toast {
-    font-size: 12px;
-    padding: 8px 14px;
-    max-width: calc(100vw - 32px);
-    white-space: normal;
-    text-align: center;
-  }
-
-  /* ── DETAIL PANEL #dp — desktop is 360px wide, on phone make it a near-full overlay ── */
-  /* Keep desktop look (right-side panel) but go wider so content doesn't squish */
-  #dp {
-    width: calc(100vw - 12px) !important;
-    max-width: 360px;
-    right: 6px !important;
-    top: 56px !important;
-    bottom: 12px;
-    border-radius: 12px;
-  }
-
-  /* ── SAVED DRAWER — same scaling ── */
-  #saved-drawer {
-    width: calc(100vw - 12px) !important;
-    max-width: 320px;
-    right: 6px !important;
-    top: 56px !important;
-    bottom: 12px;
-    border-radius: 12px;
-  }
-
-  /* ── MODALS — keep desktop centred-modal look, just shrink padding ── */
-  .dark-modal,
-  .share-card,
-  .ob-modal,
-  #matchme-modal .modal,
-  #owner-modal .modal,
-  #compare-modal .modal,
-  .overlay > .modal {
-    width: calc(100vw - 24px) !important;
-    max-width: 420px !important;
-    padding: 18px 16px !important;
-    max-height: 88dvh !important;
-  }
-
-  /* ── FORMS: stop iOS zoom on focus ── */
-  input[type="text"], input[type="email"], input[type="tel"],
-  input[type="number"], input[type="search"], textarea, select {
-    font-size: 16px !important;
-  }
-
-  /* leaflet — slight scale-down so controls don't dominate */
-  .leaflet-control-zoom { transform: scale(0.85); transform-origin: top right; }
-  .leaflet-popup-content-wrapper { min-width: 170px; }
-
-  /* ── SPLASH still mobile-friendly ── */
   #splash {
-    padding: max(20px, env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom)) 16px;
+    padding: max(20px, var(--safe-top)) 16px calc(20px + var(--safe-bot)) 16px;
     align-items: flex-start;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -1820,22 +1654,557 @@ body { -webkit-text-size-adjust: 100%; }
   .sp-sub { font-size: 13px; }
   .sp-pill { font-size: 10.5px; padding: 4px 9px; }
 }
-
-/* very narrow — Galaxy Fold etc */
 @media (max-width: 380px) {
-  :root, body { --panel: 200px; }
-  .tb-search { min-width: 120px; max-width: 160px; }
-  #search-input { font-size: 16px !important; padding: 6px 26px; }
-  .tb-mode-btn { padding: 4px 8px; font-size: 10.5px; }
-  .tb-btn { padding: 5px 8px; font-size: 10.5px; }
+  .sp-pills, .sp-ticker { display: none; }
+  .sp-headline { font-size: 19px; }
 }
 
-/* prevent horizontal page scroll outside the topbar */
+/* ══════════════════════════════════════════════════════════════
+   APP SHELL — total topbar = 52 + 44 = 96px
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  body, #app { max-width: 100vw; overflow-x: hidden; }
+  #app { height: 100dvh; overflow: hidden; }
+  :root, body { --top: 96px; --panel: 0px; }
 }
 
-/* ──── v6 END ──── */
+/* ══════════════════════════════════════════════════════════════
+   ROW 1 — Logo · Rent/Sale · ＋ · ⋮
+   The desktop search input lives in .tb-search; we hide it on mobile
+   (we'll render an alternate one in row 2 via JS shim).
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #topbar {
+    height: 52px !important;
+    padding: 0 12px !important;
+    gap: 8px !important;
+    align-items: center !important;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: nowrap;
+    overflow: visible;
+  }
+
+  .tb-logo { font-size: 17px; flex-shrink: 0; }
+  .tb-verified { display: none !important; }      /* save space */
+
+  /* Hide desktop search input — we put a real one in row 2 */
+  .tb-search { display: none !important; }
+
+  /* Rent/Sale stays */
+  .tb-mode {
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding: 3px;
+    border-radius: 22px;
+  }
+  .tb-mode-btn {
+    padding: 5px 12px;
+    font-size: 12px;
+    min-height: 30px;
+  }
+
+  /* Hide all desktop secondary buttons + view toggle */
+  .tb-right .tb-btn { display: none !important; }
+  .view-toggle { display: none !important; }
+
+  .tb-right {
+    margin-left: 0 !important;
+    gap: 6px;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  /* The List Property + (icon) — added by JS shim */
+  #m-list-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--green);
+    cursor: pointer;
+    font-size: 18px; font-weight: 600; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+    font-family: var(--ff);
+  }
+  #m-list-icon:active { background: var(--green-light); transform: scale(.95); }
+
+  .tb-menu-btn { width: 36px; height: 36px; }
+}
+
+/* very narrow phones */
+@media (max-width: 360px) {
+  .tb-logo { font-size: 15px; }
+  .tb-mode-btn { padding: 4px 10px; font-size: 11px; }
+  #m-list-icon, .tb-menu-btn { width: 34px; height: 34px; }
+  #topbar { padding: 0 10px !important; gap: 6px !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ROW 2 — full-width search bar (mobile only)
+   Element added by JS shim:
+     <div id="m-search-row">
+       <span>🔍</span>
+       <input id="m-search-input">
+       <button id="m-search-clr">✕</button>
+     </div>
+═══════════════════════════════════════════════════════════════ */
+#m-search-row { display: none; }
+
+@media (max-width: 768px) {
+  #m-search-row {
+    display: flex;
+    position: fixed;
+    top: 52px;
+    left: 0; right: 0;
+    height: 44px;
+    z-index: 1000;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    padding: 0 12px;
+    gap: 0;
+  }
+  #m-search-row .ms-ico {
+    position: absolute;
+    left: 24px;
+    color: var(--ink3);
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  #m-search-input {
+    flex: 1;
+    width: 100%;
+    height: 34px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: 20px;
+    padding: 0 36px 0 36px;
+    font-size: 16px !important;
+    color: var(--ink);
+    font-family: var(--ff);
+    outline: none;
+    transition: border-color .2s, background .2s;
+  }
+  #m-search-input:focus {
+    border-color: var(--green-mid);
+    background: var(--white);
+  }
+  #m-search-clr {
+    position: absolute;
+    right: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink3);
+    font-size: 14px;
+    display: none;
+    padding: 4px;
+    z-index: 1;
+  }
+  #m-search-clr.show { display: block; }
+
+  /* When the search dropdown #s-dd appears, anchor it under row 2 */
+  #s-dd {
+    position: fixed !important;
+    top: 100px !important;     /* below row 1 + row 2 */
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-height: 60dvh;
+    border-radius: 14px;
+    z-index: 1100 !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MAP
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #map-wrap {
+    position: fixed !important;
+    top: 96px !important;
+    right: 0 !important;
+    left: 0;
+    bottom: 0;
+    width: 100% !important;
+  }
+  #fp { display: none !important; }
+  .leaflet-right { right: 8px !important; }
+  .leaflet-control-zoom { transform: scale(.92); transform-origin: top right; }
+  .leaflet-popup-content-wrapper { min-width: 180px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   "Don't see your area?" pill — under search bar (TOP of map)
+   Override desktop's bottom positioning entirely.
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #request-btn {
+    position: fixed !important;
+    top: 104px !important;       /* 96 (topbar) + 8 gap */
+    bottom: auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 600 !important;
+    padding: 7px 14px !important;
+    font-size: 11.5px !important;
+    border-radius: 18px !important;
+    background: rgba(255,255,255,.96) !important;
+    color: var(--green) !important;
+    border: 1px solid rgba(45,106,90,.25) !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,.1) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    white-space: nowrap;
+    max-width: calc(100vw - 24px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #request-btn:hover {
+    transform: translateX(-50%) translateY(-1px) !important;
+  }
+  #request-btn::before {
+    background: var(--green) !important;   /* visible on white pill */
+  }
+
+  body.dark #request-btn {
+    background: rgba(20,20,20,.94) !important;
+    color: var(--green-mid) !important;
+    border-color: rgba(255,255,255,.1) !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BOTTOM ROW — stats pill (centered), Near Me (left), Filter (right)
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Hide other floating buttons (sat-toggle, compare) — go to hamburger */
+  #sat-toggle-btn { display: none !important; }
+  #compare-fab { display: none !important; }
+
+  /* Stats pill — centered, slightly above bottom row */
+  #stats {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    bottom: calc(70px + var(--safe-bot)) !important;
+    font-size: 11px;
+    border-radius: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.12);
+  }
+  .st-item { padding: 6px 10px; }
+  .st-num { font-size: 12.5px; }
+  .st-lbl { font-size: 8.5px; letter-spacing: .2px; }
+
+  /* Near Me — bottom-left */
+  #near-me-btn {
+    left: 14px !important;
+    right: auto !important;
+    bottom: calc(16px + var(--safe-bot)) !important;
+    padding: 9px 13px !important;
+    font-size: 12px !important;
+    border-radius: 22px !important;
+    background: var(--white) !important;
+    box-shadow: 0 3px 14px rgba(0,0,0,.12) !important;
+  }
+
+  /* Toast — above sheet */
+  #toast {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    bottom: calc(120px + var(--safe-bot)) !important;
+    max-width: calc(100vw - 32px);
+    white-space: normal;
+    text-align: center;
+    font-size: 12.5px;
+    padding: 9px 16px;
+  }
+
+  /* Banner (one-shot info) — under search */
+  #banner {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: 104px !important;
+    font-size: 11.5px;
+    padding: 7px 14px;
+    max-width: calc(100vw - 24px);
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FILTER FAB — bottom-right
+   Element added by JS shim:
+     <button id="m-filter-fab">⚙ Filter</button>
+═══════════════════════════════════════════════════════════════ */
+#m-filter-fab,
+#m-filter-overlay,
+#m-filter-sheet { display: none; }
+
+@media (max-width: 768px) {
+  #m-filter-fab {
+    display: flex;
+    position: fixed;
+    right: 14px;
+    bottom: calc(16px + var(--safe-bot));
+    z-index: 700;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 9px 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--ff);
+    box-shadow: 0 4px 18px rgba(45,106,90,.4);
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+  }
+  #m-filter-fab .fab-count {
+    background: rgba(255,255,255,.25);
+    border-radius: 12px;
+    padding: 1px 7px;
+    font-size: 10.5px;
+    margin-left: 2px;
+    display: none;
+  }
+  #m-filter-fab.has-filters .fab-count { display: inline-block; }
+}
+
+/* Filter overlay + sheet */
+@media (max-width: 768px) {
+  #m-filter-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    backdrop-filter: blur(4px);
+    z-index: 1700;
+  }
+  #m-filter-overlay.open { display: block; animation: fadeInOv .2s ease; }
+  @keyframes fadeInOv { from { opacity: 0 } to { opacity: 1 } }
+
+  #m-filter-sheet {
+    display: block;
+    position: fixed;
+    left: 0; right: 0; bottom: -100%;
+    z-index: 1800;
+    background: var(--white);
+    border-radius: 18px 18px 0 0;
+    padding: 16px 16px calc(16px + var(--safe-bot));
+    max-height: 88dvh;
+    overflow-y: auto;
+    transition: bottom .3s cubic-bezier(.32,.72,0,1);
+    box-shadow: 0 -8px 32px rgba(0,0,0,.18);
+    -webkit-overflow-scrolling: touch;
+  }
+  #m-filter-sheet.open { bottom: 0; }
+  #m-filter-sheet::before {
+    content: '';
+    position: absolute; top: 8px; left: 50%;
+    transform: translateX(-50%);
+    width: 40px; height: 4px;
+    background: rgba(0,0,0,.18);
+    border-radius: 4px;
+  }
+  body.dark #m-filter-sheet { background: #1a1a1a; }
+  body.dark #m-filter-sheet::before { background: rgba(255,255,255,.22); }
+
+  .mfs-title {
+    font-size: 17px; font-weight: 700;
+    margin: 8px 0 4px; color: var(--ink);
+  }
+  .mfs-sub {
+    font-size: 12.5px; color: var(--ink2);
+    margin-bottom: 16px;
+  }
+  .mfs-section { margin-bottom: 18px; }
+  .mfs-label {
+    font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--ink3); font-weight: 600; margin-bottom: 8px;
+  }
+  .mfs-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .mfs-chip {
+    padding: 8px 13px; border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--white); color: var(--ink2);
+    font-size: 12.5px; font-weight: 500;
+    cursor: pointer; font-family: var(--ff);
+    min-height: 36px; transition: all .15s;
+  }
+  .mfs-chip.on {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+  body.dark .mfs-chip { background: rgba(255,255,255,.04); color: var(--ink); border-color: var(--border); }
+  body.dark .mfs-chip.on { background: var(--green); color: #fff; }
+
+  /* Budget mini-range */
+  .mfs-budget-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 4px;
+  }
+  .mfs-budget-input {
+    flex: 1;
+    height: 38px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 0 12px;
+    font-size: 16px !important;
+    font-family: var(--ff);
+    color: var(--ink);
+    outline: none;
+    width: 100%;
+  }
+  .mfs-budget-sep { font-size: 12px; color: var(--ink3); }
+
+  .mfs-foot {
+    display: flex; gap: 8px; margin-top: 14px;
+    position: sticky; bottom: 0;
+    padding-top: 8px;
+    background: linear-gradient(to top, var(--white) 70%, transparent);
+  }
+  body.dark .mfs-foot { background: linear-gradient(to top, #1a1a1a 70%, transparent); }
+  .mfs-reset {
+    flex: 1; padding: 12px; border-radius: 12px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--ink2); font-size: 13.5px; font-weight: 500;
+    cursor: pointer; font-family: var(--ff);
+  }
+  .mfs-apply {
+    flex: 2; padding: 12px; border-radius: 12px;
+    border: none; background: var(--green); color: #fff;
+    font-size: 13.5px; font-weight: 600;
+    cursor: pointer; font-family: var(--ff);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   HAMBURGER MENU on mobile — full width
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .tb-menu {
+    position: fixed !important;
+    top: 56px !important;
+    right: 8px !important;
+    left: 8px !important;
+    min-width: 0 !important;
+    border-radius: 14px;
+    max-height: calc(100dvh - 80px);
+    overflow-y: auto;
+    z-index: 1200 !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DETAIL PANEL — full screen on mobile
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #dp {
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    bottom: 0 !important;
+    z-index: 1900 !important;
+    box-shadow: none !important;
+  }
+  .dp-hd {
+    padding: 12px 14px 10px;
+    padding-top: max(12px, var(--safe-top));
+  }
+  .dp-price { font-size: 22px; }
+  .dp-actions { gap: 4px; }
+  .dp-btn, .dp-close { width: 34px; height: 34px; font-size: 13px; }
+
+  #saved-drawer {
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    z-index: 1850 !important;
+    padding-top: max(16px, var(--safe-top));
+    padding-bottom: calc(20px + var(--safe-bot));
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MODALS — bottom sheets on mobile
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .dark-overlay,
+  #share-modal,
+  #matchme-modal,
+  #owner-modal,
+  #onboard-overlay,
+  #compare-modal,
+  .overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+  .dark-modal,
+  .share-card,
+  .ob-modal,
+  #matchme-modal .modal,
+  #owner-modal .modal,
+  #compare-modal .modal,
+  .overlay > .modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 18px 18px 0 0 !important;
+    max-height: 92dvh !important;
+    padding: 22px 18px calc(28px + var(--safe-bot)) 18px !important;
+    margin: 0 !important;
+    animation: slideUpSheet .26s ease both !important;
+  }
+  @keyframes slideUpSheet {
+    from { transform: translateY(40px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+  .dark-modal::before,
+  .ob-modal::before,
+  #matchme-modal .modal::before,
+  #owner-modal .modal::before,
+  #compare-modal .modal::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 50%; transform: translateX(-50%);
+    width: 38px; height: 4px;
+    background: rgba(0,0,0,0.18);
+    border-radius: 4px;
+    z-index: 10;
+  }
+  body.dark .dark-modal::before { background: rgba(255,255,255,0.22); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FORMS — fix iOS zoom, big tap targets
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  input[type="text"], input[type="email"], input[type="tel"],
+  input[type="number"], input[type="search"], textarea, select {
+    font-size: 16px !important;
+  }
+  button, .m-chip, .tb-btn, .tb-menu-item, .ob-card {
+    min-height: 40px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Anti-overflow guard
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  body, #app, #splash { max-width: 100vw; overflow-x: hidden; }
+}
+
+/* ──── MOBILE v7 END ──── */
 
 </style>
 </head>
@@ -4204,6 +4573,327 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Note: onboarding triggers inside enterApp() after splash
 });
 window.addEventListener('resize',()=>map&&map.invalidateSize());
+
+
+// ──── MOBILE v7 SHIM START ────
+// ═══════════════════════════════════════════════════════════════
+// GHARMAP MOBILE v7 — JS SHIM
+// Creates: row-2 search bar, ＋ icon, ⚙ filter FAB+sheet,
+//          hamburger menu items
+// ═══════════════════════════════════════════════════════════════
+(function(){
+  'use strict';
+
+  function isMobile(){ return window.matchMedia('(max-width: 768px)').matches; }
+  window._gmM = {};
+
+  // ─────────────────────────────────────────────────────────────
+  // 1. ROW-2 SEARCH BAR
+  // ─────────────────────────────────────────────────────────────
+  function buildSearchRow(){
+    if (document.getElementById('m-search-row')) return;
+    var topbar = document.getElementById('topbar');
+    if (!topbar) return;
+
+    var row = document.createElement('div');
+    row.id = 'm-search-row';
+    row.innerHTML =
+      '<span class="ms-ico">🔍</span>' +
+      '<input id="m-search-input" type="text" autocomplete="off" placeholder="Search area, building, landmark…">' +
+      '<button id="m-search-clr" type="button" aria-label="Clear">✕</button>';
+    topbar.parentNode.insertBefore(row, topbar.nextSibling);
+
+    var mInp = document.getElementById('m-search-input');
+    var mClr = document.getElementById('m-search-clr');
+    var dInp = document.getElementById('search-input');
+
+    if (!dInp) return;
+
+    mInp.addEventListener('input', function(){
+      dInp.value = mInp.value;
+      mClr.classList.toggle('show', !!mInp.value);
+      try { if (typeof onSearch === 'function') onSearch(mInp.value); } catch(e){}
+    });
+    mInp.addEventListener('focus', function(){
+      try { if (typeof onSearchFocus === 'function') onSearchFocus(); } catch(e){}
+    });
+    mInp.addEventListener('keydown', function(e){
+      try { if (typeof onSearchKey === 'function') onSearchKey(e); } catch(e2){}
+    });
+    mClr.addEventListener('click', function(){
+      mInp.value = ''; dInp.value = '';
+      mClr.classList.remove('show');
+      try { if (typeof clearSearch === 'function') clearSearch(); } catch(e){}
+      mInp.focus();
+    });
+
+    // Reverse-mirror (in case other code sets dInp.value)
+    var lastSeen = dInp.value;
+    setInterval(function(){
+      if (!isMobile()) return;
+      if (dInp.value !== lastSeen) {
+        lastSeen = dInp.value;
+        if (mInp.value !== dInp.value) mInp.value = dInp.value;
+        mClr.classList.toggle('show', !!dInp.value);
+      }
+    }, 300);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 2. ＋ List Property icon (in topbar before hamburger)
+  // ─────────────────────────────────────────────────────────────
+  function buildListIcon(){
+    if (document.getElementById('m-list-icon')) return;
+    var tbRight = document.querySelector('#topbar .tb-right');
+    var menuWrap = document.querySelector('#topbar .tb-right .tb-menu-wrap');
+    if (!tbRight || !menuWrap) return;
+
+    var btn = document.createElement('button');
+    btn.id = 'm-list-icon';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'List Property');
+    btn.title = 'List Property';
+    btn.innerHTML = '＋';
+    btn.addEventListener('click', function(){
+      try { if (typeof openOwnerModal === 'function') openOwnerModal(); } catch(e){}
+    });
+    tbRight.insertBefore(btn, menuWrap);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 3. HAMBURGER — additional mobile-only items
+  // ─────────────────────────────────────────────────────────────
+  function injectMenuItems(){
+    var menu = document.getElementById('tb-menu');
+    if (!menu) return;
+    if (menu.querySelector('[data-mobile-only="1"]')) return;
+
+    function item(icon, label, fn){
+      var b = document.createElement('button');
+      b.className = 'tb-menu-item';
+      b.setAttribute('data-mobile-only', '1');
+      b.innerHTML = '<span class="tbm-ico">'+icon+'</span><span>'+label+'</span>';
+      b.onclick = function(){
+        try { if (typeof closeTbMenu === 'function') closeTbMenu(); } catch(e){}
+        try { fn(); } catch(e){}
+      };
+      return b;
+    }
+
+    var sep = document.createElement('div');
+    sep.className = 'tb-menu-sep';
+    sep.setAttribute('data-mobile-only', '1');
+
+    var items = [
+      item('🔍', 'Match Me',         function(){ if (typeof openMatchMe === 'function') openMatchMe(); }),
+      item('🛰', 'Toggle Satellite', function(){ if (typeof toggleSatellite === 'function') toggleSatellite(); }),
+      item('⚖',  'Compare',           function(){ if (typeof openCompareModal === 'function') openCompareModal(); }),
+    ];
+
+    var first = menu.firstChild;
+    menu.insertBefore(sep, first);
+    for (var i = items.length - 1; i >= 0; i--) menu.insertBefore(items[i], sep);
+  }
+  function removeMenuItems(){
+    var menu = document.getElementById('tb-menu');
+    if (!menu) return;
+    menu.querySelectorAll('[data-mobile-only="1"]').forEach(function(el){ el.remove(); });
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 4. FILTER FAB + BOTTOM SHEET
+  // ─────────────────────────────────────────────────────────────
+  function buildFilterFAB(){
+    if (document.getElementById('m-filter-fab')) return;
+
+    // FAB
+    var fab = document.createElement('button');
+    fab.id = 'm-filter-fab';
+    fab.type = 'button';
+    fab.innerHTML = '<span>⚙ Filter</span><span class="fab-count" id="fab-count">0</span>';
+    fab.addEventListener('click', openFilterSheet);
+    document.body.appendChild(fab);
+
+    // Overlay
+    var ov = document.createElement('div');
+    ov.id = 'm-filter-overlay';
+    ov.addEventListener('click', closeFilterSheet);
+    document.body.appendChild(ov);
+
+    // Sheet
+    var sh = document.createElement('div');
+    sh.id = 'm-filter-sheet';
+    sh.innerHTML =
+      '<div class="mfs-title">Filter properties</div>' +
+      '<div class="mfs-sub">Refine by type, BHK, budget &amp; furnishing</div>' +
+
+      '<div class="mfs-section">' +
+        '<div class="mfs-label">Type</div>' +
+        '<div class="mfs-chips" data-group="type">' +
+          '<button class="mfs-chip on" data-v="all">All</button>' +
+          '<button class="mfs-chip" data-v="flat">🏠 Flat</button>' +
+          '<button class="mfs-chip" data-v="pg">🛏 PG</button>' +
+          '<button class="mfs-chip" data-v="commercial">🏢 Commercial</button>' +
+          '<button class="mfs-chip" data-v="house">🏡 House</button>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="mfs-section">' +
+        '<div class="mfs-label">BHK</div>' +
+        '<div class="mfs-chips" data-group="bhk">' +
+          '<button class="mfs-chip on" data-v="all">Any</button>' +
+          '<button class="mfs-chip" data-v="1">1 BHK</button>' +
+          '<button class="mfs-chip" data-v="2">2 BHK</button>' +
+          '<button class="mfs-chip" data-v="3">3 BHK</button>' +
+          '<button class="mfs-chip" data-v="4">4 BHK</button>' +
+          '<button class="mfs-chip" data-v="3+">3+ BHK</button>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="mfs-section">' +
+        '<div class="mfs-label">Budget (₹)</div>' +
+        '<div class="mfs-budget-row">' +
+          '<input type="number" class="mfs-budget-input" id="mfs-min" placeholder="Min" inputmode="numeric">' +
+          '<span class="mfs-budget-sep">to</span>' +
+          '<input type="number" class="mfs-budget-input" id="mfs-max" placeholder="Max" inputmode="numeric">' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="mfs-section">' +
+        '<div class="mfs-label">Furnishing</div>' +
+        '<div class="mfs-chips" data-group="fur">' +
+          '<button class="mfs-chip on" data-v="all">Any</button>' +
+          '<button class="mfs-chip" data-v="furnished">Furnished</button>' +
+          '<button class="mfs-chip" data-v="semi">Semi</button>' +
+          '<button class="mfs-chip" data-v="unfurnished">Bare</button>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="mfs-foot">' +
+        '<button class="mfs-reset" type="button">Reset</button>' +
+        '<button class="mfs-apply" type="button">Apply Filters</button>' +
+      '</div>';
+
+    document.body.appendChild(sh);
+
+    sh.querySelectorAll('.mfs-chips').forEach(function(g){
+      g.addEventListener('click', function(e){
+        var c = e.target.closest('.mfs-chip');
+        if (!c) return;
+        g.querySelectorAll('.mfs-chip').forEach(function(x){ x.classList.remove('on'); });
+        c.classList.add('on');
+      });
+    });
+
+    sh.querySelector('.mfs-apply').addEventListener('click', applyFilterSheet);
+    sh.querySelector('.mfs-reset').addEventListener('click', resetFilterSheet);
+  }
+
+  function syncSheetFromFlt(){
+    if (typeof flt === 'undefined') return;
+    var sh = document.getElementById('m-filter-sheet');
+    if (!sh) return;
+    [['type', flt.type], ['bhk', flt.bhk], ['fur', flt.fur]].forEach(function(pair){
+      var grp = sh.querySelector('.mfs-chips[data-group="' + pair[0] + '"]');
+      if (!grp) return;
+      grp.querySelectorAll('.mfs-chip').forEach(function(c){
+        c.classList.toggle('on', c.dataset.v === (pair[1] || 'all'));
+      });
+    });
+    var minIn = document.getElementById('mfs-min');
+    var maxIn = document.getElementById('mfs-max');
+    if (minIn) minIn.value = flt.minP || '';
+    if (maxIn) maxIn.value = flt.maxP || '';
+  }
+
+  function openFilterSheet(){
+    syncSheetFromFlt();
+    document.getElementById('m-filter-overlay').classList.add('open');
+    document.getElementById('m-filter-sheet').classList.add('open');
+  }
+  function closeFilterSheet(){
+    document.getElementById('m-filter-overlay').classList.remove('open');
+    document.getElementById('m-filter-sheet').classList.remove('open');
+  }
+  function applyFilterSheet(){
+    var sh = document.getElementById('m-filter-sheet');
+    if (!sh || typeof flt === 'undefined') { closeFilterSheet(); return; }
+
+    ['type', 'bhk', 'fur'].forEach(function(g){
+      var on = sh.querySelector('.mfs-chips[data-group="' + g + '"] .mfs-chip.on');
+      if (on) flt[g] = on.dataset.v;
+    });
+    var minV = parseInt(document.getElementById('mfs-min').value, 10);
+    var maxV = parseInt(document.getElementById('mfs-max').value, 10);
+    if (!isNaN(minV) && minV > 0) flt.minP = minV;
+    if (!isNaN(maxV) && maxV > 0) flt.maxP = maxV;
+
+    try { if (typeof draw === 'function') draw(); } catch(e){}
+    updateFabCount();
+    closeFilterSheet();
+    try { if (typeof showToast === 'function') showToast('✅ Filters applied'); } catch(e){}
+  }
+  function resetFilterSheet(){
+    var sh = document.getElementById('m-filter-sheet');
+    sh.querySelectorAll('.mfs-chips').forEach(function(g){
+      g.querySelectorAll('.mfs-chip').forEach(function(c){
+        c.classList.toggle('on', c.dataset.v === 'all');
+      });
+    });
+    document.getElementById('mfs-min').value = '';
+    document.getElementById('mfs-max').value = '';
+    if (typeof flt !== 'undefined') {
+      flt.type = 'all'; flt.bhk = 'all'; flt.fur = 'all';
+      flt.minP = 2000; flt.maxP = 10000000;
+      try { if (typeof draw === 'function') draw(); } catch(e){}
+    }
+    updateFabCount();
+  }
+
+  function updateFabCount(){
+    var fab = document.getElementById('m-filter-fab');
+    if (!fab) return;
+    if (typeof flt === 'undefined') return;
+    var n = 0;
+    if (flt.type && flt.type !== 'all') n++;
+    if (flt.bhk  && flt.bhk  !== 'all') n++;
+    if (flt.fur  && flt.fur  !== 'all') n++;
+    if (flt.minP && flt.minP !== 2000) n++;
+    if (flt.maxP && flt.maxP !== 10000000) n++;
+    var countEl = document.getElementById('fab-count');
+    if (countEl) countEl.textContent = n;
+    fab.classList.toggle('has-filters', n > 0);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 5. INIT / SYNC
+  // ─────────────────────────────────────────────────────────────
+  function syncMobile(){
+    if (isMobile()) {
+      buildSearchRow();
+      buildListIcon();
+      injectMenuItems();
+      buildFilterFAB();
+      setTimeout(updateFabCount, 200);
+    } else {
+      removeMenuItems();
+      // CSS handles hiding mobile-only elements on desktop
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncMobile);
+  } else {
+    syncMobile();
+  }
+  var rt;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(syncMobile, 200);
+  });
+})();
+
+// ──── MOBILE v7 SHIM END ────
 </script>
 <!-- HOW IT WORKS MODAL -->
 <div class="dark-overlay" id="how-modal">
