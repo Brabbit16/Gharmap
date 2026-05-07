@@ -5339,6 +5339,116 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
 })();
 
 // ──── MOBILE v7.1 SHIM END ────
+
+
+// ──── SHEETS LISTINGS LOADER START ────
+// ═══════════════════════════════════════════════════════════════
+// GHARMAP × GOOGLE SHEETS — live listings loader
+// ═══════════════════════════════════════════════════════════════
+// On page load:
+//   1. Fetch listings from the Apps Script Web App URL
+//   2. Replace in-memory LISTINGS with sheet data
+//   3. Re-render: ticker + map markers + count
+//   4. On any failure (network, timeout, bad JSON):
+//      keep the hardcoded LISTINGS — site never shows empty state
+// ═══════════════════════════════════════════════════════════════
+(function(){
+  'use strict';
+
+  var SHEET_API = 'https://script.google.com/macros/s/AKfycbyfZ9bnxTVcJZR_NbxlFcM1GYSzKI8CpsWUN6c80qUfmWFWp0hXZt_qkbdRSKvkZv_u/exec';
+
+  function refreshUI(){
+    try {
+      var spCount = document.getElementById('sp-count');
+      if (spCount && typeof LISTINGS !== 'undefined') {
+        spCount.textContent = LISTINGS.length;
+      }
+    } catch (e) {}
+    try { if (typeof renderTicker === 'function') renderTicker(); } catch (e) {}
+    try { if (typeof draw === 'function' && typeof map !== 'undefined' && map) draw(); } catch (e) {}
+  }
+
+  function replaceListings(arr){
+    if (typeof LISTINGS === 'undefined') return;
+    LISTINGS.length = 0;
+    for (var i = 0; i < arr.length; i++) LISTINGS.push(arr[i]);
+  }
+
+  function fetchTimeout(url, ms){
+    var ctl = new AbortController();
+    var id = setTimeout(function(){ ctl.abort(); }, ms || 12000);
+    return fetch(url, { signal: ctl.signal, cache: 'no-store' })
+      .finally(function(){ clearTimeout(id); });
+  }
+
+  function loadFromSheet(){
+    if (!SHEET_API || SHEET_API.indexOf('REPLACE_ME') !== -1) {
+      console.warn('[GharMap] SHEET_API not configured — using hardcoded LISTINGS');
+      return;
+    }
+    fetchTimeout(SHEET_API, 12000)
+      .then(function(res){
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function(data){
+        if (!data || !Array.isArray(data.listings)) {
+          throw new Error('Bad response shape');
+        }
+        if (data.listings.length === 0) {
+          console.warn('[GharMap] Sheet returned 0 listings — keeping hardcoded LISTINGS');
+          return;
+        }
+        var clean = data.listings
+          .filter(function(p){ return p.lat && p.lng && p.rent; })
+          .map(function(p){
+            return {
+              id:         p.id,
+              lat:        Number(p.lat),
+              lng:        Number(p.lng),
+              mode:       p.mode || 'rent',
+              type:       p.type || 'flat',
+              bhk:        p.bhk || '',
+              rent:       Number(p.rent) || 0,
+              fur:        p.fur || 'unfurnished',
+              area:       p.area || 'Lucknow',
+              zone:       p.zone || 'gomti',
+              sqft:       p.sqft || null,
+              parking:    p.parking || '',
+              lift:       p.lift || '',
+              power:      p.power || '',
+              note:       p.note || '',
+              whatToKnow: p.whatToKnow || '',
+              scores:     p.scores || { safety: 80, connectivity: 80, water: 80, noise: 70 },
+              neg:        Array.isArray(p.neg) ? p.neg : [],
+              status:     p.status || 'available',
+              verified:   p.verified !== false,
+            };
+          });
+
+        if (clean.length === 0) {
+          console.warn('[GharMap] All sheet rows invalid — keeping hardcoded LISTINGS');
+          return;
+        }
+        replaceListings(clean);
+        refreshUI();
+        console.log('[GharMap] ✓ Loaded ' + clean.length + ' listings from Google Sheet');
+      })
+      .catch(function(err){
+        console.warn('[GharMap] Sheet load failed, using hardcoded LISTINGS:', err && err.message);
+      });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadFromSheet);
+  } else {
+    loadFromSheet();
+  }
+
+  window.gmReloadListings = loadFromSheet;
+})();
+
+// ──── SHEETS LISTINGS LOADER END ────
 </script>
 <!-- HOW IT WORKS MODAL -->
 <div class="dark-overlay" id="how-modal">
