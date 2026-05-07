@@ -2425,20 +2425,7 @@ body { -webkit-text-size-adjust: 100%; }
         <span class="sp-live-txt">LIVE</span>
       </div>
       <div class="sp-scroll">
-        <div class="sp-track" id="ticker-track">
-          <span class="sp-tick"><b>₹18K</b> · Gomti Nagar · 2BHK</span><span class="sp-tick-dot">·</span>
-          <span class="sp-tick"><b>₹8K</b> · Aminabad · PG</span><span class="sp-tick-dot">·</span>
-          <span class="sp-tick"><b>₹35K</b> · Hazratganj · 3BHK</span><span class="sp-tick-dot">·</span>
-          <span class="sp-tick"><b>₹12K</b> · Vibhuti Khand · 1BHK</span><span class="sp-tick-dot">·</span>
-          <span class="sp-tick"><b>₹24K</b> · Indira Nagar · 3BHK</span><span class="sp-tick-dot">·</span>
-          <span class="sp-tick"><b>₹20K</b> · Jankipuram · 3BHK</span><span class="sp-tick-dot">·</span>
-          <span class="sp-tick"><b>₹13K</b> · Alambagh · 2BHK</span><span class="sp-tick-dot">·</span>
-          <span class="sp-tick"><b>₹18K</b> · Gomti Nagar · 2BHK</span><span class="sp-tick-dot">·</span>
-          <span class="sp-tick"><b>₹8K</b> · Aminabad · PG</span><span class="sp-tick-dot">·</span>
-          <span class="sp-tick"><b>₹35K</b> · Hazratganj · 3BHK</span><span class="sp-tick-dot">·</span>
-          <span class="sp-tick"><b>₹12K</b> · Vibhuti Khand · 1BHK</span><span class="sp-tick-dot">·</span>
-          <span class="sp-tick"><b>₹24K</b> · Indira Nagar · 3BHK</span><span class="sp-tick-dot">·</span>
-        </div>
+        <div class="sp-track" id="ticker-track"></div>
       </div>
     </div>
 
@@ -3068,6 +3055,37 @@ function fmtP(v,mode='rent'){
 }
 function fmtRent(v){return v>=1000?'₹'+(v/1000).toFixed(0)+'K':'₹'+v;}
 function all(){return LISTINGS;}
+
+// ── LIVE TICKER from real LISTINGS ──
+function renderTicker(){
+  const track = document.getElementById('ticker-track');
+  const ticker = document.querySelector('.sp-ticker');
+  if (!track) return;
+
+  const data = (typeof LISTINGS !== 'undefined') ? LISTINGS : [];
+  // Hide the whole ticker bar if no real listings exist
+  if (!data.length) { if (ticker) ticker.style.display = 'none'; return; }
+
+  // Build one tick per listing
+  function tickHTML(p){
+    const price = (typeof fmtP === 'function') ? fmtP(p.rent, p.mode) : ('₹' + p.rent);
+    const suffix = p.mode === 'rent' ? '/mo' : '';
+    const tag = p.type === 'pg' ? 'PG'
+              : p.type === 'commercial' ? 'Commercial'
+              : (p.bhk ? p.bhk + 'BHK' : (p.type || 'flat'));
+    return '<span class="sp-tick"><b>' + price + suffix + '</b> · ' + (p.area || 'Lucknow') + ' · ' + tag + '</span><span class="sp-tick-dot">·</span>';
+  }
+
+  const items = data.map(tickHTML);
+
+  // Duplicate enough times that the scroll stays seamless even with few listings
+  const minItems = 12;
+  let out = items.slice();
+  while (out.length < minItems) out = out.concat(items);
+
+  track.innerHTML = out.join('');
+}
+
 
 // ══ SPLASH ══
 function copyShareMsg(){
@@ -4750,6 +4768,7 @@ function shareToWhatsApp(){
 document.addEventListener('DOMContentLoaded',()=>{
   initTheme();
   document.getElementById('sp-count').textContent=LISTINGS.length;
+  renderTicker();
   ['mc-purpose','mc-bhk','mc-budget','mc-areas','mc-timeline','mc-profile','ow-type','ow-purpose'].forEach(setupChips);
 
   // Splash — founder name + activity stats from config
