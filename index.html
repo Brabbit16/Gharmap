@@ -1614,13 +1614,11 @@ body.dark .lv-card { background: var(--white); }
 }
 
 
-/* ──── MOBILE v5 START ──── */
+/* ──── v6 SHRINK-DESKTOP START ──── */
 /* ═══════════════════════════════════════════════════════════════
-   GHARMAP MOBILE v5 — Apple-Maps-style draggable bottom sheet
-   The map fills the screen below a solid white header.
-   A bottom sheet floats above the map in 3 snap states:
-     PEEK (~120px), HALF (~52dvh), FULL (~92dvh)
-   All other UI lives inside the sheet or the hamburger.
+   GHARMAP v6 — desktop layout on mobile, just smaller.
+   No reflow. No bottom sheets. No new patterns.
+   Same DOM, same positions, smaller numbers.
 ═══════════════════════════════════════════════════════════════ */
 
 /* baseline */
@@ -1628,592 +1626,165 @@ body.dark .lv-card { background: var(--white); }
 html, body { overflow-x: hidden; }
 body { -webkit-text-size-adjust: 100%; }
 
-@supports (padding: max(0px)) {
-  :root {
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bot: env(safe-area-inset-bottom, 0px);
-  }
-}
-
-/* kill the floating chat button site-wide */
+/* kill the floating chat button */
 #wa-chat-btn { display: none !important; }
 
-/* ══════════ SPLASH on mobile ══════════ */
+/* ══════════════════════════════════════════════════════════════
+   Phone: shrink the desktop layout proportionally.
+   We change ONLY:
+     - panel width: 320 → 220px
+     - topbar height: 56 → 50px
+     - font sizes: small reductions
+     - paddings: tightened
+   We KEEP:
+     - all elements visible
+     - all positions
+     - desktop topbar (with horizontal scroll if needed)
+     - desktop filter panel on the right
+     - desktop stats bar at bottom
+     - floating buttons
+═══════════════════════════════════════════════════════════════ */
+
 @media (max-width: 768px) {
-  #splash {
-    padding: max(20px, var(--safe-top)) 16px calc(20px + var(--safe-bot)) 16px;
-    align-items: flex-start;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+  :root, body {
+    --panel: 220px;
+    --top: 50px;
   }
-  .sp { width: 100%; max-width: 100%; }
-  .sp-logo { font-size: 22px; }
-  .sp-headline { font-size: 22px; line-height: 1.25; }
-  .sp-sub { font-size: 13px; line-height: 1.5; }
-  .sp-pills { gap: 5px; }
-  .sp-pill { font-size: 10.5px; padding: 4px 9px; }
-  .sp-trust { font-size: 11px; }
-  .sp-share-box { padding: 8px 11px; }
-  .sp-share-txt { font-size: 11.5px; line-height: 1.45; }
-  .sp-btn-main { padding: 13px; font-size: 14px; min-height: 46px; }
-  .sp-btn-how, .sp-btn-sec { padding: 11px; min-height: 42px; font-size: 12.5px; }
-  .sp-footer { font-size: 10.5px; }
-}
-@media (max-width: 380px) {
-  .sp-pills, .sp-ticker { display: none; }
-  .sp-headline { font-size: 19px; }
-}
+  #app { height: 100dvh; }
 
-/* ══════════ APP SHELL ══════════ */
-@media (max-width: 768px) {
-  #app { height: 100dvh; overflow: hidden; }
-  :root, body { --top: 56px; }   /* single solid header, no second tier */
-}
-
-/* ══════════ HEADER (Row 1, solid white) ══════════
-   Logo · Rent/Sale toggle · search icon · hamburger
-   The desktop search input is HIDDEN on mobile.
-   Tap the search icon to open a full-width search overlay.
-*/
-@media (max-width: 768px) {
+  /* ── TOPBAR — same elements, scroll horizontally if too wide ── */
   #topbar {
-    height: 56px !important;
-    padding: 0 12px !important;
-    gap: 8px !important;
-    align-items: center;
-    background: var(--white);
-    border-bottom: 1px solid var(--border);
+    height: 50px;
+    padding: 0 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
-  .tb-logo { font-size: 17px; flex-shrink: 0; }
-  .tb-verified { display: none !important; }
+  #topbar::-webkit-scrollbar { display: none; }
+  #topbar > * { flex-shrink: 0; }   /* keep all elements at intrinsic size */
 
-  /* Hide the desktop inline search; we show a search-icon button */
-  .tb-search { display: none !important; }
+  .tb-logo { font-size: 16px; }
+  .tb-verified { font-size: 9px; padding: 2px 5px; }
 
-  /* Rent/Sale stays */
-  .tb-mode {
-    flex: 0 0 auto;
-    margin-left: auto;
-    padding: 3px;
-    border-radius: 22px;
-  }
-  .tb-mode-btn {
-    padding: 6px 14px;
-    font-size: 12.5px;
-    min-height: 32px;
-  }
-
-  /* Hide all other tb-right buttons + Map/List view-toggle */
-  .tb-right .tb-btn,
-  .view-toggle { display: none !important; }
-
-  .tb-right {
-    margin-left: 0 !important;
-    gap: 4px;
-    flex-shrink: 0;
-    align-items: center;
-  }
-
-  .tb-menu-btn { width: 38px; height: 38px; }
-
-  /* New search-icon button — added by JS shim, lives inside .tb-right */
-  #m-search-icon {
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--ink2);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px;
-    transition: all .15s;
-  }
-  #m-search-icon:hover { border-color: var(--green-mid); color: var(--green); }
-}
-
-@media (max-width: 360px) {
-  .tb-logo { font-size: 15px; }
-  .tb-mode-btn { padding: 5px 10px; font-size: 11.5px; }
-  #m-search-icon { width: 36px; height: 36px; }
-  .tb-menu-btn { width: 36px; height: 36px; }
-}
-
-/* ══════════ SEARCH OVERLAY (mobile) ══════════
-   Slides down from the header when the search icon is tapped.
-   Fills the top portion of the screen, holds the input + dropdown.
-*/
-#m-search-overlay { display: none; }
-
-@media (max-width: 768px) {
-  #m-search-overlay {
-    display: block;
-    position: fixed;
-    top: -200px;          /* hidden above viewport */
-    left: 0; right: 0;
-    z-index: 1300;
-    background: var(--white);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 12px 12px;
-    transition: top .25s ease;
-    box-shadow: 0 6px 24px rgba(0,0,0,.08);
-  }
-  #m-search-overlay.open { top: 0; padding-top: max(10px, var(--safe-top)); }
-
-  #m-search-row {
-    display: flex; align-items: center; gap: 8px;
-    height: 40px;
-  }
-  #m-search-back {
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    border: none; background: transparent;
-    cursor: pointer;
-    color: var(--ink2);
-    font-size: 18px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  #m-search-input-wrap {
-    flex: 1; position: relative;
-  }
-  #m-search-input {
-    width: 100%;
-    height: 40px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    border-radius: 22px;
-    padding: 0 36px 0 36px;
-    font-size: 16px !important;
-    color: var(--ink);
-    font-family: var(--ff);
-    outline: none;
-  }
-  #m-search-input:focus {
-    border-color: var(--green-mid);
-    background: var(--white);
-  }
-  #m-search-input-wrap .ms-ico {
-    position: absolute;
-    left: 12px;
-    top: 50%; transform: translateY(-50%);
-    color: var(--ink3);
-    font-size: 14px;
-    pointer-events: none;
-  }
-  #m-search-clr {
-    position: absolute;
-    right: 10px;
-    top: 50%; transform: translateY(-50%);
-    background: none; border: none;
-    cursor: pointer;
-    color: var(--ink3);
-    font-size: 14px;
-    display: none;
-    padding: 4px;
-  }
-  #m-search-clr.show { display: block; }
-
-  /* When overlay open, host the dropdown inside it (CSS only repositions) */
-  #m-search-overlay.open #s-dd {
-    position: relative !important;
-    top: 8px !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    max-height: calc(100dvh - 90px - var(--safe-top));
-    border-radius: 12px;
-    box-shadow: none;
-    border: 1px solid var(--border);
-  }
-}
-
-/* ══════════ MAP ══════════ */
-@media (max-width: 768px) {
-  #map-wrap {
-    position: fixed !important;
-    top: 56px !important;
-    right: 0 !important;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-  }
-  #fp { display: none !important; }
-  .leaflet-right { right: 8px !important; }
-  .leaflet-control-zoom { transform: scale(.92); transform-origin: top right; }
-  .leaflet-popup-content-wrapper { min-width: 180px; }
-
-  /* Sheet sits in front of the map and obscures the bottom controls,
-     so push leaflet's zoom buttons up into the visible map area */
-  .leaflet-bottom { bottom: calc(140px + var(--safe-bot)) !important; }
-}
-
-/* ══════════ THE BOTTOM SHEET ══════════
-   Three snap states:
-     peek : 130px tall
-     half : 52dvh
-     full : 92dvh
-   The wrapper element itself has `top` driven by JS (drag) plus a class
-   for snap states.  CSS only handles look + transitions.
-*/
-#m-sheet,
-#m-sheet-backdrop { display: none; }
-
-@media (max-width: 768px) {
-  /* The sheet */
-  #m-sheet {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    left: 0; right: 0;
-    top: calc(100dvh - 130px);   /* default = peek */
-    bottom: 0;
-    z-index: 900;
-    background: var(--white);
-    border-radius: 18px 18px 0 0;
-    box-shadow: 0 -10px 30px rgba(0,0,0,.12);
-    transition: top .28s cubic-bezier(.32,.72,0,1);
-    overflow: hidden;
-    will-change: top;
-  }
-  #m-sheet.dragging { transition: none; }
-
-  /* Snap classes — mutated by JS */
-  #m-sheet.peek { top: calc(100dvh - 130px - var(--safe-bot)); }
-  #m-sheet.half { top: 48dvh; }
-  #m-sheet.full { top: 8dvh; }
-
-  /* Drag handle area — large hit target */
-  #m-sheet-handle {
-    flex-shrink: 0;
-    height: 24px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: grab;
-    touch-action: none;     /* JS owns the gesture */
-  }
-  #m-sheet-handle::before {
-    content: '';
-    width: 40px; height: 4px;
-    background: rgba(0,0,0,.18);
-    border-radius: 4px;
-  }
-  body.dark #m-sheet-handle::before { background: rgba(255,255,255,.22); }
-
-  /* Header inside sheet — count + filter */
-  #m-sheet-head {
-    flex-shrink: 0;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 4px 16px 12px;
-    border-bottom: 1px solid var(--border);
-  }
-  #m-sheet-count {
-    font-size: 14px;
-    color: var(--ink);
-    font-weight: 600;
-  }
-  #m-sheet-count small {
-    color: var(--ink3);
-    font-weight: 400;
-    margin-left: 4px;
-  }
-  #m-sheet-filter {
-    background: var(--green);
-    color: #fff;
-    border: none;
-    border-radius: 18px;
-    padding: 7px 14px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: var(--ff);
-    display: flex; align-items: center; gap: 5px;
+  /* search bar slightly smaller but visible */
+  .tb-search { max-width: 200px; min-width: 140px; }
+  #search-input {
+    font-size: 16px !important;   /* prevents iOS zoom-on-focus */
+    padding: 6px 28px 6px 28px;
     height: 32px;
   }
+  .si-ico, #si-clr { font-size: 12px; }
 
-  /* Card list — scrollable */
-  #m-sheet-list {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 12px 14px calc(20px + var(--safe-bot));
-    overscroll-behavior: contain;
-  }
-  #m-sheet-list.peek-mode {
-    /* In PEEK state, scroll horizontally instead */
-    display: flex;
-    overflow-y: hidden;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    gap: 10px;
-    padding: 12px 14px;
-    scroll-snap-type: x mandatory;
-    overscroll-behavior-x: contain;
-  }
+  .tb-mode { padding: 2px; }
+  .tb-mode-btn { padding: 5px 10px; font-size: 11px; min-height: 28px; }
 
-  /* Property card */
-  .ms-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 12px 14px;
-    cursor: pointer;
-    transition: border-color .15s, transform .15s;
-    margin-bottom: 10px;
-  }
-  .ms-card:hover { border-color: var(--green-mid); }
-  .ms-card.active {
-    border-color: var(--green);
-    border-width: 2px;
-    padding: 11px 13px;     /* compensate for thicker border */
+  .view-toggle { height: 32px; }
+  .view-tog-btn { padding: 4px 9px !important; font-size: 11px !important; min-height: 28px; }
+
+  .tb-btn { padding: 6px 10px; font-size: 11px; }
+  .tb-menu-btn { width: 32px; height: 32px; font-size: 14px; }
+
+  .tb-right { gap: 5px; }
+
+  /* ── MAP & FILTER PANEL — same positions, just smaller panel ── */
+  /* (handled by --panel CSS variable above; map-wrap and #fp already use it) */
+
+  /* ── FILTER PANEL — tighten internals so it's usable at 220px ── */
+  #fp { font-size: 12px; }
+  .fp-section { padding: 12px 12px 10px; }
+  .fp-lbl {
+    font-size: 9px;
+    letter-spacing: .8px;
+    margin-bottom: 8px;
   }
 
-  /* In peek-mode, cards become horizontal cards */
-  #m-sheet-list.peek-mode .ms-card {
-    flex: 0 0 240px;
-    margin-bottom: 0;
-    scroll-snap-align: start;
-  }
+  .tcards { gap: 4px; }
+  .tcard { padding: 7px 9px; gap: 7px; }
+  .tcard-ico { font-size: 14px; }
+  .tcard-lbl { font-size: 11px; }
+  .tcard-sub { font-size: 9px; }
+  .tcard-cnt { font-size: 9px; padding: 1px 5px; }
 
-  .ms-card-row1 {
-    display: flex; align-items: baseline; justify-content: space-between;
-    margin-bottom: 4px;
-    gap: 8px;
-  }
-  .ms-card-price {
-    font-size: 18px; font-weight: 700; color: var(--ink);
-    line-height: 1.2;
-  }
-  .ms-card-price small {
-    font-size: 11px; font-weight: 400; color: var(--ink3);
-  }
-  .ms-card-badge {
-    font-size: 9.5px; font-weight: 600; letter-spacing: .5px;
-    text-transform: uppercase;
-    color: var(--green);
-    background: var(--green-light);
-    padding: 2px 6px; border-radius: 4px;
-    flex-shrink: 0;
-  }
-  .ms-card-area {
-    font-size: 12.5px; color: var(--ink2);
-    margin-bottom: 6px;
-    line-height: 1.35;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .ms-card-tags {
-    display: flex; flex-wrap: wrap; gap: 5px;
-  }
-  .ms-card-tag {
-    font-size: 10.5px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 2px 8px;
-    color: var(--ink2);
-    white-space: nowrap;
-  }
+  .fd-trigger { padding: 9px 12px; font-size: 11px; }
+  .fd-val { font-size: 10px; }
+  .fd-arrow { font-size: 9px; }
+  .fd-body { padding: 0 12px 10px; }
 
-  /* Backdrop — only when in FULL state */
-  #m-sheet-backdrop {
-    display: block;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0);
-    pointer-events: none;
-    transition: background .22s ease;
-    z-index: 850;
-  }
-  #m-sheet.full ~ #m-sheet-backdrop {
-    background: rgba(0,0,0,.18);
-    pointer-events: auto;
-  }
+  .chips { gap: 4px; }
+  .chip { padding: 5px 10px !important; font-size: 11px !important; min-height: 28px !important; }
 
-  /* Empty state inside sheet */
-  .ms-empty {
-    text-align: center;
-    padding: 24px 16px;
-    color: var(--ink3);
-    font-size: 13px;
-  }
-}
+  .fopts { gap: 3px; }
+  .fopt { padding: 5px 3px !important; font-size: 10px !important; }
 
-/* ══════════ HAMBURGER MENU on mobile ══════════ */
-@media (max-width: 768px) {
-  .tb-menu {
-    position: fixed !important;
-    top: 60px !important;
-    right: 8px !important;
-    left: 8px !important;
-    min-width: 0 !important;
-    border-radius: 14px;
-    max-height: calc(100dvh - 80px);
-    overflow-y: auto;
-    z-index: 1200 !important;
-  }
-}
+  .bp { padding: 3px 9px; font-size: 11px; }
+  .blbls { font-size: 9px; }
 
-/* ══════════ FILTER BOTTOM-SHEET (separate from list sheet) ══════════ */
-#m-filter-overlay,
-#m-filter-sheet { display: none; }
+  .zi { padding: 6px 7px; gap: 7px; }
+  .zcb { width: 13px; height: 13px; font-size: 8px; }
+  .z-lbl { font-size: 11px; }
+  .z-sub { font-size: 9px; }
 
-@media (max-width: 768px) {
-  #m-filter-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.45);
-    backdrop-filter: blur(4px);
-    z-index: 1700;
-  }
-  #m-filter-overlay.open { display: block; animation: fadeInOv .2s ease; }
-  @keyframes fadeInOv { from { opacity: 0 } to { opacity: 1 } }
+  .fp-foot { padding: 9px 12px; gap: 5px; }
+  .btn-reset, .btn-apply { padding: 8px; font-size: 11px; }
 
-  #m-filter-sheet {
-    display: block;
-    position: fixed;
-    left: 0; right: 0; bottom: -100%;
-    z-index: 1800;
-    background: var(--white);
-    border-radius: 18px 18px 0 0;
-    padding: 16px 16px calc(24px + var(--safe-bot));
-    max-height: 88dvh;
-    overflow-y: auto;
-    transition: bottom .28s cubic-bezier(.32,.72,0,1);
-    box-shadow: 0 -8px 32px rgba(0,0,0,.18);
+  /* ── STATS BAR — keep bottom-centred; just smaller ── */
+  #stats {
+    bottom: max(12px, calc(env(safe-area-inset-bottom) + 6px));
   }
-  #m-filter-sheet.open { bottom: 0; }
-  #m-filter-sheet::before {
-    content: '';
-    position: absolute; top: 8px; left: 50%;
-    transform: translateX(-50%);
-    width: 40px; height: 4px;
-    background: rgba(0,0,0,.18);
-    border-radius: 4px;
-  }
-  body.dark #m-filter-sheet { background: #1a1a1a; }
-  body.dark #m-filter-sheet::before { background: rgba(255,255,255,.22); }
+  .st-item { padding: 6px 10px; }
+  .st-num { font-size: 12px; }
+  .st-lbl { font-size: 8px; letter-spacing: 0.2px; }
 
-  .mfs-title {
-    font-size: 16px; font-weight: 700;
-    margin: 8px 0 14px; color: var(--ink);
-  }
-  .mfs-section { margin-bottom: 14px; }
-  .mfs-label {
-    font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase;
-    color: var(--ink3); font-weight: 600; margin-bottom: 8px;
-  }
-  .mfs-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .mfs-chip {
-    padding: 8px 13px; border-radius: 20px;
-    border: 1px solid var(--border);
-    background: var(--white); color: var(--ink2);
-    font-size: 12.5px; font-weight: 500;
-    cursor: pointer; font-family: var(--ff);
-    min-height: 36px; transition: all .15s;
-  }
-  .mfs-chip.on {
-    background: var(--green);
-    border-color: var(--green);
-    color: #fff;
-  }
-  .mfs-foot {
-    display: flex; gap: 8px; margin-top: 14px;
-    position: sticky; bottom: 0;
-    padding-top: 8px;
-    background: linear-gradient(to top, var(--white) 70%, transparent);
-  }
-  body.dark .mfs-foot { background: linear-gradient(to top, #1a1a1a 70%, transparent); }
-  .mfs-reset {
-    flex: 1; padding: 12px; border-radius: 12px;
-    border: 1px solid var(--border); background: transparent;
-    color: var(--ink2); font-size: 13.5px; font-weight: 500;
-    cursor: pointer; font-family: var(--ff);
-  }
-  .mfs-apply {
-    flex: 2; padding: 12px; border-radius: 12px;
-    border: none; background: var(--green); color: #fff;
-    font-size: 13.5px; font-weight: 600;
-    cursor: pointer; font-family: var(--ff);
-  }
-}
-
-/* ══════════ HIDE DESKTOP MAP-FAB BUTTONS ══════════ */
-@media (max-width: 768px) {
-  #request-btn,
+  /* ── FLOATING BUTTONS — keep same desktop positions, just smaller ── */
+  #near-me-btn,
   #sat-toggle-btn,
-  #compare-fab,
-  #stats,
-  #near-me-btn { display: none !important; }    /* moved into sheet/menu */
+  #request-btn,
+  #compare-fab {
+    font-size: 11px !important;
+    padding: 7px 11px !important;
+    border-radius: 20px !important;
+  }
 
-  /* Banner under header */
+  /* ── BANNER / TOAST — fit phone width ── */
   #banner {
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    top: 64px !important;
-    font-size: 11.5px;
-    padding: 7px 14px;
-    max-width: calc(100vw - 24px);
+    font-size: 11px;
+    padding: 6px 12px;
+    max-width: calc(100vw - 16px);
     white-space: normal;
     text-align: center;
   }
-  /* Toast above the sheet */
   #toast {
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    bottom: calc(150px + var(--safe-bot)) !important;
+    font-size: 12px;
+    padding: 8px 14px;
     max-width: calc(100vw - 32px);
     white-space: normal;
     text-align: center;
-    font-size: 12.5px;
-    padding: 9px 16px;
   }
-}
 
-/* ══════════ DETAIL PANEL & SAVED DRAWER on mobile ══════════ */
-@media (max-width: 768px) {
+  /* ── DETAIL PANEL #dp — desktop is 360px wide, on phone make it a near-full overlay ── */
+  /* Keep desktop look (right-side panel) but go wider so content doesn't squish */
   #dp {
-    top: 0 !important;
-    right: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100dvh !important;
-    bottom: 0 !important;
-    z-index: 1900 !important;
-    box-shadow: none !important;
+    width: calc(100vw - 12px) !important;
+    max-width: 360px;
+    right: 6px !important;
+    top: 56px !important;
+    bottom: 12px;
+    border-radius: 12px;
   }
-  .dp-hd {
-    padding: 12px 14px 10px;
-    padding-top: max(12px, var(--safe-top));
-  }
-  .dp-price { font-size: 22px; }
-  .dp-actions { gap: 4px; }
-  .dp-btn, .dp-close { width: 34px; height: 34px; font-size: 13px; }
 
+  /* ── SAVED DRAWER — same scaling ── */
   #saved-drawer {
-    top: 0 !important;
-    right: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100dvh !important;
-    z-index: 1850 !important;
-    padding-top: max(16px, var(--safe-top));
-    padding-bottom: calc(20px + var(--safe-bot));
+    width: calc(100vw - 12px) !important;
+    max-width: 320px;
+    right: 6px !important;
+    top: 56px !important;
+    bottom: 12px;
+    border-radius: 12px;
   }
-}
 
-/* ══════════ MODALS = bottom sheets on mobile ══════════ */
-@media (max-width: 768px) {
-  .dark-overlay,
-  #share-modal,
-  #matchme-modal,
-  #owner-modal,
-  #onboard-overlay,
-  #compare-modal,
-  .overlay {
-    padding: 0 !important;
-    align-items: flex-end !important;
-  }
+  /* ── MODALS — keep desktop centred-modal look, just shrink padding ── */
   .dark-modal,
   .share-card,
   .ob-modal,
@@ -2221,52 +1792,50 @@ body { -webkit-text-size-adjust: 100%; }
   #owner-modal .modal,
   #compare-modal .modal,
   .overlay > .modal {
-    width: 100% !important;
-    max-width: 100% !important;
-    border-radius: 18px 18px 0 0 !important;
-    max-height: 92dvh !important;
-    padding: 22px 18px calc(28px + var(--safe-bot)) 18px !important;
-    margin: 0 !important;
-    animation: slideUpSheet .26s ease both !important;
+    width: calc(100vw - 24px) !important;
+    max-width: 420px !important;
+    padding: 18px 16px !important;
+    max-height: 88dvh !important;
   }
-  @keyframes slideUpSheet {
-    from { transform: translateY(40px); opacity: 0; }
-    to   { transform: translateY(0); opacity: 1; }
-  }
-  .dark-modal::before,
-  .ob-modal::before,
-  #matchme-modal .modal::before,
-  #owner-modal .modal::before,
-  #compare-modal .modal::before {
-    content: '';
-    position: absolute;
-    top: 8px; left: 50%; transform: translateX(-50%);
-    width: 38px; height: 4px;
-    background: rgba(0,0,0,0.18);
-    border-radius: 4px;
-    z-index: 10;
-  }
-  body.dark .dark-modal::before { background: rgba(255,255,255,0.22); }
-}
 
-/* ══════════ FORMS ══════════ */
-@media (max-width: 768px) {
+  /* ── FORMS: stop iOS zoom on focus ── */
   input[type="text"], input[type="email"], input[type="tel"],
   input[type="number"], input[type="search"], textarea, select {
     font-size: 16px !important;
   }
-  button, .m-chip, .tb-btn, .tb-menu-item, .ob-card {
-    min-height: 40px;
+
+  /* leaflet — slight scale-down so controls don't dominate */
+  .leaflet-control-zoom { transform: scale(0.85); transform-origin: top right; }
+  .leaflet-popup-content-wrapper { min-width: 170px; }
+
+  /* ── SPLASH still mobile-friendly ── */
+  #splash {
+    padding: max(20px, env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom)) 16px;
+    align-items: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
+  .sp { width: 100%; max-width: 100%; }
+  .sp-headline { font-size: 22px; line-height: 1.25; }
+  .sp-sub { font-size: 13px; }
+  .sp-pill { font-size: 10.5px; padding: 4px 9px; }
 }
 
-/* ══════════ kill horizontal scroll ══════════ */
+/* very narrow — Galaxy Fold etc */
+@media (max-width: 380px) {
+  :root, body { --panel: 200px; }
+  .tb-search { min-width: 120px; max-width: 160px; }
+  #search-input { font-size: 16px !important; padding: 6px 26px; }
+  .tb-mode-btn { padding: 4px 8px; font-size: 10.5px; }
+  .tb-btn { padding: 5px 8px; font-size: 10.5px; }
+}
+
+/* prevent horizontal page scroll outside the topbar */
 @media (max-width: 768px) {
-  body { max-width: 100vw; overflow-x: hidden; }
-  #app, #splash { max-width: 100vw; }
+  body, #app { max-width: 100vw; overflow-x: hidden; }
 }
 
-/* ──── MOBILE v5 END ──── */
+/* ──── v6 END ──── */
 
 </style>
 </head>
@@ -4635,541 +4204,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Note: onboarding triggers inside enterApp() after splash
 });
 window.addEventListener('resize',()=>map&&map.invalidateSize());
-
-
-// ──── MOBILE v5 SHIM START ────
-// ═══════════════════════════════════════════════════════════════
-// GHARMAP MOBILE v5 — JS shim
-// Apple-Maps-style draggable bottom sheet
-// ═══════════════════════════════════════════════════════════════
-(function(){
-  'use strict';
-
-  function isMobile(){ return window.matchMedia('(max-width: 768px)').matches; }
-
-  // We expose a tiny namespace for debugging
-  window._gmMobile = {};
-
-  // ─────────────────────────────────────────────────────────────
-  // 1. SEARCH OVERLAY (icon in topbar → fullwidth overlay slides down)
-  // ─────────────────────────────────────────────────────────────
-  function buildSearchOverlay(){
-    if (document.getElementById('m-search-icon')) return;
-
-    var tbRight = document.querySelector('#topbar .tb-right');
-    var menuWrap = document.querySelector('#topbar .tb-right .tb-menu-wrap');
-    if (!tbRight || !menuWrap) return;
-
-    // Search icon button — placed just before the hamburger
-    var icon = document.createElement('button');
-    icon.id = 'm-search-icon';
-    icon.type = 'button';
-    icon.setAttribute('aria-label', 'Search');
-    icon.innerHTML = '🔍';
-    icon.addEventListener('click', openSearchOverlay);
-    tbRight.insertBefore(icon, menuWrap);
-
-    // Overlay
-    var ov = document.createElement('div');
-    ov.id = 'm-search-overlay';
-    ov.innerHTML =
-      '<div id="m-search-row">' +
-        '<button id="m-search-back" type="button" aria-label="Close">←</button>' +
-        '<div id="m-search-input-wrap">' +
-          '<span class="ms-ico">🔍</span>' +
-          '<input id="m-search-input" type="text" autocomplete="off" placeholder="Search area, building, landmark…">' +
-          '<button id="m-search-clr" type="button" aria-label="Clear">✕</button>' +
-        '</div>' +
-      '</div>';
-    document.body.appendChild(ov);
-
-    var mInp = ov.querySelector('#m-search-input');
-    var mClr = ov.querySelector('#m-search-clr');
-    var mBack = ov.querySelector('#m-search-back');
-    var dInp = document.getElementById('search-input');
-
-    if (!dInp) return;
-
-    // Mirror typing → original input → trigger original handlers
-    mInp.addEventListener('input', function(){
-      dInp.value = mInp.value;
-      mClr.classList.toggle('show', !!mInp.value);
-      try { if (typeof onSearch === 'function') onSearch(mInp.value); } catch(e){}
-      moveDropdownIntoOverlay();
-    });
-    mInp.addEventListener('focus', function(){
-      try { if (typeof onSearchFocus === 'function') onSearchFocus(); } catch(e){}
-      moveDropdownIntoOverlay();
-    });
-    mInp.addEventListener('keydown', function(e){
-      try { if (typeof onSearchKey === 'function') onSearchKey(e); } catch(e2){}
-    });
-    mClr.addEventListener('click', function(){
-      mInp.value = ''; dInp.value = '';
-      mClr.classList.remove('show');
-      try { if (typeof clearSearch === 'function') clearSearch(); } catch(e){}
-      mInp.focus();
-    });
-    mBack.addEventListener('click', closeSearchOverlay);
-  }
-
-  function moveDropdownIntoOverlay(){
-    if (!isMobile()) return;
-    var dd = document.getElementById('s-dd');
-    var ov = document.getElementById('m-search-overlay');
-    if (!dd || !ov) return;
-    if (dd.parentNode !== ov) ov.appendChild(dd);
-  }
-
-  function moveDropdownBack(){
-    var dd = document.getElementById('s-dd');
-    var orig = document.querySelector('.tb-search');
-    if (!dd || !orig) return;
-    if (dd.parentNode !== orig) orig.appendChild(dd);
-  }
-
-  function openSearchOverlay(){
-    var ov = document.getElementById('m-search-overlay');
-    if (!ov) return;
-    ov.classList.add('open');
-    var inp = ov.querySelector('#m-search-input');
-    if (inp) {
-      moveDropdownIntoOverlay();
-      setTimeout(function(){ inp.focus(); }, 80);
-    }
-  }
-  function closeSearchOverlay(){
-    var ov = document.getElementById('m-search-overlay');
-    if (!ov) return;
-    ov.classList.remove('open');
-    document.activeElement && document.activeElement.blur && document.activeElement.blur();
-    moveDropdownBack();
-  }
-  window._gmMobile.openSearch = openSearchOverlay;
-  window._gmMobile.closeSearch = closeSearchOverlay;
-
-  // ─────────────────────────────────────────────────────────────
-  // 2. HAMBURGER MENU EXTRAS
-  // ─────────────────────────────────────────────────────────────
-  function injectMenuItems(){
-    var menu = document.getElementById('tb-menu');
-    if (!menu) return;
-    if (menu.querySelector('[data-mobile-only="1"]')) return;
-
-    function item(icon, label, fn){
-      var b = document.createElement('button');
-      b.className = 'tb-menu-item';
-      b.setAttribute('data-mobile-only', '1');
-      b.innerHTML = '<span class="tbm-ico">'+icon+'</span><span>'+label+'</span>';
-      b.onclick = function(){
-        try { if (typeof closeTbMenu === 'function') closeTbMenu(); } catch(e){}
-        try { fn(); } catch(e){}
-      };
-      return b;
-    }
-
-    var sep = document.createElement('div');
-    sep.className = 'tb-menu-sep';
-    sep.setAttribute('data-mobile-only', '1');
-
-    var items = [
-      item('＋', 'List Property',   function(){ if (typeof openOwnerModal === 'function') openOwnerModal(); }),
-      item('🔍', 'Match Me',         function(){ if (typeof openMatchMe === 'function') openMatchMe(); }),
-      item('📍', 'Near Me',          function(){ if (typeof nearMe === 'function') nearMe(); }),
-      item('🛰', 'Toggle Satellite', function(){ if (typeof toggleSatellite === 'function') toggleSatellite(); }),
-      item('⚖',  'Compare',           function(){ if (typeof openCompareModal === 'function') openCompareModal(); }),
-    ];
-
-    var first = menu.firstChild;
-    menu.insertBefore(sep, first);
-    for (var i = items.length - 1; i >= 0; i--) menu.insertBefore(items[i], sep);
-  }
-  function removeMenuItems(){
-    var menu = document.getElementById('tb-menu');
-    if (!menu) return;
-    menu.querySelectorAll('[data-mobile-only="1"]').forEach(function(el){ el.remove(); });
-  }
-
-  // ─────────────────────────────────────────────────────────────
-  // 3. THE BOTTOM SHEET
-  // ─────────────────────────────────────────────────────────────
-  var sheetState = 'peek';   // 'peek' | 'half' | 'full'
-  var dragStartY = 0;
-  var dragStartTop = 0;
-  var dragging = false;
-
-  function buildSheet(){
-    if (document.getElementById('m-sheet')) return;
-
-    var sheet = document.createElement('div');
-    sheet.id = 'm-sheet';
-    sheet.className = 'peek';
-    sheet.innerHTML =
-      '<div id="m-sheet-handle" aria-label="Drag to expand"></div>' +
-      '<div id="m-sheet-head">' +
-        '<div id="m-sheet-count">— properties</div>' +
-        '<button id="m-sheet-filter" type="button">⚙ Filters</button>' +
-      '</div>' +
-      '<div id="m-sheet-list" class="peek-mode"></div>';
-    document.body.appendChild(sheet);
-
-    var bd = document.createElement('div');
-    bd.id = 'm-sheet-backdrop';
-    bd.addEventListener('click', function(){ snapTo('half'); });
-    document.body.appendChild(bd);
-
-    // Drag handlers — work on touch + mouse
-    var handle = document.getElementById('m-sheet-handle');
-    var head   = document.getElementById('m-sheet-head');
-
-    function onDragStart(e){
-      dragging = true;
-      var pt = (e.touches && e.touches[0]) || e;
-      dragStartY = pt.clientY;
-      dragStartTop = sheet.getBoundingClientRect().top;
-      sheet.classList.add('dragging');
-      e.preventDefault && e.preventDefault();
-    }
-    function onDragMove(e){
-      if (!dragging) return;
-      var pt = (e.touches && e.touches[0]) || e;
-      var delta = pt.clientY - dragStartY;
-      var newTop = dragStartTop + delta;
-      var minTop = window.innerHeight * 0.08;
-      var maxTop = window.innerHeight - 60;
-      newTop = Math.max(minTop, Math.min(maxTop, newTop));
-      sheet.style.top = newTop + 'px';
-    }
-    function onDragEnd(e){
-      if (!dragging) return;
-      dragging = false;
-      sheet.classList.remove('dragging');
-      var top = sheet.getBoundingClientRect().top;
-      var vh = window.innerHeight;
-      // Snap to nearest state
-      var dPeek = Math.abs(top - (vh - 130));
-      var dHalf = Math.abs(top - vh * 0.48);
-      var dFull = Math.abs(top - vh * 0.08);
-      var min = Math.min(dPeek, dHalf, dFull);
-      sheet.style.top = '';
-      if (min === dPeek) snapTo('peek');
-      else if (min === dHalf) snapTo('half');
-      else snapTo('full');
-    }
-
-    handle.addEventListener('touchstart', onDragStart, { passive: false });
-    handle.addEventListener('touchmove',  onDragMove,  { passive: false });
-    handle.addEventListener('touchend',   onDragEnd);
-    handle.addEventListener('mousedown',  onDragStart);
-    document.addEventListener('mousemove', onDragMove);
-    document.addEventListener('mouseup',   onDragEnd);
-
-    // Tap on handle/head with no drag → cycle states
-    handle.addEventListener('click', function(){
-      if (sheetState === 'peek') snapTo('half');
-      else if (sheetState === 'half') snapTo('full');
-      else snapTo('peek');
-    });
-
-    // Filter button
-    document.getElementById('m-sheet-filter').addEventListener('click', openFilterSheet);
-  }
-
-  function snapTo(state){
-    var sheet = document.getElementById('m-sheet');
-    if (!sheet) return;
-    sheet.classList.remove('peek', 'half', 'full');
-    sheet.classList.add(state);
-    sheetState = state;
-
-    // List orientation
-    var list = document.getElementById('m-sheet-list');
-    if (list) {
-      list.classList.toggle('peek-mode', state === 'peek');
-    }
-  }
-  window._gmMobile.snapTo = snapTo;
-
-  // ─────────────────────────────────────────────────────────────
-  // 4. CARD LIST — render + sync
-  // ─────────────────────────────────────────────────────────────
-  function fmtPriceSafe(v, mode){
-    try {
-      if (typeof fmtP === 'function') return fmtP(v, mode);
-    } catch(e){}
-    if (v >= 10000000) return '₹' + (v/10000000).toFixed(2) + ' Cr';
-    if (v >= 100000) return '₹' + (v/100000).toFixed(1) + ' L';
-    if (v >= 1000) return '₹' + (v/1000).toFixed(0) + 'K';
-    return '₹' + v;
-  }
-
-  function escapeHtml(s){
-    return String(s||'')
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-
-  function getVisibleListings(){
-    // Use existing globals if present; otherwise fall back to LISTINGS
-    var data = (typeof LISTINGS !== 'undefined') ? LISTINGS : [];
-    if (!data.length) return [];
-    var f = (typeof flt !== 'undefined') ? flt : null;
-    var lm = (typeof listingMode !== 'undefined') ? listingMode : 'rent';
-
-    return data.filter(function(p){
-      if (p.mode !== lm) return false;
-      if (!f) return true;
-      if (f.type && f.type !== 'all' && p.type !== f.type) return false;
-      if (f.bhk && f.bhk !== 'all' && p.bhk !== f.bhk) return false;
-      if (f.fur && f.fur !== 'all' && p.fur !== f.fur) return false;
-      if (f.minP != null && p.rent < f.minP) return false;
-      if (f.maxP != null && p.rent > f.maxP) return false;
-      return true;
-    });
-  }
-
-  function renderList(){
-    var listEl = document.getElementById('m-sheet-list');
-    var countEl = document.getElementById('m-sheet-count');
-    if (!listEl || !countEl) return;
-
-    var pins = getVisibleListings();
-    var count = pins.length;
-    var avgWord = '';
-    if (count) {
-      var avg = Math.round(pins.reduce(function(s,p){return s+p.rent;},0) / count);
-      avgWord = ' · avg ' + fmtPriceSafe(avg, pins[0].mode);
-    }
-    countEl.innerHTML = '<b>' + count + '</b> propert' + (count === 1 ? 'y' : 'ies') +
-      '<small>' + avgWord + '</small>';
-
-    if (!count) {
-      listEl.innerHTML = '<div class="ms-empty">No listings match — try adjusting filters</div>';
-      return;
-    }
-
-    listEl.innerHTML = pins.map(function(p){
-      var furLabel = ({furnished:'Furnished', semi:'Semi', unfurnished:'Bare'})[p.fur] || '';
-      var modeSuffix = (p.mode === 'rent') ? '<small>/mo</small>' : '';
-      var bhkTag = (p.bhk && p.type !== 'pg') ? '<span class="ms-card-tag">' + escapeHtml(p.bhk) + ' BHK</span>' : '';
-      var furTag = furLabel ? '<span class="ms-card-tag">' + furLabel + '</span>' : '';
-      var sqftTag = p.sqft ? '<span class="ms-card-tag">' + p.sqft + ' sq.ft</span>' : '';
-      return '' +
-        '<div class="ms-card" data-id="' + escapeHtml(p.id) + '">' +
-          '<div class="ms-card-row1">' +
-            '<div class="ms-card-price">' + fmtPriceSafe(p.rent, p.mode) + modeSuffix + '</div>' +
-            '<span class="ms-card-badge">✓ Verified</span>' +
-          '</div>' +
-          '<div class="ms-card-area">📍 ' + escapeHtml(p.area) + '</div>' +
-          '<div class="ms-card-tags">' + bhkTag + furTag + sqftTag + '</div>' +
-        '</div>';
-    }).join('');
-
-    // Tap a card → open detail; also pan map to that pin
-    listEl.querySelectorAll('.ms-card').forEach(function(card){
-      card.addEventListener('click', function(){
-        var id = card.dataset.id;
-        var p = pins.find(function(x){ return x.id === id; });
-        if (p && typeof map !== 'undefined' && map && p.lat && p.lng) {
-          try { map.setView([p.lat, p.lng], Math.max(map.getZoom(), 15), { animate: true }); } catch(e){}
-        }
-        if (typeof openDetail === 'function') openDetail(id);
-      });
-    });
-  }
-
-  // Public hook so original draw() can call us
-  window._gmMobile.renderList = renderList;
-
-  // Highlight a card when its pin is opened
-  window._gmMobile.highlightCard = function(id){
-    var listEl = document.getElementById('m-sheet-list');
-    if (!listEl) return;
-    listEl.querySelectorAll('.ms-card').forEach(function(c){
-      c.classList.toggle('active', c.dataset.id === id);
-    });
-    var active = listEl.querySelector('.ms-card.active');
-    if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-  };
-
-  // ─────────────────────────────────────────────────────────────
-  // 5. FILTER BOTTOM SHEET (separate from list sheet)
-  // ─────────────────────────────────────────────────────────────
-  function buildFilterSheet(){
-    if (document.getElementById('m-filter-sheet')) return;
-
-    var ov = document.createElement('div');
-    ov.id = 'm-filter-overlay';
-    ov.addEventListener('click', closeFilterSheet);
-
-    var sh = document.createElement('div');
-    sh.id = 'm-filter-sheet';
-    sh.innerHTML =
-      '<div class="mfs-title">Filter properties</div>' +
-      '<div class="mfs-section"><div class="mfs-label">Type</div><div class="mfs-chips" data-group="type">' +
-        '<button class="mfs-chip on" data-v="all">All</button>' +
-        '<button class="mfs-chip" data-v="flat">🏠 Flat</button>' +
-        '<button class="mfs-chip" data-v="pg">🛏 PG</button>' +
-        '<button class="mfs-chip" data-v="commercial">🏢 Commercial</button>' +
-        '<button class="mfs-chip" data-v="house">🏡 House</button>' +
-      '</div></div>' +
-      '<div class="mfs-section"><div class="mfs-label">BHK</div><div class="mfs-chips" data-group="bhk">' +
-        '<button class="mfs-chip on" data-v="all">Any</button>' +
-        '<button class="mfs-chip" data-v="1">1 BHK</button>' +
-        '<button class="mfs-chip" data-v="2">2 BHK</button>' +
-        '<button class="mfs-chip" data-v="3">3 BHK</button>' +
-        '<button class="mfs-chip" data-v="3+">3+ BHK</button>' +
-      '</div></div>' +
-      '<div class="mfs-section"><div class="mfs-label">Furnishing</div><div class="mfs-chips" data-group="fur">' +
-        '<button class="mfs-chip on" data-v="all">Any</button>' +
-        '<button class="mfs-chip" data-v="furnished">Furnished</button>' +
-        '<button class="mfs-chip" data-v="semi">Semi</button>' +
-        '<button class="mfs-chip" data-v="unfurnished">Bare</button>' +
-      '</div></div>' +
-      '<div class="mfs-foot">' +
-        '<button class="mfs-reset" type="button">Reset</button>' +
-        '<button class="mfs-apply" type="button">Apply Filters</button>' +
-      '</div>';
-
-    document.body.appendChild(ov);
-    document.body.appendChild(sh);
-
-    sh.querySelectorAll('.mfs-chips').forEach(function(g){
-      g.addEventListener('click', function(e){
-        var c = e.target.closest('.mfs-chip');
-        if (!c) return;
-        g.querySelectorAll('.mfs-chip').forEach(function(x){ x.classList.remove('on'); });
-        c.classList.add('on');
-      });
-    });
-    sh.querySelector('.mfs-apply').addEventListener('click', applyFilterSheet);
-    sh.querySelector('.mfs-reset').addEventListener('click', resetFilterSheet);
-  }
-
-  function syncSheetFromFlt(){
-    if (typeof flt === 'undefined') return;
-    var sh = document.getElementById('m-filter-sheet');
-    if (!sh) return;
-    [['type', flt.type], ['bhk', flt.bhk], ['fur', flt.fur]].forEach(function(pair){
-      var grp = sh.querySelector('.mfs-chips[data-group="' + pair[0] + '"]');
-      if (!grp) return;
-      grp.querySelectorAll('.mfs-chip').forEach(function(c){
-        c.classList.toggle('on', c.dataset.v === (pair[1] || 'all'));
-      });
-    });
-  }
-
-  function openFilterSheet(){
-    var ov = document.getElementById('m-filter-overlay');
-    var sh = document.getElementById('m-filter-sheet');
-    if (!ov || !sh) return;
-    syncSheetFromFlt();
-    ov.classList.add('open');
-    sh.classList.add('open');
-  }
-  function closeFilterSheet(){
-    document.getElementById('m-filter-overlay').classList.remove('open');
-    document.getElementById('m-filter-sheet').classList.remove('open');
-  }
-  function applyFilterSheet(){
-    var sh = document.getElementById('m-filter-sheet');
-    if (!sh || typeof flt === 'undefined') { closeFilterSheet(); return; }
-    ['type', 'bhk', 'fur'].forEach(function(g){
-      var on = sh.querySelector('.mfs-chips[data-group="' + g + '"] .mfs-chip.on');
-      if (on) flt[g] = on.dataset.v;
-    });
-    try { if (typeof draw === 'function') draw(); } catch(e){}
-    renderList();
-    closeFilterSheet();
-    try { if (typeof showToast === 'function') showToast('✅ Filters applied'); } catch(e){}
-  }
-  function resetFilterSheet(){
-    var sh = document.getElementById('m-filter-sheet');
-    sh.querySelectorAll('.mfs-chips').forEach(function(g){
-      g.querySelectorAll('.mfs-chip').forEach(function(c){
-        c.classList.toggle('on', c.dataset.v === 'all');
-      });
-    });
-    if (typeof flt !== 'undefined') {
-      flt.type = 'all'; flt.bhk = 'all'; flt.fur = 'all';
-      try { if (typeof draw === 'function') draw(); } catch(e){}
-    }
-    renderList();
-  }
-
-  // ─────────────────────────────────────────────────────────────
-  // 6. WIRE INTO EXISTING APP
-  // ─────────────────────────────────────────────────────────────
-  function wireHooks(){
-    // Re-render the list whenever existing draw() runs
-    if (typeof window.draw === 'function' && !window._gmMobile._wrappedDraw) {
-      var origDraw = window.draw;
-      window.draw = function(){
-        var r = origDraw.apply(this, arguments);
-        if (isMobile()) renderList();
-        return r;
-      };
-      window._gmMobile._wrappedDraw = true;
-    }
-    // Re-render when openDetail runs (highlight active card)
-    if (typeof window.openDetail === 'function' && !window._gmMobile._wrappedOpenDetail) {
-      var origOD = window.openDetail;
-      window.openDetail = function(id){
-        if (isMobile()) {
-          window._gmMobile.highlightCard(id);
-        }
-        return origOD.apply(this, arguments);
-      };
-      window._gmMobile._wrappedOpenDetail = true;
-    }
-    // Re-render when mode changes
-    if (typeof window.setMode === 'function' && !window._gmMobile._wrappedSetMode) {
-      var origSM = window.setMode;
-      window.setMode = function(){
-        var r = origSM.apply(this, arguments);
-        if (isMobile()) renderList();
-        return r;
-      };
-      window._gmMobile._wrappedSetMode = true;
-    }
-  }
-
-  // ─────────────────────────────────────────────────────────────
-  // 7. INIT / SYNC
-  // ─────────────────────────────────────────────────────────────
-  function syncMobile(){
-    if (isMobile()) {
-      buildSearchOverlay();
-      injectMenuItems();
-      buildSheet();
-      buildFilterSheet();
-      wireHooks();
-      // Initial render — wait a tick so app initialised
-      setTimeout(renderList, 100);
-    } else {
-      removeMenuItems();
-      // Leave other elements; CSS hides them.
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', syncMobile);
-  } else {
-    syncMobile();
-  }
-  // Re-sync on rotate / resize
-  var rt;
-  window.addEventListener('resize', function(){
-    clearTimeout(rt);
-    rt = setTimeout(syncMobile, 200);
-  });
-  // Also re-render after splash → app transition
-  window.addEventListener('load', function(){
-    setTimeout(function(){ if (isMobile()) { wireHooks(); renderList(); } }, 600);
-  });
-})();
-
-// ──── MOBILE v5 SHIM END ────
 </script>
 <!-- HOW IT WORKS MODAL -->
 <div class="dark-overlay" id="how-modal">
