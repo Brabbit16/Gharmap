@@ -2468,11 +2468,6 @@ body { -webkit-text-size-adjust: 100%; }
       </div>
     </div>
 
-    <div class="sp-share-box">
-      <div class="sp-share-txt" id="sp-share-msg">Real verified properties in Lucknow — GharMap shows real rents, real availability, and you can book a visit directly. gharmap.in</div>
-      <button class="sp-copy-btn" onclick="copyShareMsg()" title="Copy">⧉</button>
-    </div>
-
     <button class="sp-btn-main" onclick="enterApp()">🗺 See Listings on Map</button>
     <button class="sp-btn-how" onclick="openHowModal()">How does this work?</button>
     <button class="sp-btn-sec" onclick="shareToWhatsApp()">
@@ -2484,7 +2479,7 @@ body { -webkit-text-size-adjust: 100%; }
       By continuing you agree to our
       <a href="#" onclick="event.preventDefault();openPrivacyModal()">Privacy Policy</a> &amp;
       <a href="#" onclick="event.preventDefault();openTncModal()">Terms &amp; Conditions</a>
-      <div style="margin-top:4px;opacity:.8;">Built by <span id="sp-founder-name" style="color:var(--ink2);font-weight:600;">[Your Name]</span></div>
+      <div style="margin-top:4px;opacity:.8;">Built by <span id="sp-founder-name" style="color:var(--ink2);font-weight:600;">Team GharMap</span></div>
     </div>
 
   </div>
@@ -3017,7 +3012,7 @@ const SUPABASE_URL = 'https://nefyaqjolvglodomshcx.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lZnlhcWpvbHZnbG9kb21zaGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMTQ1MDcsImV4cCI6MjA5MjY5MDUwN30.N2oNOSvUGa0oDELrMYn4ib5541zxz58F7NXTiuYCaxk';
 const AGENT_WA    = '919336297656'; // ← your WhatsApp number
 const AGENT_EMAIL = 'bookings@gharmap.in'; // ← your email
-const FOUNDER_NAME = '[Your Name]'; // ← your name as the founder
+const FOUNDER_NAME = 'Team GharMap'; // ← shown after "Built by" on splash
 const FOUNDER_PHOTO_URL = ''; // ← optional: paste your photo URL here (leave '' for emoji fallback)
 const ACTIVITY_STATS = {
   // Update these manually each Monday — shows real momentum on splash
@@ -3081,7 +3076,7 @@ function copyShareMsg(){
 }
 function sharePage(){
   const url=location.href.split('?')[0];
-  const txt='Real verified properties in Lucknow — GharMap. Real rents, book site visits directly. '+url;
+  const txt='Found this on GharMap — real verified rentals in Lucknow, no broker spam. '+url;
   if(navigator.share){navigator.share({title:'GharMap Lucknow',text:txt,url}).catch(()=>{});}
   else{navigator.clipboard.writeText(url).then(()=>showToast('✅ Link copied!'));}
 }
