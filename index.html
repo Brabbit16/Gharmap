@@ -2206,6 +2206,204 @@ body { -webkit-text-size-adjust: 100%; }
 
 /* ──── MOBILE v7 END ──── */
 
+
+/* ──── MOBILE v7.1 START ──── */
+/* ═══════════════════════════════════════════════════════════════
+   GHARMAP MOBILE v7.1 — surgical fixes
+   1. Force Rent/Sale toggle visible on mobile (overrides 480px hide)
+   2. ＋ and ⋮ buttons as proper circles, equal sizes
+   3. Budget = slider (not inputs) — JS shim replaces inputs
+═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Rent/Sale toggle MUST be visible on mobile ── */
+@media (max-width: 768px) {
+  .tb-mode {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
+    padding: 3px !important;
+    border-radius: 22px !important;
+    background: var(--bg) !important;
+    border: 1px solid var(--border);
+  }
+  .tb-mode-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 5px 11px !important;
+    font-size: 11.5px !important;
+    min-height: 28px !important;
+    height: 28px !important;
+    border-radius: 16px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+  .tb-mode-btn.on {
+    background: var(--white) !important;
+    color: var(--ink) !important;
+  }
+
+  /* keep menu btn forced visible too — original 480 rule covers this
+     but make sure */
+  .tb-menu-btn { display: flex !important; }
+}
+
+/* ── 2. Make ＋ and ⋮ proper circles, identical sizes ── */
+@media (max-width: 768px) {
+  #m-list-icon,
+  .tb-menu-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid var(--border);
+    background: var(--white);
+    cursor: pointer;
+    line-height: 1;
+    transition: all .15s;
+  }
+  #m-list-icon {
+    color: var(--green);
+    font-size: 20px;        /* the + glyph */
+    font-weight: 600;
+  }
+  #m-list-icon:active {
+    background: var(--green-light);
+    transform: scale(.94);
+  }
+  .tb-menu-btn {
+    color: var(--ink2);
+    font-size: 16px;
+  }
+
+  /* If on very narrow screen, both still circular at 34px */
+}
+@media (max-width: 360px) {
+  #m-list-icon,
+  .tb-menu-btn {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+  }
+  #m-list-icon { font-size: 19px; }
+}
+
+/* ── 3. Budget slider styling (JS shim replaces inputs with this markup) ── */
+@media (max-width: 768px) {
+  .mfs-slider-wrap {
+    margin-top: 6px;
+    padding: 4px 4px 0;
+  }
+  .mfs-slider-readout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    font-family: var(--ff-d);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .mfs-slider-readout .arrow {
+    font-size: 11px;
+    color: var(--ink3);
+    font-weight: 400;
+    margin: 0 8px;
+  }
+  .mfs-slider {
+    position: relative;
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    margin: 8px 4px 6px;
+  }
+  .mfs-slider-fill {
+    position: absolute;
+    height: 100%;
+    background: var(--green);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+  .mfs-slider input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    top: 0; left: 0;
+    background: transparent;
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+  }
+  .mfs-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2.5px solid var(--green);
+    cursor: pointer;
+    pointer-events: all;
+    box-shadow: 0 2px 6px rgba(0,0,0,.18);
+    margin-top: 0;
+  }
+  .mfs-slider input[type="range"]::-moz-range-thumb {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2.5px solid var(--green);
+    cursor: pointer;
+    pointer-events: all;
+    box-shadow: 0 2px 6px rgba(0,0,0,.18);
+  }
+  .mfs-slider input[type="range"]:focus { outline: none; }
+  .mfs-slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: var(--ink3);
+    margin-top: 6px;
+    letter-spacing: .2px;
+  }
+  .mfs-mode-tabs {
+    display: flex; gap: 4px;
+    background: var(--bg);
+    padding: 3px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
+  .mfs-mode-tab {
+    flex: 1;
+    padding: 7px 10px;
+    border: none;
+    background: transparent;
+    border-radius: 7px;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--ink2);
+    cursor: pointer;
+    font-family: var(--ff);
+  }
+  .mfs-mode-tab.on {
+    background: var(--white);
+    color: var(--ink);
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+}
+
+/* hide the OLD number-input budget row from v7 (replaced by slider) */
+@media (max-width: 768px) {
+  .mfs-budget-row { display: none !important; }
+}
+
+/* ──── MOBILE v7.1 END ──── */
+
 </style>
 </head>
 <body>
@@ -4894,6 +5092,239 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
 })();
 
 // ──── MOBILE v7 SHIM END ────
+
+
+// ──── MOBILE v7.1 SHIM START ────
+// ═══════════════════════════════════════════════════════════════
+// GHARMAP v7.1 — Budget slider shim
+// Replaces the number-input budget row in #m-filter-sheet
+// with a dual-handle range slider that auto-switches scale
+// based on the user's current rent/sale mode.
+// ═══════════════════════════════════════════════════════════════
+(function(){
+  'use strict';
+
+  // Range presets — pick whichever applies to current `listingMode`
+  const RANGES = {
+    rent: {
+      min: 2000,
+      max: 200000,
+      step: 1000,
+      defMin: 2000,
+      defMax: 200000,
+      fmt: function(v){
+        if (v >= 100000) return '₹' + (v/100000).toFixed(1).replace(/\.0$/, '') + 'L';
+        if (v >= 1000)   return '₹' + Math.round(v/1000) + 'K';
+        return '₹' + v;
+      }
+    },
+    sale: {
+      min: 1000000,         // ₹10 L
+      max: 100000000,       // ₹10 Cr
+      step: 100000,
+      defMin: 1000000,
+      defMax: 100000000,
+      fmt: function(v){
+        if (v >= 10000000) return '₹' + (v/10000000).toFixed(2).replace(/\.?0+$/, '') + ' Cr';
+        if (v >= 100000)   return '₹' + (v/100000).toFixed(1).replace(/\.0$/, '') + ' L';
+        if (v >= 1000)     return '₹' + Math.round(v/1000) + 'K';
+        return '₹' + v;
+      }
+    }
+  };
+
+  function mode(){
+    return (typeof listingMode !== 'undefined' && listingMode === 'sale') ? 'sale' : 'rent';
+  }
+
+  function rangeForMode(){ return RANGES[mode()]; }
+
+  function buildSlider(){
+    var sheet = document.getElementById('m-filter-sheet');
+    if (!sheet) return;
+
+    // Find the budget section (we know the v7 sheet has .mfs-section with mfs-budget-row inside)
+    var budgetRow = sheet.querySelector('.mfs-budget-row');
+    if (!budgetRow) return;
+
+    // Already replaced?
+    if (sheet.querySelector('.mfs-slider-wrap')) return;
+
+    var section = budgetRow.closest('.mfs-section');
+    if (!section) return;
+
+    // Replace the entire section content (keep the section box)
+    section.innerHTML =
+      '<div class="mfs-label" id="mfs-budget-label">Budget</div>' +
+      '<div class="mfs-slider-wrap">' +
+        '<div class="mfs-slider-readout">' +
+          '<span id="mfs-rd-min">—</span>' +
+          '<span class="arrow">to</span>' +
+          '<span id="mfs-rd-max">—</span>' +
+        '</div>' +
+        '<div class="mfs-slider" id="mfs-slider">' +
+          '<div class="mfs-slider-fill" id="mfs-slider-fill"></div>' +
+          '<input type="range" id="mfs-rng-min">' +
+          '<input type="range" id="mfs-rng-max">' +
+        '</div>' +
+        '<div class="mfs-slider-labels">' +
+          '<span id="mfs-rd-floor">—</span>' +
+          '<span id="mfs-rd-ceil">—</span>' +
+        '</div>' +
+      '</div>';
+
+    var rngMin = document.getElementById('mfs-rng-min');
+    var rngMax = document.getElementById('mfs-rng-max');
+    var fill   = document.getElementById('mfs-slider-fill');
+    var rdMin  = document.getElementById('mfs-rd-min');
+    var rdMax  = document.getElementById('mfs-rd-max');
+    var rdFloor= document.getElementById('mfs-rd-floor');
+    var rdCeil = document.getElementById('mfs-rd-ceil');
+    var lbl    = document.getElementById('mfs-budget-label');
+
+    function configureForMode(){
+      var R = rangeForMode();
+      [rngMin, rngMax].forEach(function(r){
+        r.min  = R.min;
+        r.max  = R.max;
+        r.step = R.step;
+      });
+      // Pull current values from flt; clamp into the range
+      var curMin = (typeof flt !== 'undefined' && flt.minP) ? Math.max(R.min, Math.min(R.max, flt.minP)) : R.defMin;
+      var curMax = (typeof flt !== 'undefined' && flt.maxP) ? Math.max(R.min, Math.min(R.max, flt.maxP)) : R.defMax;
+      // Validate ordering
+      if (curMin >= curMax) { curMin = R.defMin; curMax = R.defMax; }
+      rngMin.value = curMin;
+      rngMax.value = curMax;
+      rdFloor.textContent = R.fmt(R.min);
+      rdCeil.textContent  = R.fmt(R.max);
+      lbl.textContent     = mode() === 'sale' ? 'Budget (Sale)' : 'Budget (Rent / month)';
+      updateUI();
+    }
+
+    function updateUI(){
+      var R = rangeForMode();
+      var lo = parseInt(rngMin.value, 10);
+      var hi = parseInt(rngMax.value, 10);
+      // Enforce min <= max - step
+      if (lo > hi - R.step) {
+        if (document.activeElement === rngMin) lo = hi - R.step;
+        else hi = lo + R.step;
+        rngMin.value = lo;
+        rngMax.value = hi;
+      }
+      var pctL = ((lo - R.min) / (R.max - R.min)) * 100;
+      var pctR = ((hi - R.min) / (R.max - R.min)) * 100;
+      fill.style.left  = pctL + '%';
+      fill.style.width = (pctR - pctL) + '%';
+      rdMin.textContent = R.fmt(lo);
+      rdMax.textContent = R.fmt(hi);
+    }
+
+    rngMin.addEventListener('input', updateUI);
+    rngMax.addEventListener('input', updateUI);
+
+    // Also listen for mode (rent/sale) changes via the Rent/Sale toggle
+    document.querySelectorAll('.tb-mode-btn').forEach(function(b){
+      b.addEventListener('click', function(){ setTimeout(configureForMode, 50); });
+    });
+
+    configureForMode();
+
+    // Patch the apply / reset handlers so they read from the slider
+    patchApplyReset();
+  }
+
+  function patchApplyReset(){
+    var sheet = document.getElementById('m-filter-sheet');
+    if (!sheet || sheet.dataset.sliderPatched === '1') return;
+    sheet.dataset.sliderPatched = '1';
+
+    var apply = sheet.querySelector('.mfs-apply');
+    var reset = sheet.querySelector('.mfs-reset');
+    if (!apply || !reset) return;
+
+    // Wrap the existing apply handler — read slider values and stuff into flt.minP/maxP
+    var origApplyHandler = apply.onclick;
+    apply.onclick = null;
+    apply.addEventListener('click', function(e){
+      var rngMin = document.getElementById('mfs-rng-min');
+      var rngMax = document.getElementById('mfs-rng-max');
+      if (rngMin && rngMax && typeof flt !== 'undefined') {
+        flt.minP = parseInt(rngMin.value, 10);
+        flt.maxP = parseInt(rngMax.value, 10);
+      }
+      // Now let the v7 apply logic run (read chip selections + close sheet)
+      var v7sheet = document.getElementById('m-filter-sheet');
+      ['type', 'bhk', 'fur'].forEach(function(g){
+        var on = v7sheet.querySelector('.mfs-chips[data-group="' + g + '"] .mfs-chip.on');
+        if (on && typeof flt !== 'undefined') flt[g] = on.dataset.v;
+      });
+      try { if (typeof draw === 'function') draw(); } catch(err){}
+      // Close
+      document.getElementById('m-filter-overlay').classList.remove('open');
+      v7sheet.classList.remove('open');
+      try { if (typeof showToast === 'function') showToast('✅ Filters applied'); } catch(err){}
+
+      // Update FAB count
+      var fab = document.getElementById('m-filter-fab');
+      if (fab && typeof flt !== 'undefined') {
+        var n = 0;
+        var R = rangeForMode();
+        if (flt.type !== 'all') n++;
+        if (flt.bhk  !== 'all') n++;
+        if (flt.fur  !== 'all') n++;
+        if (flt.minP > R.min || flt.maxP < R.max) n++;
+        var c = document.getElementById('fab-count');
+        if (c) c.textContent = n;
+        fab.classList.toggle('has-filters', n > 0);
+      }
+    }, true);
+
+    // Reset
+    reset.addEventListener('click', function(){
+      var R = rangeForMode();
+      var rngMin = document.getElementById('mfs-rng-min');
+      var rngMax = document.getElementById('mfs-rng-max');
+      if (rngMin && rngMax) {
+        rngMin.value = R.defMin;
+        rngMax.value = R.defMax;
+        rngMin.dispatchEvent(new Event('input'));
+      }
+    });
+  }
+
+  function isMobile(){ return window.matchMedia('(max-width: 768px)').matches; }
+
+  function init(){
+    if (!isMobile()) return;
+    // The filter sheet is built by v7 shim — wait for it
+    var tries = 0;
+    var iv = setInterval(function(){
+      if (++tries > 40) { clearInterval(iv); return; }
+      if (document.getElementById('m-filter-sheet') && document.querySelector('.mfs-budget-row')) {
+        clearInterval(iv);
+        buildSlider();
+      }
+    }, 150);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  var rt;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){
+      if (isMobile() && !document.querySelector('.mfs-slider-wrap')) buildSlider();
+    }, 200);
+  });
+})();
+
+// ──── MOBILE v7.1 SHIM END ────
 </script>
 <!-- HOW IT WORKS MODAL -->
 <div class="dark-overlay" id="how-modal">
