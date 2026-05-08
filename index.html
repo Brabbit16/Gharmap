@@ -3623,7 +3623,7 @@ function onSearch(q){
     sTimer = setTimeout(() => {
       const current = document.getElementById('search-input').value.toLowerCase().trim();
       if (current === ql) photonSearch(q, listingMatches);
-    }, 250);
+    }, 120);   // tightened 250ms -> 120ms — Google-like
   }
 }
 
@@ -3656,72 +3656,133 @@ function renderDd(res){
   dd.classList.add('open');
 }
 
-// Photon API — accurate, free, no key needed. Uses OpenStreetMap data.
+// LocationIQ API — fast Indian-edge geocoding, replaces Photon.
+// Includes: response cache (instant on repeat), in-flight abort (typing fast
+// cancels stale requests), tight error handling.
+
+const LOCATIONIQ_KEY = 'pk.fb8e2328893a24fb9ebebeed6aac8c9b';
+const LIQ_CACHE = new Map();        // q (lowercased) -> places[]
+const LIQ_CACHE_MAX = 80;           // bounded LRU-ish
+let _liqCtl = null;                 // active AbortController for cancelling stale requests
+
+function _liqCacheGet(q){ return LIQ_CACHE.get(q); }
+function _liqCacheSet(q, v){
+  if (LIQ_CACHE.size >= LIQ_CACHE_MAX) {
+    // Drop oldest entry — Map preserves insertion order
+    const firstKey = LIQ_CACHE.keys().next().value;
+    LIQ_CACHE.delete(firstKey);
+  }
+  LIQ_CACHE.set(q, v);
+}
+
+// Map an OSM/LocationIQ "type" to a relevant emoji icon
+function _liqIcon(type, klass){
+  const t = (type || '').toLowerCase();
+  const c = (klass || '').toLowerCase();
+  if (t === 'mall' || t === 'department_store') return '🛍';
+  if (t === 'hospital' || t === 'clinic') return '🏥';
+  if (t === 'university' || t === 'college' || t === 'school') return '🎓';
+  if (t === 'station' || c === 'railway') return '🚉';
+  if (t === 'aerodrome' || t === 'airport') return '✈️';
+  if (t === 'bus_station') return '🚌';
+  if (t === 'park' || t === 'garden') return '🌳';
+  if (t === 'place_of_worship' || t === 'mosque' || t === 'temple') return '🕌';
+  if (t === 'restaurant' || t === 'cafe') return '🍽';
+  if (t === 'hotel') return '🏨';
+  if (t === 'bank' || t === 'atm') return '🏦';
+  if (c === 'place') return '🏘';
+  if (c === 'building') return '🏢';
+  return '📍';
+}
+
 async function photonSearch(q, inventoryMatches){
+  const ql = q.toLowerCase().trim();
+  if (!ql) return;
+
+  // 1. CACHE HIT — return instantly, zero network
+  const cached = _liqCacheGet(ql);
+  if (cached) {
+    const combined = [...(inventoryMatches || []), ...cached];
+    renderDd(combined);
+    return;
+  }
+
+  // 2. CANCEL any in-flight request — keystroke after this one will be the "real" search
+  if (_liqCtl) { try { _liqCtl.abort(); } catch(e){} }
+  _liqCtl = new AbortController();
+  const ctl = _liqCtl;
+
   try {
-    // Bias to Lucknow center, search globally but limit to India
-    const url = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(q + ', Lucknow') +
-                '&lat=26.8467&lon=80.9462&zoom=13&limit=8&lang=en';
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('Photon error');
+    // Bias to Lucknow with viewbox; restrict to India for cleanliness.
+    // viewbox = west,north,east,south — roughly Lucknow district + 30km.
+    const url = 'https://api.locationiq.com/v1/autocomplete' +
+                '?key=' + encodeURIComponent(LOCATIONIQ_KEY) +
+                '&q='   + encodeURIComponent(q) +
+                '&limit=8' +
+                '&countrycodes=in' +
+                '&viewbox=80.65,27.05,81.35,26.55' +
+                '&bounded=0' +
+                '&dedupe=1' +
+                '&accept-language=en' +
+                '&tag=country:in';
+
+    const res = await fetch(url, { signal: ctl.signal });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
 
-    // Filter to only Lucknow district / nearby (within ~50km of city center)
+    // Filter to Lucknow region (~50km of city center)
     const LCK_LAT = 26.8467, LCK_LNG = 80.9462;
     const places = [];
-    for (const f of (data.features || [])) {
-      const [lng, lat] = f.geometry.coordinates;
-      // Distance check — exclude things outside Lucknow region
+    const seen = new Set();
+
+    for (const f of (Array.isArray(data) ? data : [])) {
+      const lat = parseFloat(f.lat);
+      const lng = parseFloat(f.lon);
+      if (!lat || !lng) continue;
       const d = Math.sqrt(Math.pow(lat - LCK_LAT, 2) + Math.pow(lng - LCK_LNG, 2));
-      if (d > 0.6) continue; // ~60km bbox
+      if (d > 0.6) continue;
 
-      const props = f.properties || {};
-      const name = props.name || '';
+      // Dedupe by display name's first word
+      const display = f.display_name || '';
+      const name = (f.address && (f.address.name || f.address.suburb || f.address.neighbourhood ||
+                    f.address.village || f.address.town || f.address.road)) ||
+                   display.split(',')[0] || '';
       if (!name) continue;
+      const key = name.toLowerCase().trim();
+      if (seen.has(key)) continue;
+      seen.add(key);
 
-      // Build a meaningful subtitle
       const subParts = [];
-      if (props.street) subParts.push(props.street);
-      if (props.district) subParts.push(props.district);
-      else if (props.suburb) subParts.push(props.suburb);
-      if (props.city && props.city !== name) subParts.push(props.city);
-      const sub = subParts.slice(0, 2).join(', ') || (props.state || 'Lucknow');
+      if (f.address) {
+        if (f.address.suburb && f.address.suburb !== name) subParts.push(f.address.suburb);
+        if (f.address.city && f.address.city !== name && !subParts.includes(f.address.city))
+          subParts.push(f.address.city);
+        else if (f.address.county && !subParts.length) subParts.push(f.address.county);
+      }
+      const sub = subParts.slice(0, 2).join(', ') || 'Lucknow';
 
-      // Pick icon based on OSM category
-      let ico = '📍';
-      const k = (props.osm_key || '') + ':' + (props.osm_value || '');
-      if (props.osm_value === 'mall' || props.osm_value === 'department_store') ico = '🛍';
-      else if (props.osm_value === 'hospital' || props.osm_value === 'clinic') ico = '🏥';
-      else if (props.osm_value === 'university' || props.osm_value === 'college' || props.osm_value === 'school') ico = '🎓';
-      else if (props.osm_value === 'station' || props.osm_value === 'railway' || k.includes('railway')) ico = '🚉';
-      else if (props.osm_value === 'aerodrome' || props.osm_value === 'airport') ico = '✈️';
-      else if (props.osm_value === 'bus_station') ico = '🚌';
-      else if (props.osm_value === 'park' || props.osm_value === 'garden') ico = '🌳';
-      else if (props.osm_value === 'place_of_worship' || props.osm_value === 'mosque' || props.osm_value === 'temple') ico = '🕌';
-      else if (props.osm_value === 'restaurant' || props.osm_value === 'cafe') ico = '🍽';
-      else if (props.osm_value === 'hotel') ico = '🏨';
-      else if (props.osm_value === 'bank' || props.osm_value === 'atm') ico = '🏦';
-      else if (k.includes('place:')) ico = '🏘';
-      else if (k.includes('building')) ico = '🏢';
-
-      places.push({ n: name, lat, lng, sub, ico, isInventory: false });
+      places.push({
+        n: name,
+        lat, lng,
+        sub,
+        ico: _liqIcon(f.type, f.class),
+        isInventory: false
+      });
     }
 
-    // De-dupe by name
-    const seen = new Set();
-    const dedup = places.filter(p => {
-      const key = p.n.toLowerCase();
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    }).slice(0, 7);
+    const dedup = places.slice(0, 7);
+    _liqCacheSet(ql, dedup);
 
-    // Combine inventory (top) + Photon places (below)
+    // Only render if this is still the latest query (controller wasn't aborted)
+    if (ctl.signal.aborted) return;
+
     const combined = [...(inventoryMatches || []), ...dedup];
     renderDd(combined);
+
   } catch (e) {
-    console.log('Photon search failed:', e.message);
-    // If Photon fails, just show whatever inventory we already had
+    // AbortError is expected when the user types fast — silently ignore
+    if (e.name === 'AbortError') return;
+    console.log('LocationIQ search failed:', e.message);
     if (inventoryMatches && inventoryMatches.length) {
       renderDd(inventoryMatches);
     } else {
