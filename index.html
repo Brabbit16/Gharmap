@@ -2745,7 +2745,7 @@ body { -webkit-text-size-adjust: 100%; }
 
     <div class="dp-foot">
       <div id="dp-wa-btn"></div>
-      <button class="btn-interest" onclick="openMatchMeFromDetail()">📩 I'm Interested — Contact Team</button>
+      <button class="btn-interest" onclick="openMatchMeFromDetail()">📅 I'm Interested — Book a Visit</button>
       <div class="dp-foot-note">🔒 Your details only shared with our verified team</div>
     </div>
   </div>
@@ -3933,7 +3933,34 @@ function setupChips(id){
     });
   });
 }
-function openMatchMeFromDetail(){openMatchMe();}
+function openMatchMeFromDetail(){
+  // Scroll the detail panel to the Book a Visit section and highlight it briefly.
+  // (Was previously opening the Match Me wizard — wrong intent for property-specific interest.)
+  var visitSec = document.getElementById('dp-visit-sec');
+  var dpScroll = document.querySelector('.dp-body');
+  if (!visitSec) { try { openMatchMe(); } catch(e){} return; }
+
+  // Make sure visit section is visible (it gets hidden for 'rented' properties)
+  if (visitSec.style.display === 'none') visitSec.style.display = 'block';
+
+  // Smooth scroll within the detail panel
+  if (dpScroll) {
+    var top = visitSec.offsetTop - 12;
+    dpScroll.scrollTo({ top: top, behavior: 'smooth' });
+  } else {
+    visitSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Briefly highlight so the user notices where their attention was directed
+  visitSec.style.transition = 'box-shadow .35s ease, background .35s ease';
+  var origBg = visitSec.style.background;
+  visitSec.style.boxShadow = '0 0 0 3px rgba(45,106,90,.25)';
+  visitSec.style.background = 'rgba(45,106,90,.04)';
+  setTimeout(function(){
+    visitSec.style.boxShadow = '';
+    visitSec.style.background = origBg;
+  }, 1400);
+}
 // closeMatchMe defined above in submitMatchMe
 async function submitMatchMe(){
   const name=document.getElementById('mc-name').value.trim();
@@ -5423,6 +5450,7 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
               neg:        Array.isArray(p.neg) ? p.neg : [],
               status:     p.status || 'available',
               verified:   p.verified !== false,
+              photos:     Array.isArray(p.photos) ? p.photos : [],
             };
           });
 
