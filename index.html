@@ -2404,6 +2404,39 @@ body { -webkit-text-size-adjust: 100%; }
 
 /* ──── MOBILE v7.1 END ──── */
 
+/* ── MAP LOADING OVERLAY ── */
+#map-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 400;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  pointer-events: all;
+  transition: opacity .35s ease;
+}
+#map-loading-overlay.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+.mlo-spinner {
+  width: 38px; height: 38px;
+  border: 3px solid var(--border);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: mloSpin .9s linear infinite;
+}
+@keyframes mloSpin { to { transform: rotate(360deg); } }
+.mlo-text {
+  font-size: 13px;
+  color: var(--ink2);
+  letter-spacing: .04em;
+}
+body.dark #map-loading-overlay { background: #161616; }
+
 </style>
 </head>
 <body>
@@ -2553,7 +2586,7 @@ body { -webkit-text-size-adjust: 100%; }
   </div>
 
   <!-- MAP -->
-  <div id="map-wrap"><div id="map"></div></div>
+  <div id="map-wrap"><div id="map"></div><div id="map-loading-overlay"><div class="mlo-spinner"></div><div class="mlo-text">Loading verified listings…</div></div></div>
 
   <!-- LIST VIEW -->
   <div id="list-view">
@@ -3106,22 +3139,36 @@ function enterApp(){
     sp.style.display='none';
     document.getElementById('app').classList.add('show');
     initMap();
-    setTimeout(()=>{
-      map.invalidateSize(true);
-      setupUI();
-      draw();
-      updateSavedCount();
-      checkDeepLink();
-      checkAdminUrl();
-      if (typeof updateCompareFab === 'function') updateCompareFab();
-      // Show onboarding if first-time visitor
-      const skipped = localStorage.getItem('gharmap_prefs_skipped');
-      if(!prefs && !skipped) {
-        setTimeout(()=>openOnboarding(false), 600);
-      } else if(prefs) {
-        setTimeout(()=>applyPreferences(), 500);
-      }
-    },300);
+    // Await Sheet data before first draw — prevents the
+    // "hardcoded flash → real data" jump users were seeing.
+    var sheetReady = (window._sheetReady && typeof window._sheetReady.then === 'function')
+      ? window._sheetReady
+      : Promise.resolve('skipped');
+
+    sheetReady.then(function(){
+      setTimeout(()=>{
+        map.invalidateSize(true);
+        setupUI();
+        draw();
+        updateSavedCount();
+        checkDeepLink();
+        checkAdminUrl();
+        if (typeof updateCompareFab === 'function') updateCompareFab();
+        // Hide the loading spinner now that real data is on screen
+        var ov = document.getElementById('map-loading-overlay');
+        if (ov) {
+          ov.classList.add('hide');
+          setTimeout(function(){ if (ov.parentNode) ov.parentNode.removeChild(ov); }, 400);
+        }
+        // Show onboarding if first-time visitor
+        const skipped = localStorage.getItem('gharmap_prefs_skipped');
+        if(!prefs && !skipped) {
+          setTimeout(()=>openOnboarding(false), 600);
+        } else if(prefs) {
+          setTimeout(()=>applyPreferences(), 500);
+        }
+      },120);
+    });
   },300);
 }
 
@@ -5383,6 +5430,7 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
   'use strict';
 
   var SHEET_API = 'https://script.google.com/macros/s/AKfycbyfZ9bnxTVcJZR_NbxlFcM1GYSzKI8CpsWUN6c80qUfmWFWp0hXZt_qkbdRSKvkZv_u/exec';
+  var TIMEOUT_MS = 5000;          // hard cap so the spinner never hangs forever
 
   function refreshUI(){
     try {
@@ -5403,77 +5451,81 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
 
   function fetchTimeout(url, ms){
     var ctl = new AbortController();
-    var id = setTimeout(function(){ ctl.abort(); }, ms || 12000);
+    var id = setTimeout(function(){ ctl.abort(); }, ms);
     return fetch(url, { signal: ctl.signal, cache: 'no-store' })
       .finally(function(){ clearTimeout(id); });
   }
 
+  // Map a raw sheet row to the LISTING shape used by the rest of the app.
+  function shape(p){
+    return {
+      id:         p.id,
+      lat:        Number(p.lat),
+      lng:        Number(p.lng),
+      mode:       p.mode || 'rent',
+      type:       p.type || 'flat',
+      bhk:        p.bhk || '',
+      rent:       Number(p.rent) || 0,
+      fur:        p.fur || 'unfurnished',
+      area:       p.area || 'Lucknow',
+      zone:       p.zone || 'gomti',
+      sqft:       p.sqft || null,
+      parking:    p.parking || '',
+      lift:       p.lift || '',
+      power:      p.power || '',
+      note:       p.note || '',
+      whatToKnow: p.whatToKnow || '',
+      scores:     p.scores || { safety: 80, connectivity: 80, water: 80, noise: 70 },
+      neg:        Array.isArray(p.neg) ? p.neg : [],
+      status:     p.status || 'available',
+      verified:   p.verified !== false,
+      photos:     Array.isArray(p.photos) ? p.photos : [],
+    };
+  }
+
+  // Returns a Promise that resolves as soon as data is loaded OR timeout fires.
+  // Always resolves — never rejects — so callers can do `await window._sheetReady`
+  // without try/catch and the UI never gets stuck.
   function loadFromSheet(){
     if (!SHEET_API || SHEET_API.indexOf('REPLACE_ME') !== -1) {
       console.warn('[GharMap] SHEET_API not configured — using hardcoded LISTINGS');
-      return;
+      return Promise.resolve('skipped');
     }
-    fetchTimeout(SHEET_API, 12000)
+
+    return fetchTimeout(SHEET_API, TIMEOUT_MS)
       .then(function(res){
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();
       })
       .then(function(data){
-        if (!data || !Array.isArray(data.listings)) {
-          throw new Error('Bad response shape');
-        }
+        if (!data || !Array.isArray(data.listings)) throw new Error('Bad response shape');
         if (data.listings.length === 0) {
           console.warn('[GharMap] Sheet returned 0 listings — keeping hardcoded LISTINGS');
-          return;
+          return 'empty';
         }
-        var clean = data.listings
-          .filter(function(p){ return p.lat && p.lng && p.rent; })
-          .map(function(p){
-            return {
-              id:         p.id,
-              lat:        Number(p.lat),
-              lng:        Number(p.lng),
-              mode:       p.mode || 'rent',
-              type:       p.type || 'flat',
-              bhk:        p.bhk || '',
-              rent:       Number(p.rent) || 0,
-              fur:        p.fur || 'unfurnished',
-              area:       p.area || 'Lucknow',
-              zone:       p.zone || 'gomti',
-              sqft:       p.sqft || null,
-              parking:    p.parking || '',
-              lift:       p.lift || '',
-              power:      p.power || '',
-              note:       p.note || '',
-              whatToKnow: p.whatToKnow || '',
-              scores:     p.scores || { safety: 80, connectivity: 80, water: 80, noise: 70 },
-              neg:        Array.isArray(p.neg) ? p.neg : [],
-              status:     p.status || 'available',
-              verified:   p.verified !== false,
-              photos:     Array.isArray(p.photos) ? p.photos : [],
-            };
-          });
-
+        var clean = data.listings.filter(function(p){
+          return p.lat && p.lng && p.rent;
+        }).map(shape);
         if (clean.length === 0) {
           console.warn('[GharMap] All sheet rows invalid — keeping hardcoded LISTINGS');
-          return;
+          return 'invalid';
         }
         replaceListings(clean);
         refreshUI();
         console.log('[GharMap] ✓ Loaded ' + clean.length + ' listings from Google Sheet');
+        return 'ok';
       })
       .catch(function(err){
         console.warn('[GharMap] Sheet load failed, using hardcoded LISTINGS:', err && err.message);
+        return 'failed';
       });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadFromSheet);
-  } else {
-    loadFromSheet();
-  }
-
-  window.gmReloadListings = loadFromSheet;
+  // Kick off the load IMMEDIATELY (don't wait for DOMContentLoaded — this
+  // request can run while HTML/CSS still parsing). We expose the promise
+  // for enterApp() to await before first map draw.
+  window._sheetReady = loadFromSheet();
+  window.gmReloadListings = loadFromSheet;   // for manual refresh from console
 })();
 
 // ──── SHEETS LISTINGS LOADER END ────
