@@ -4,6 +4,9 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>GharMap · Verified Properties · Lucknow</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2218%22 fill=%22%232d6a5a%22/><text x=%2250%22 y=%2272%22 font-size=%2260%22 text-anchor=%22middle%22>🏠</text></svg>">
+<meta name="theme-color" content="#2d6a5a">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
@@ -2505,7 +2508,7 @@ html.dark-preload, html.dark-preload body { background: #141414 !important; }
     </div>
 
     <div class="sp-trust">
-      <span class="sp-trust-num" id="sp-count">3</span> verified listings &nbsp;·&nbsp; Gomti Nagar &nbsp;·&nbsp; Zero fake listings
+      <span class="sp-trust-num" id="sp-count">—</span> verified <span id="sp-count-noun">listings</span> &nbsp;·&nbsp; Gomti Nagar &nbsp;·&nbsp; Zero fake listings
     </div>
 
     <!-- Last week activity counter -->
@@ -2837,7 +2840,12 @@ html.dark-preload, html.dark-preload body { background: #141414 !important; }
   <div id="banner">📍 Tap the map to explore</div>
   <div id="loading"><div class="spinner"></div><div class="loading-txt" id="loading-txt">Loading…</div></div>
   <div id="toast">✅ Done!</div>
-  <div id="empty-state"><div class="es-ico">🔍</div><div class="es-t">No verified listings match</div><div class="es-s">Try adjusting your filters</div></div>
+  <div id="empty-state">
+    <div class="es-ico" id="es-ico">🔨</div>
+    <div class="es-t" id="es-t">New listings being verified — back soon.</div>
+    <div class="es-s" id="es-s">Tell us what you're looking for and our team will reach out personally.</div>
+    <button id="es-cta" onclick="openMatchMe()" style="margin-top:14px;padding:9px 18px;border-radius:20px;border:none;background:var(--green);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ff);pointer-events:all;box-shadow:0 4px 14px rgba(45,106,90,.3);">Tell us what you need →</button>
+  </div>
   </div>
 
 <!-- ONBOARDING MODAL -->
@@ -3078,12 +3086,8 @@ function sbH(x={}){return{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABA
 // LISTINGS — add your inventory here
 // ══════════════════════════════════════
 const LISTINGS = [
-  // ── Shalimar One World Belvedere Court 3 — Gomti Nagar Extension ──
-  {id:'s11',lat:26.825157,lng:81.023905,mode:'sale',type:'flat',bhk:'3',rent:20000000,fur:'semi',area:'Shalimar One World Belvedere Court 3',zone:'gomti',sqft:2715,parking:'Reserved',lift:'Yes',power:'24/7 backup',note:'Premium luxury project on Shaheed Path, Gomti Nagar Extension. Lake-facing tower. RERA approved (UPRERAPRJ260653). Swimming pool, gym, club house, jogging track on premises. Near Ekana Stadium, Phoenix Palassio, Lulu Mall, Medanta Hospital. 15 mins from Amausi Airport.',neg:[],scores:{safety:90,connectivity:88,water:90,noise:78},whatToKnow:'Luxury project with all amenities — but maintenance is on the higher side (₹4-5K/month). Check exact unit views during visit since lake-facing units cost more.',status:'available'},
-
-  {id:'s12',lat:26.825257,lng:81.024005,mode:'rent',type:'flat',bhk:'4',rent:50000,fur:'semi',area:'Shalimar One World Belvedere Court 3',zone:'gomti',sqft:2715,parking:'Reserved',lift:'Yes',power:'24/7 backup',note:'Spacious 4BHK in Lucknow\'s most premium township. Lake district neighborhood. Club One access. Swimming pool, kids pool, badminton court, banquet hall, indoor cafe. Near Shaheed Path for instant connectivity.',neg:[],scores:{safety:90,connectivity:88,water:90,noise:78},whatToKnow:'Premium 4BHK with full society amenities — but ground-floor units may have privacy concerns from common areas. Higher floors recommended.',status:'available'},
-
-  {id:'s13',lat:26.825057,lng:81.023805,mode:'rent',type:'flat',bhk:'4',rent:50000,fur:'semi',area:'Shalimar One World Belvedere Court 3',zone:'gomti',sqft:2715,parking:'Reserved',lift:'Yes',power:'24/7 backup',note:'4BHK with servant room option. One of the few luxury rental options in Gomti Nagar Extension. Full clubhouse access. Vastu-compliant layouts. Walking distance to lake.',neg:[],scores:{safety:90,connectivity:88,water:90,noise:78},whatToKnow:'Excellent rental in luxury society — but during festive months (Oct-Dec) banquet hall events can be loud on weekends. Verify unit position during visit.',status:'available'},
+  // Listings load from Google Sheet on page-load. This array stays empty by design.
+  // Empty state: when Sheet returns 0 listings, show "🔨 New listings being verified — back soon."
 ];
 
 const ZONES=[
@@ -3292,7 +3296,30 @@ function draw(){
     document.getElementById('fp-avg').textContent=fmtRent(avg);
     document.getElementById('fp-low').textContent=fmtRent(low);
   }else{['s-avg','s-low','fp-avg','fp-low'].forEach(id=>document.getElementById(id).textContent='₹—');}
-  document.getElementById('empty-state').style.display=vis.length===0?'block':'none';
+  // Empty-state — distinguish between "no inventory" vs "filters too narrow"
+  const es = document.getElementById('empty-state');
+  const esIco = document.getElementById('es-ico');
+  const esT = document.getElementById('es-t');
+  const esS = document.getElementById('es-s');
+  const esBtn = document.getElementById('es-cta');
+  if (vis.length === 0) {
+    if (all().length === 0) {
+      // No listings at all — Sheet empty or failed
+      if (esIco) esIco.textContent = '🔨';
+      if (esT) esT.textContent = 'New listings being verified — back soon.';
+      if (esS) esS.textContent = 'Tell us what you\'re looking for and our team will reach out personally.';
+      if (esBtn) esBtn.textContent = 'Tell us what you need →';
+    } else {
+      // Filters matched 0
+      if (esIco) esIco.textContent = '🔍';
+      if (esT) esT.textContent = 'No matches for your filters.';
+      if (esS) esS.textContent = 'Try adjusting filters, or let us find one for you.';
+      if (esBtn) esBtn.textContent = 'Get matched →';
+    }
+    es.style.display = 'block';
+  } else {
+    es.style.display = 'none';
+  }
   // Refresh list view if active
   if(typeof currentView !== 'undefined' && currentView === 'list') renderListView();
   // Update preference banner count if visible
@@ -4930,7 +4957,9 @@ function shareToWhatsApp(){
 // ══ INIT ══
 document.addEventListener('DOMContentLoaded',()=>{
   initTheme();
-  document.getElementById('sp-count').textContent=LISTINGS.length;
+  // Splash count is set by refreshUI() after Sheet loads.
+  // Keep "—" placeholder visible until then to avoid showing "0".
+  // (Initial markup: <span id="sp-count">—</span>)
   renderTicker();
   ['mc-purpose','mc-bhk','mc-budget','mc-areas','mc-timeline','mc-profile','ow-type','ow-purpose'].forEach(setupChips);
 
@@ -5547,8 +5576,16 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
   function refreshUI(){
     try {
       var spCount = document.getElementById('sp-count');
+      var spNoun  = document.getElementById('sp-count-noun');
       if (spCount && typeof LISTINGS !== 'undefined') {
-        spCount.textContent = LISTINGS.length;
+        var n = LISTINGS.length;
+        if (n === 0) {
+          spCount.textContent = '—';
+          if (spNoun) spNoun.textContent = 'listings coming';
+        } else {
+          spCount.textContent = n;
+          if (spNoun) spNoun.textContent = (n === 1) ? 'listing' : 'listings';
+        }
       }
     } catch (e) {}
     try { if (typeof renderTicker === 'function') renderTicker(); } catch (e) {}
@@ -5612,14 +5649,16 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
       .then(function(data){
         if (!data || !Array.isArray(data.listings)) throw new Error('Bad response shape');
         if (data.listings.length === 0) {
-          console.warn('[GharMap] Sheet returned 0 listings — keeping hardcoded LISTINGS');
+          console.warn('[GharMap] Sheet returned 0 listings — site will show empty state');
+          refreshUI();   // still trigger UI so empty-state renders
           return 'empty';
         }
         var clean = data.listings.filter(function(p){
           return p.lat && p.lng && p.rent;
         }).map(shape);
         if (clean.length === 0) {
-          console.warn('[GharMap] All sheet rows invalid — keeping hardcoded LISTINGS');
+          console.warn('[GharMap] All sheet rows invalid — site will show empty state');
+          refreshUI();
           return 'invalid';
         }
         replaceListings(clean);
@@ -5628,7 +5667,8 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
         return 'ok';
       })
       .catch(function(err){
-        console.warn('[GharMap] Sheet load failed, using hardcoded LISTINGS:', err && err.message);
+        console.warn('[GharMap] Sheet load failed — site will show empty state:', err && err.message);
+        refreshUI();   // still trigger UI so empty-state renders
         return 'failed';
       });
   }
