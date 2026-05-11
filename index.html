@@ -1645,11 +1645,18 @@ body { -webkit-text-size-adjust: 100%; }
 @media (max-width: 768px) {
   #splash {
     padding: max(20px, var(--safe-top)) 16px calc(20px + var(--safe-bot)) 16px;
-    align-items: flex-start;
+    align-items: center;        /* center vertically when content fits viewport */
+    justify-content: center;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    min-height: 100dvh;
   }
-  .sp { width: 100%; max-width: 100%; }
+  /* When content is TALLER than viewport, flex centering would push it past
+     the top edge and clip — this fallback lets the user scroll naturally. */
+  @supports (height: 100dvh) {
+    #splash { min-height: 100dvh; }
+  }
+  .sp { width: 100%; max-width: 100%; margin: auto 0; }
   .sp-headline { font-size: 22px; line-height: 1.25; }
   .sp-sub { font-size: 13px; }
   .sp-pill { font-size: 10.5px; padding: 4px 9px; }
@@ -3907,7 +3914,7 @@ function onSearchKey(e){
   else if(e.key==='Enter'&&idx>=0)items[idx].click();
   else if(e.key==='Escape')clearSearch();
 }
-document.addEventListener('click',e=>{if(!e.target.closest('.tb-search'))closeDd();});
+document.addEventListener('click',e=>{if(!e.target.closest('.tb-search')&&!e.target.closest('#m-search-row')&&!e.target.closest('#s-dd'))closeDd();});
 
 // ══ FILTERS ══
 function setupUI(){
