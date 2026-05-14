@@ -2489,9 +2489,13 @@ body.dark #map-loading-overlay { background: #161616; }
 })();
 </script>
 <style>
-/* Match body.dark background so the html element doesn't flash white
-   while body is still being constructed. */
-html.dark-preload, html.dark-preload body { background: #141414 !important; }
+/* Match body.dark background so html, body, app shell and splash overlay
+   all paint dark from the very first frame — no white flash, no flicker. */
+html.dark-preload,
+html.dark-preload body,
+html.dark-preload #app,
+html.dark-preload #splash { background: #141414 !important; }
+html.dark-preload #splash { background: rgba(0,0,0,.55) !important; }
 </style>
 </head>
 <body>
