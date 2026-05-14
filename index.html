@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- Cache control — force browsers to fetch fresh HTML on every visit (site is actively evolving) -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
 <title>GharMap · Verified Properties · Lucknow</title>
 <!-- Favicon: green rounded tile with white house glyph (SVG path, no emoji dependency) -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%232d6a5a'/><path d='M10 32 L32 14 L54 32 Z' fill='white'/><rect x='16' y='30' width='32' height='22' fill='white'/><rect x='28' y='38' width='8' height='14' fill='%232d6a5a'/></svg>">
@@ -92,9 +96,22 @@ body{min-height:100%;font-family:var(--ff);background:var(--white);color:var(--i
 ══════════════════════════ */
 #splash{
   position:fixed;inset:0;z-index:9999;
-  background:var(--bg);
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(8px) saturate(140%);
+  -webkit-backdrop-filter:blur(8px) saturate(140%);
   display:flex;align-items:center;justify-content:center;
   padding:16px;overflow-y:auto;
+}
+body.dark #splash {
+  background: rgba(0,0,0,.55);
+}
+/* The splash card itself — sits on top of the map */
+#splash .sp{
+  background: var(--white);
+  border-radius: 18px;
+  padding: 26px 22px;
+  box-shadow: 0 24px 80px rgba(0,0,0,.35);
+  border: 1px solid var(--border);
 }
 .sp{
   width:100%;max-width:400px;
@@ -264,7 +281,9 @@ body{min-height:100%;font-family:var(--ff);background:var(--white);color:var(--i
 /* ══════════════════════════
    APP
 ══════════════════════════ */
-#app{display:none;height:100vh;overflow:hidden;position:fixed;inset:0;background:var(--bg);}
+/* App shell — visible from page load (map-first layout).
+   The #splash overlay sits ON TOP of this and blurs into the map behind. */
+#app{display:block;height:100vh;overflow:hidden;position:fixed;inset:0;background:var(--bg);}
 #app.show{display:block;}
 
 /* topbar */
@@ -2481,11 +2500,8 @@ html.dark-preload, html.dark-preload body { background: #141414 !important; }
 <div id="splash">
   <div class="sp">
 
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
-      <div class="sp-logo">Ghar<span>Map</span></div>
-      <button class="theme-toggle" id="theme-btn-sp" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
-    </div>
-    <div class="sp-tag">Verified Properties · Lucknow</div>
+    <div class="sp-logo">Ghar<span>Map</span></div>
+    <div class="sp-tag">Making the biggest Properties Map in India</div>
 
     <!-- live ticker -->
     <div class="sp-ticker">
@@ -2524,7 +2540,7 @@ html.dark-preload, html.dark-preload body { background: #141414 !important; }
       </div>
     </div>
 
-    <button class="sp-btn-main" onclick="enterApp()">🗺 See Listings on Map</button>
+    <button class="sp-btn-main" onclick="enterApp()">🗺 Explore the Map →</button>
     <button class="sp-btn-how" onclick="openHowModal()">How does this work?</button>
     <button class="sp-btn-sec" onclick="shareToWhatsApp()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -3184,43 +3200,69 @@ function sharePage(){
 }
 function enterApp(){
   const sp=document.getElementById('splash');
-  sp.style.opacity='0';sp.style.transition='opacity .3s';
-  document.body.style.overflow='hidden';
+  if (!sp) return;
+  // Mark welcome as seen so returning visitors get the map directly
+  try { localStorage.setItem('gharmap_welcome_seen', '1'); } catch(e){}
+  sp.style.opacity='0';
+  sp.style.transition='opacity .35s ease';
+  document.body.style.overflow='';
   setTimeout(()=>{
     sp.style.display='none';
-    document.getElementById('app').classList.add('show');
-    initMap();
-    // Await Sheet data before first draw — prevents the
-    // "hardcoded flash → real data" jump users were seeing.
-    var sheetReady = (window._sheetReady && typeof window._sheetReady.then === 'function')
-      ? window._sheetReady
-      : Promise.resolve('skipped');
+    // Map is already initialized + drawn (see boot logic). Just invalidate size
+    // in case the modal was masking it during init.
+    if (typeof map !== 'undefined' && map) {
+      try { map.invalidateSize(true); } catch(e){}
+    }
+    // Show onboarding if first-time visitor (preferences not set)
+    const skipped = localStorage.getItem('gharmap_prefs_skipped');
+    if(!prefs && !skipped) {
+      setTimeout(()=>openOnboarding(false), 400);
+    } else if(prefs) {
+      setTimeout(()=>applyPreferences(), 300);
+    }
+  },350);
+}
 
-    sheetReady.then(function(){
-      setTimeout(()=>{
-        map.invalidateSize(true);
-        setupUI();
-        draw();
-        updateSavedCount();
-        checkDeepLink();
-        checkAdminUrl();
-        if (typeof updateCompareFab === 'function') updateCompareFab();
-        // Hide the loading spinner now that real data is on screen
-        var ov = document.getElementById('map-loading-overlay');
-        if (ov) {
-          ov.classList.add('hide');
-          setTimeout(function(){ if (ov.parentNode) ov.parentNode.removeChild(ov); }, 400);
-        }
-        // Show onboarding if first-time visitor
-        const skipped = localStorage.getItem('gharmap_prefs_skipped');
-        if(!prefs && !skipped) {
-          setTimeout(()=>openOnboarding(false), 600);
-        } else if(prefs) {
-          setTimeout(()=>applyPreferences(), 500);
-        }
-      },120);
-    });
-  },300);
+// Boot the app immediately — map-first layout.
+// Map renders behind the splash overlay so users see real pins through the blur.
+function bootApp(){
+  initMap();
+  var sheetReady = (window._sheetReady && typeof window._sheetReady.then === 'function')
+    ? window._sheetReady
+    : Promise.resolve('skipped');
+  sheetReady.then(function(){
+    setTimeout(()=>{
+      try { map.invalidateSize(true); } catch(e){}
+      setupUI();
+      draw();
+      updateSavedCount();
+      checkDeepLink();
+      checkAdminUrl();
+      if (typeof updateCompareFab === 'function') updateCompareFab();
+      // Hide the loading spinner
+      var ov = document.getElementById('map-loading-overlay');
+      if (ov) {
+        ov.classList.add('hide');
+        setTimeout(function(){ if (ov.parentNode) ov.parentNode.removeChild(ov); }, 400);
+      }
+    }, 120);
+  });
+
+  // Returning visitors: auto-dismiss the splash after a brief glance (1.2s)
+  // First-time visitors: splash stays until they click "See Listings on Map"
+  try {
+    var welcomed = localStorage.getItem('gharmap_welcome_seen');
+    if (welcomed === '1') {
+      // Brief glance, then auto-dismiss
+      var sp = document.getElementById('splash');
+      if (sp) {
+        // Show subtle indicator that splash will auto-dismiss
+        setTimeout(function(){
+          if (sp.style.display !== 'none') enterApp();
+        }, 1200);
+      }
+    }
+  } catch(e){}
 }
 
 // ══ MAP ══
@@ -4286,12 +4328,15 @@ async function submitOwnerRequest(){
 function goHome(){
   closeDetail();
   document.getElementById('saved-drawer').classList.remove('open');
-  document.getElementById('app').classList.remove('show');
+  // App stays visible — map-first layout. Just re-show the splash overlay on top.
   const sp=document.getElementById('splash');
   sp.style.opacity='0';
   sp.style.display='flex';
   document.body.style.overflow='';
-  requestAnimationFrame(()=>{sp.style.transition='opacity .3s';sp.style.opacity='1';});
+  requestAnimationFrame(()=>{
+    sp.style.transition='opacity .3s';
+    sp.style.opacity='1';
+  });
 }
 
 // ══════════════════════════════════════════
@@ -4977,6 +5022,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Keep "—" placeholder visible until then to avoid showing "0".
   // (Initial markup: <span id="sp-count">—</span>)
   renderTicker();
+  // Map-first layout: boot the map immediately so it renders behind the splash overlay
+  // (was previously waiting for the splash click → caused "two pages" feel)
+  try { bootApp(); } catch(e){ console.warn('bootApp failed:', e); }
   ['mc-purpose','mc-bhk','mc-budget','mc-areas','mc-timeline','mc-profile','ow-type','ow-purpose'].forEach(setupChips);
 
   // Splash — founder name + activity stats from config
@@ -5724,7 +5772,7 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
       <div class="dm-step-n">5</div>
       <div><div class="dm-step-t">Can't find what you need?</div><div class="dm-step-d">Use "Match Me" — tell us your budget and preferences. Our team personally calls you within 24 hours with matching properties from our private inventory.</div></div>
     </div>
-    <button class="dm-cta" onclick="closeHowModal();enterApp();">Got it — See Listings on Map →</button>
+    <button class="dm-cta" onclick="closeHowModal();enterApp();">Got it — Explore the Map →</button>
   </div>
 </div>
 
