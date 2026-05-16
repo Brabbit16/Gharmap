@@ -565,6 +565,176 @@ body{min-height:100%;font-family:var(--ff);background:var(--bg);color:var(--ink)
 }
 
 @keyframes pop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+
+/* ══ STEP-BY-STEP GUIDE ══ */
+.guide-modal{
+  background:#111;border:1px solid #1e1e1e;border-radius:18px;
+  width:100%;max-width:460px;max-height:88vh;
+  overflow-y:auto;position:relative;animation:fadeUp .25s ease;
+  -webkit-overflow-scrolling:touch;
+}
+.guide-modal::-webkit-scrollbar{width:3px;}
+.guide-modal::-webkit-scrollbar-thumb{background:#333;border-radius:4px;}
+
+.guide-header{
+  padding:22px 20px 16px;border-bottom:1px solid #1e1e1e;
+  background:linear-gradient(135deg,#111 0%,#161e1b 100%);
+  border-radius:18px 18px 0 0;
+}
+.guide-logo{font-size:18px;font-weight:700;color:#eee;margin-bottom:8px;}
+.guide-logo span{color:#4d9a82;}
+.guide-title{font-size:22px;font-weight:700;color:#eee;letter-spacing:-.3px;margin-bottom:4px;}
+.guide-sub{font-size:13px;color:#666;}
+
+.guide-steps{padding:16px 16px 8px;}
+
+.guide-step{
+  display:flex;gap:0;margin-bottom:0;
+}
+.guide-step-left{
+  display:flex;flex-direction:column;align-items:center;
+  width:44px;flex-shrink:0;
+}
+.guide-step-num{
+  width:32px;height:32px;border-radius:50%;
+  background:#2d6a5a;color:#fff;
+  font-size:13px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;z-index:1;border:2px solid #111;
+}
+.guide-step-line{
+  width:2px;flex:1;background:#1e1e1e;
+  margin:4px 0;min-height:20px;
+}
+.guide-step.last .guide-step-line{display:none;}
+
+.guide-step-card{
+  flex:1;
+  border:1px solid #1e1e1e;border-radius:12px;
+  padding:13px 14px;margin-bottom:10px;
+  background:#141414;
+  transition:border-color .2s;
+}
+.guide-step-card:hover{border-color:#2d6a5a;}
+.guide-step-ico{font-size:22px;margin-bottom:7px;}
+.guide-step-content{}
+.guide-step-title{
+  font-size:14px;font-weight:700;color:#eee;
+  margin-bottom:5px;letter-spacing:-.1px;
+}
+.guide-step-desc{
+  font-size:12.5px;color:#888;line-height:1.65;margin-bottom:8px;
+}
+.guide-step-desc b{color:#bbb;}
+.guide-step-tip{
+  background:#1a1a1a;border:1px solid #222;border-left:3px solid #2d6a5a;
+  border-radius:0 8px 8px 0;padding:8px 11px;
+  font-size:11.5px;color:#666;line-height:1.5;
+}
+.guide-step-tip b{color:#4d9a82;}
+
+.guide-footer{padding:12px 16px 20px;}
+.guide-cta{
+  width:100%;padding:14px;border-radius:12px;border:none;
+  background:#2d6a5a;color:#fff;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:var(--ff);
+  transition:opacity .15s;margin-bottom:8px;
+  display:flex;align-items:center;justify-content:center;
+}
+.guide-cta:hover{opacity:.88;}
+.guide-footer-note{font-size:11px;color:#444;text-align:center;}
+
+/* ══ COMPREHENSIVE MOBILE FIXES ══ */
+@media(max-width:768px){
+
+  /* Splash */
+  #splash{padding:12px;}
+  .sp{max-width:100%;border-radius:14px;padding:22px 18px 18px;}
+  .sp-headline{font-size:18px;}
+  .sp-sub{font-size:12px;}
+
+  /* Top controls */
+  #gm-top-controls{top:8px;width:calc(100% - 16px);max-width:100%;}
+  .gm-search-block{border-radius:10px;}
+  .gm-search-row{height:44px;padding:5px 5px 5px 12px;}
+  .gm-search-box input{font-size:16px !important;height:32px;}
+  .gm-filter-btn{padding:6px 12px;font-size:12px;min-height:34px;}
+  .gm-hood-chip{font-size:11px;padding:5px 10px;min-height:30px;}
+  .gm-action-row{border-radius:10px;}
+  .gm-act-btn{font-size:11.5px;padding:6px 8px;min-height:36px;}
+  .gm-mode-btn{padding:5px 10px;min-height:28px;}
+
+  /* Detail panel — bottom sheet */
+  #dp{
+    bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;
+    width:100% !important;max-width:100% !important;transform:none !important;
+    max-height:82vh !important;border-radius:16px 16px 0 0 !important;
+    z-index:1900 !important;
+  }
+  #dp.open{animation:slideUpSheet .28s ease both !important;transform:none !important;}
+  #dp .dp-hd::before{content:'';display:block;width:40px;height:4px;background:#2a2a2a;border-radius:4px;margin:0 auto 10px;}
+
+  /* Saved drawer */
+  #saved-drawer{
+    bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;
+    width:100% !important;max-width:100% !important;transform:none !important;
+    max-height:82vh !important;border-radius:16px 16px 0 0 !important;
+    z-index:1850 !important;
+  }
+  #saved-drawer.open{animation:slideUpSheet .28s ease both !important;}
+
+  /* Right toolbar — bottom right */
+  #gm-right-toolbar{top:auto;bottom:14px;right:10px;transform:none;gap:6px;}
+  .gm-rt-btn{width:38px;height:38px;border-radius:10px;font-size:14px;}
+  .gm-rt-label{display:none;}
+
+  /* Stats */
+  #gm-stats-row{bottom:14px;left:10px;gap:5px;}
+  .gm-stat-chip{font-size:10.5px;padding:5px 9px;border-radius:16px;}
+
+  /* Activity toast */
+  #gm-activity-toast{font-size:11px;padding:9px 14px;bottom:70px;white-space:normal;text-align:center;max-width:calc(100vw - 40px);}
+
+  /* Filter sheet */
+  #gm-filter-overlay{align-items:flex-end !important;padding:0 !important;}
+  .gm-filter-modal{
+    max-width:100% !important;width:100% !important;
+    border-radius:18px 18px 0 0 !important;
+    max-height:92dvh !important;
+    animation:slideUpSheet .26s ease both !important;
+    padding-bottom:calc(20px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* All modals as bottom sheets */
+  .dark-overlay,.overlay,#share-modal{
+    padding:0 !important;
+    align-items:flex-end !important;
+  }
+  .dark-modal,.modal,.share-card,.guide-modal{
+    width:100% !important;max-width:100% !important;
+    border-radius:18px 18px 0 0 !important;
+    max-height:92dvh !important;
+    animation:slideUpSheet .26s ease both !important;
+    padding-bottom:calc(24px + env(safe-area-inset-bottom)) !important;
+  }
+  .guide-header{border-radius:18px 18px 0 0;}
+
+  /* Guide steps on mobile */
+  .guide-step-card{padding:12px 12px;}
+  .guide-step-title{font-size:13.5px;}
+  .guide-step-desc{font-size:12px;}
+  .guide-cta{padding:15px;font-size:14px;}
+
+  /* Minimum tap targets */
+  button,.dp-btn,.dp-close,.gm-rt-btn{min-height:40px;min-width:40px;}
+  .btn-interest,.btn-book,.btn-pri,.sp-btn-main,.guide-cta{min-height:48px;}
+
+  /* Safe area padding */
+  #dp .dp-foot{padding-bottom:calc(14px + env(safe-area-inset-bottom));}
+  #saved-drawer{padding-bottom:calc(20px + env(safe-area-inset-bottom));}
+
+  @keyframes slideUpSheet{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+}
 @keyframes searchPulse{0%{transform:translateX(-50%) scale(0.6);opacity:0.9}100%{transform:translateX(-50%) scale(2.2);opacity:0}}
 
 /* Viewing signal */
@@ -1011,18 +1181,87 @@ body{min-height:100%;font-family:var(--ff);background:var(--bg);color:var(--ink)
 </div>
 
 <!-- HOW IT WORKS MODAL — centered -->
+<!-- STEP-BY-STEP GUIDE MODAL -->
 <div class="dark-overlay" id="how-modal">
-  <div class="dark-modal">
-    <button class="dm-close" onclick="closeHowModal()">✕</button>
-    <div class="dm-title">How GharMap works</div>
-    <div class="dm-date">Simple. Verified. Honest.</div>
-    <div class="dm-step"><div class="dm-step-n">1</div><div><div class="dm-step-t">Open the map</div><div class="dm-step-d">Browse verified properties pinned across Lucknow. Filter by area, budget, BHK and furnishing.</div></div></div>
-    <div class="dm-step"><div class="dm-step-n">2</div><div><div class="dm-step-t">Tap any pin for details</div><div class="dm-step-d">See real rent, building report card, and negotiation history — data no other platform shares.</div></div></div>
-    <div class="dm-step"><div class="dm-step-n">3</div><div><div class="dm-step-t">Book a site visit</div><div class="dm-step-d">Pick a date and time. Our team confirms within 2 hours. 100% free.</div></div></div>
-    <div class="dm-step"><div class="dm-step-n">4</div><div><div class="dm-step-t">Move in with confidence</div><div class="dm-step-d">Every listing is physically visited by us. No fake prices. No ghost properties.</div></div></div>
-    <button class="dm-cta" onclick="closeHowModal()">Got it →</button>
+  <div class="guide-modal">
+    <button class="dm-close" onclick="closeHowModal()" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,.08);border:none;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#888;cursor:pointer;z-index:2;">✕</button>
+
+    <div class="guide-header">
+      <div class="guide-logo">Ghar<span>Map</span></div>
+      <div class="guide-title">How it works</div>
+      <div class="guide-sub">From map to move-in — in 4 simple steps</div>
+    </div>
+
+    <div class="guide-steps">
+
+      <div class="guide-step">
+        <div class="guide-step-left">
+          <div class="guide-step-num">1</div>
+          <div class="guide-step-line"></div>
+        </div>
+        <div class="guide-step-card">
+          <div class="guide-step-ico">🗺</div>
+          <div class="guide-step-content">
+            <div class="guide-step-title">Browse the Map</div>
+            <div class="guide-step-desc">Every pin is a verified property. Use the <b>neighbourhood chips</b> to zoom into your preferred area. Filter by BHK, budget, and furnishing.</div>
+            <div class="guide-step-tip">💡 Tap <b>All areas</b> to see everything, or pick a zone to zoom in with a boundary circle.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-step-left">
+          <div class="guide-step-num">2</div>
+          <div class="guide-step-line"></div>
+        </div>
+        <div class="guide-step-card">
+          <div class="guide-step-ico">🏠</div>
+          <div class="guide-step-content">
+            <div class="guide-step-title">Chat with This House</div>
+            <div class="guide-step-desc">Tap any pin → <b>Chat with this house</b>. See the real rent, total monthly cost estimate, building report card, and anonymous negotiation history.</div>
+            <div class="guide-step-tip">💡 The <b>negotiation history</b> shows what past tenants actually paid — use it to negotiate.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-step-left">
+          <div class="guide-step-num">3</div>
+          <div class="guide-step-line"></div>
+        </div>
+        <div class="guide-step-card">
+          <div class="guide-step-ico">📅</div>
+          <div class="guide-step-content">
+            <div class="guide-step-title">Book a Site Visit</div>
+            <div class="guide-step-desc">Pick any open slot — morning or evening. Enter your name and number. Our team <b>confirms within 2 hours</b> via WhatsApp.</div>
+            <div class="guide-step-tip">💡 All visits are <b>100% free</b>. No broker. No surprise charges. Ever.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-step last">
+        <div class="guide-step-left">
+          <div class="guide-step-num">4</div>
+        </div>
+        <div class="guide-step-card">
+          <div class="guide-step-ico">🤝</div>
+          <div class="guide-step-content">
+            <div class="guide-step-title">Move In with Confidence</div>
+            <div class="guide-step-desc">Our team accompanies you on the visit, helps negotiate, and supports till agreement signing. <b>Zero brokerage to tenants.</b></div>
+            <div class="guide-step-tip">💡 Can't find what you need? Tap <b>Find a Place</b> — we source from our private network within 24 hrs.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="guide-footer">
+      <button class="guide-cta" onclick="closeHowModal()">Got it — Start Exploring 🗺</button>
+      <div class="guide-footer-note">📞 Questions? WhatsApp our team anytime</div>
+    </div>
   </div>
 </div>
+
 
 <!-- PRIVACY MODAL -->
 <div class="dark-overlay" id="privacy-modal">
@@ -1098,6 +1337,9 @@ function enterApp(){
   setTimeout(()=>{
     sp.style.display='none';
     if(map)map.invalidateSize(true);
+    // Show guide on first visit
+    const seen = localStorage.getItem('gm_guide_seen');
+    if(!seen){ setTimeout(()=>openHowModal(), 500); }
   },350);
 }
 
@@ -1637,7 +1879,10 @@ function closeMatchMe(){document.getElementById('matchme-modal').classList.remov
 function openOwnerModal(){closeAll('owner');document.getElementById('owner-modal').classList.add('open');}
 function closeOwnerModal(){document.getElementById('owner-modal').classList.remove('open');}
 function openHowModal(){closeAll('how');document.getElementById('how-modal').classList.add('open');}
-function closeHowModal(){document.getElementById('how-modal').classList.remove('open');}
+function closeHowModal(){
+  document.getElementById('how-modal').classList.remove('open');
+  localStorage.setItem('gm_guide_seen','1');
+}
 function openPrivacyModal(){document.getElementById('privacy-modal').classList.add('open');}
 function closePrivacyModal(){document.getElementById('privacy-modal').classList.remove('open');}
 function openTncModal(){document.getElementById('tnc-modal').classList.add('open');}
