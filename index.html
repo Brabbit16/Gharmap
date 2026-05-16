@@ -4,8 +4,6 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0"/>
-<meta http-equiv="Pragma" content="no-cache"/>
-<meta http-equiv="Expires" content="0"/>
 <title>GharMap · Verified Properties · Lucknow</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%232d6a5a'/><path d='M10 32 L32 14 L54 32 Z' fill='white'/><rect x='16' y='30' width='32' height='22' fill='white'/><rect x='28' y='38' width='8' height='14' fill='%232d6a5a'/></svg>">
 <meta name="theme-color" content="#0a0a0a">
@@ -25,126 +23,111 @@
   --green:#2d6a5a; --green-mid:#4d9a82; --green-light:rgba(45,106,90,.15);
   --gold:#c4943a; --gold-light:rgba(196,148,58,.1);
   --rust:#c0472a; --rust-light:rgba(192,71,42,.12);
-  --sh:0 2px 12px rgba(0,0,0,.4);
-  --sh-lg:0 8px 40px rgba(0,0,0,.5);
-  --r:12px; --panel:0px; --top:0px;
   --ff:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 }
-
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{height:100%;}
-body{min-height:100%;font-family:var(--ff);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+html,body{height:100%;-webkit-text-size-adjust:100%;}
+body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoothing:antialiased;}
 
-/* ══ SPLASH — overlay ON the map ══ */
+/* ══ SPLASH ══ */
 #splash{
   position:fixed;inset:0;z-index:9999;
-  background:rgba(0,0,0,.35);
-  backdrop-filter:blur(3px);
-  -webkit-backdrop-filter:blur(3px);
-  display:flex;align-items:center;justify-content:center;
-  padding:16px;
+  background:rgba(0,0,0,.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;padding:16px;
 }
 .sp{
-  width:100%;max-width:390px;
-  background:#141414;border-radius:18px;padding:26px 22px 20px;
-  border:1px solid #222;position:relative;overflow:hidden;
-  box-shadow:0 24px 70px rgba(0,0,0,.55);
-  animation:fadeUp .4s ease both;
+  width:100%;max-width:390px;background:#141414;border-radius:18px;
+  padding:26px 22px 20px;border:1px solid #222;position:relative;overflow:hidden;
+  box-shadow:0 24px 70px rgba(0,0,0,.6);animation:fadeUp .4s ease both;
 }
-.sp::before{
-  content:'';position:absolute;top:0;left:20%;right:20%;height:2px;
-  background:linear-gradient(90deg,transparent,#4d9a82,transparent);
-}
+.sp::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;
+  background:linear-gradient(90deg,transparent,#4d9a82,transparent);}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes livePulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-.sp-logo{font-size:22px;font-weight:700;color:#eee;letter-spacing:-.3px;margin-bottom:2px;}
+.sp-logo{font-size:22px;font-weight:700;color:#eee;margin-bottom:2px;}
 .sp-logo span{color:#4d9a82;}
 .sp-tag{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#555;margin-bottom:12px;}
-.sp-headline{font-size:20px;font-weight:700;color:#eee;line-height:1.3;margin-bottom:6px;letter-spacing:-.2px;}
+.sp-headline{font-size:20px;font-weight:700;color:#eee;line-height:1.3;margin-bottom:6px;}
 .sp-sub{font-size:12.5px;color:#888;line-height:1.6;margin-bottom:12px;}
 .sp-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
 .sp-pill{font-size:11px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:20px;padding:4px 10px;color:#888;}
-.sp-trust{font-size:11px;color:#555;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.sp-trust{font-size:11px;color:#555;margin-bottom:12px;}
 .sp-trust b{color:#4d9a82;}
-.sp-btn-main{
-  width:100%;padding:12px;border-radius:10px;border:none;
-  background:#2d6a5a;color:#fff;font-size:14px;font-weight:600;
-  cursor:pointer;font-family:var(--ff);margin-bottom:7px;transition:opacity .15s;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.sp-btn-main:hover{opacity:.88;}
-.sp-btn-how{
-  width:100%;padding:9px;border-radius:10px;border:1px solid #2a2a2a;
-  background:transparent;color:#777;font-size:12px;cursor:pointer;
-  font-family:var(--ff);margin-bottom:7px;transition:all .15s;
-}
-.sp-btn-how:hover{border-color:#4d9a82;color:#4d9a82;}
-.sp-btn-sec{
-  width:100%;padding:9px;border-radius:10px;border:none;
-  background:#25d366;color:#fff;font-size:12px;font-weight:500;
-  cursor:pointer;font-family:var(--ff);margin-bottom:10px;
-  display:flex;align-items:center;justify-content:center;gap:7px;
-}
-.sp-footer{font-size:11px;color:#444;text-align:center;line-height:1.6;}
-.sp-footer a{color:#666;text-decoration:underline;cursor:pointer;}
-/* Activity box */
 .sp-activity{background:#1a1a1a;border:1px solid #252525;border-radius:10px;padding:9px 12px;margin-bottom:12px;display:flex;gap:9px;align-items:flex-start;}
 .sp-act-dot{width:7px;height:7px;border-radius:50%;background:#4d9a82;margin-top:5px;flex-shrink:0;animation:livePulse 1.4s ease infinite;}
 .sp-act-text{font-size:11px;color:#888;line-height:1.5;}
-.sp-act-text b{color:#4d9a82;font-weight:700;}
+.sp-act-text b{color:#4d9a82;}
+.sp-btn-main{width:100%;padding:12px;border-radius:10px;border:none;background:#2d6a5a;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ff);margin-bottom:7px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.sp-btn-how{width:100%;padding:9px;border-radius:10px;border:1px solid #2a2a2a;background:transparent;color:#777;font-size:12px;cursor:pointer;font-family:var(--ff);margin-bottom:7px;}
+.sp-btn-sec{width:100%;padding:9px;border-radius:10px;border:none;background:#25d366;color:#fff;font-size:12px;cursor:pointer;font-family:var(--ff);margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:7px;}
+.sp-footer{font-size:11px;color:#444;text-align:center;line-height:1.6;}
+.sp-footer a{color:#666;text-decoration:underline;cursor:pointer;}
 
 /* ══ APP ══ */
-#app{display:block;height:100vh;overflow:hidden;position:fixed;inset:0;background:var(--bg);}
+#app{display:block;height:100vh;overflow:hidden;position:fixed;inset:0;background:transparent;}
 #topbar{display:none !important;}
 
 /* ══ MAP ══ */
-#map-wrap{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1;}
+#map-wrap{position:fixed;inset:0;z-index:1;}
 #map{width:100%;height:100%;}
 .leaflet-control-attribution{display:none !important;}
 .leaflet-control-zoom{border:1px solid #e0e0e0 !important;border-radius:10px !important;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1) !important;}
 .leaflet-control-zoom a{background:#fff !important;color:#555 !important;border-color:#e0e0e0 !important;}
+.leaflet-popup-content-wrapper{background:#fff !important;border:1px solid #e8e8e8 !important;border-radius:12px !important;color:#1a1a1a !important;box-shadow:0 4px 20px rgba(0,0,0,.12) !important;}
+.leaflet-popup-tip{background:#fff !important;}
+.leaflet-popup-content{margin:12px 15px !important;min-width:170px;}
+.pp-view{display:block;margin-top:10px;font-size:12px;color:#fff;background:#2d6a5a;padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:600;border:none;font-family:var(--ff);width:100%;text-align:center;}
+.pp-t{font-size:10px;padding:2px 7px;border-radius:6px;background:#f5f5f5;border:1px solid #e8e8e8;color:#666;}
 
-/* ══ FLOATING CONTROLS ══ */
+/* ══ TOP CONTROLS — ONE unified block ══ */
 #gm-top-controls{
   position:fixed;top:10px;left:50%;transform:translateX(-50%);
-  z-index:900;display:flex;flex-direction:column;align-items:center;gap:6px;
-  width:auto;max-width:600px;min-width:320px;pointer-events:none;
+  z-index:900;width:calc(100% - 24px);max-width:620px;pointer-events:none;
 }
 #gm-top-controls>*{pointer-events:all;}
-#gm-top-controls .gm-search-block{width:100%;}
 
-/* Search block: search row + neighbourhood chips as ONE dark card */
 .gm-search-block{
-  background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;
-  box-shadow:0 4px 20px rgba(0,0,0,.4);overflow:hidden;
+  background:rgba(20,20,20,.94);border:1px solid #2a2a2a;border-radius:12px;
+  box-shadow:0 4px 24px rgba(0,0,0,.35);overflow:hidden;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
 }
+
+/* Row 1 — search + rent/buy + filter + menu */
 .gm-search-row{
   display:flex;align-items:center;gap:6px;
-  padding:5px 5px 5px 12px;border-bottom:1px solid #222;height:40px;
+  padding:5px 6px 5px 12px;border-bottom:1px solid rgba(255,255,255,.05);
+  height:42px;
 }
-.gm-search-box{flex:1;position:relative;display:flex;align-items:center;}
+.gm-search-box{flex:1;display:flex;align-items:center;gap:6px;min-width:0;}
+.gm-search-ico{font-size:13px;color:#555;flex-shrink:0;}
 .gm-search-box input{
-  width:100%;background:transparent;border:none;
-  padding:0 6px 0 20px;height:28px;
-  font-size:13px;color:#eee;font-family:var(--ff);outline:none;
+  flex:1;background:transparent;border:none;outline:none;
+  font-size:13px;color:#eee;font-family:var(--ff);min-width:0;
 }
 .gm-search-box input::placeholder{color:#555;}
-.gm-search-ico{position:absolute;left:2px;font-size:12px;color:#555;pointer-events:none;}
+.gm-divider{width:1px;height:16px;background:#2a2a2a;flex-shrink:0;}
+.gm-mode-toggle{display:flex;background:#0e0e0e;border-radius:6px;padding:2px;flex-shrink:0;}
+.gm-mode-btn{padding:4px 10px;border-radius:4px;border:none;background:transparent;color:#555;font-size:11px;font-weight:600;font-family:var(--ff);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.gm-mode-btn.on{background:#252525;color:#eee;}
 .gm-filter-btn{
-  background:#252525;border:1px solid #333;border-radius:8px;
-  padding:5px 12px;font-size:11.5px;font-weight:700;color:#ccc;
-  font-family:var(--ff);cursor:pointer;display:flex;align-items:center;gap:5px;
-  transition:all .2s;white-space:nowrap;flex-shrink:0;
+  background:#252525;border:1px solid #333;border-radius:7px;
+  padding:5px 10px;font-size:11px;font-weight:600;color:#ccc;
+  font-family:var(--ff);cursor:pointer;display:flex;align-items:center;gap:4px;
+  flex-shrink:0;transition:all .2s;white-space:nowrap;
 }
 .gm-filter-btn:hover{border-color:#4d9a82;color:#4d9a82;}
-.gm-search-div{width:1px;height:16px;background:#2a2a2a;flex-shrink:0;}
+.gm-menu-btn{
+  width:30px;height:30px;background:#252525;border:1px solid #333;
+  border-radius:7px;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;flex-shrink:0;transition:all .2s;
+}
+.gm-menu-btn:hover{border-color:#4d9a82;}
+.gm-menu-line{width:12px;height:1.5px;background:#aaa;border-radius:2px;}
 
-/* Neighbourhood chips row — INSIDE search block */
+/* Row 2 — neighbourhood chips */
 .gm-hood-row{
-  display:flex;align-items:center;gap:5px;
-  overflow-x:auto;padding:6px 10px;
-  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+  display:flex;align-items:center;gap:5px;overflow-x:auto;
+  padding:6px 10px;scrollbar-width:none;
 }
 .gm-hood-row::-webkit-scrollbar{display:none;}
 .gm-hood-chip{
@@ -156,82 +139,99 @@ body{min-height:100%;font-family:var(--ff);background:var(--bg);color:var(--ink)
 .gm-hood-chip:hover{border-color:#4d9a82;color:#4d9a82;}
 .gm-hood-chip.on{background:#2d6a5a;border-color:#2d6a5a;color:#fff;font-weight:600;}
 
-/* Action row */
-.gm-action-row{
-  display:flex;align-items:center;justify-content:center;gap:2px;
-  background:#1a1a1a;border:1px solid #2a2a2a;
-  border-radius:12px;padding:4px 10px;
-  box-shadow:0 4px 20px rgba(0,0,0,.35);
-  width:fit-content;
-}
-.gm-mode-toggle{display:flex;background:#0e0e0e;border-radius:8px;padding:2px;flex-shrink:0;}
-.gm-mode-btn{
-  padding:5px 12px;border-radius:6px;border:none;background:transparent;color:#555;
-  font-size:11.5px;font-weight:600;font-family:var(--ff);cursor:pointer;transition:all .2s;
-}
-.gm-mode-btn.on{background:#252525;color:#eee;}
-.gm-act-btn{
-  padding:5px 9px;border-radius:6px;border:none;
-  background:transparent;color:#888;font-size:11.5px;font-weight:500;
-  font-family:var(--ff);cursor:pointer;transition:all .2s;white-space:nowrap;
-  display:flex;align-items:center;gap:3px;
-}
-.gm-act-btn:hover{background:rgba(255,255,255,.06);color:#eee;}
-
-/* Mobile */
-@media(max-width:768px){
-  #gm-top-controls{width:calc(100% - 16px);max-width:100%;top:6px;}
-  .gm-search-box input{font-size:16px !important;}
-  .gm-act-btn{font-size:11px;padding:4px 7px;}
-  .gm-hood-chip{font-size:10.5px;padding:3px 9px;}
-}
-
-/* Right toolbar */
+/* ══ RIGHT TOOLBAR ══ */
 #gm-right-toolbar{
   position:fixed;top:50%;right:12px;transform:translateY(-50%);
   z-index:800;display:flex;flex-direction:column;gap:4px;
 }
 .gm-rt-btn{
-  width:38px;height:38px;border-radius:10px;
-  background:#1a1a1a;border:1px solid #2a2a2a;
+  width:36px;height:36px;border-radius:10px;
+  background:rgba(20,20,20,.92);border:1px solid #2a2a2a;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
-  color:#888;font-size:15px;transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.3);
-  position:relative;
+  color:#888;font-size:14px;transition:all .2s;
+  box-shadow:0 2px 12px rgba(0,0,0,.3);position:relative;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
 }
 .gm-rt-btn:hover{border-color:#4d9a82;color:#4d9a82;}
-.gm-rt-label{
-  position:absolute;right:calc(100% + 8px);
-  background:#1a1a1a;border:1px solid #2a2a2a;border-radius:6px;padding:3px 9px;
-  font-size:10.5px;color:#999;white-space:nowrap;
-  opacity:0;pointer-events:none;transition:opacity .15s;
-}
+.gm-rt-label{position:absolute;right:calc(100% + 8px);background:rgba(20,20,20,.92);border:1px solid #2a2a2a;border-radius:6px;padding:3px 9px;font-size:10px;color:#999;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;}
 .gm-rt-btn:hover .gm-rt-label{opacity:1;}
 
-/* Bottom stats */
-#gm-stats-row{position:fixed;bottom:12px;left:14px;z-index:800;display:flex;gap:6px;}
+/* ══ STATS ROW ══ */
+#gm-stats-row{position:fixed;bottom:12px;left:14px;z-index:800;display:flex;gap:5px;}
 .gm-stat-chip{
-  background:#1a1a1a;border:1px solid #2a2a2a;border-radius:20px;
-  padding:5px 12px;font-size:11px;color:#999;
-  box-shadow:0 4px 16px rgba(0,0,0,.25);display:flex;align-items:center;gap:4px;
+  background:rgba(20,20,20,.92);border:1px solid #2a2a2a;border-radius:20px;
+  padding:5px 10px;font-size:11px;color:#999;
+  box-shadow:0 2px 10px rgba(0,0,0,.2);display:flex;align-items:center;gap:4px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
 }
 .gm-stat-chip b{color:#4d9a82;font-weight:700;}
 
-#gm-bottom-attr{
-  position:fixed;bottom:12px;right:14px;z-index:800;
-  display:flex;align-items:center;gap:12px;font-size:10.5px;color:#444;
+/* ══ BOTTOM CTA ROW — two pills ══ */
+#bottom-cta-row{
+  position:fixed;bottom:12px;right:12px;z-index:800;
+  display:flex;gap:8px;align-items:center;
 }
-#gm-bottom-attr a{color:#555;text-decoration:none;cursor:pointer;}
+#list-btn{
+  background:rgba(20,20,20,.92);color:#ccc;
+  border:1px solid #2a2a2a;border-radius:24px;
+  padding:10px 14px;font-size:12px;font-weight:600;font-family:var(--ff);
+  cursor:pointer;display:flex;align-items:center;gap:6px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:0 4px 16px rgba(0,0,0,.3);transition:all .2s;
+}
+#list-btn:hover{border-color:#4d9a82;color:#4d9a82;}
+#talk-btn{
+  background:#2d6a5a;color:#fff;border:none;border-radius:24px;
+  padding:10px 14px;font-size:12px;font-weight:700;font-family:var(--ff);
+  cursor:pointer;display:flex;align-items:center;gap:6px;
+  box-shadow:0 4px 20px rgba(45,106,90,.4);transition:all .2s;
+}
+#talk-btn:hover{opacity:.9;transform:translateY(-1px);}
+#talk-btn::before{content:'';width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.7);animation:talkPulse 1.8s ease infinite;}
+@keyframes talkPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.3)}}
+
+/* ══ HAMBURGER MENU — floating card, same as detail panel ══ */
+#menu-overlay{display:none;position:fixed;inset:0;z-index:1700;background:rgba(0,0,0,.3);backdrop-filter:blur(2px);}
+#menu-overlay.open{display:block;}
+#menu-sheet{
+  display:none;
+  position:fixed;right:12px;top:50%;transform:translateY(-50%);
+  width:260px;max-height:calc(100vh - 80px);
+  z-index:1800;background:#111;border:1px solid #1e1e1e;
+  border-radius:14px;overflow-y:auto;
+  box-shadow:0 8px 40px rgba(0,0,0,.55);
+  padding-bottom:8px;
+}
+#menu-sheet.open{display:block;animation:slideInRight .28s cubic-bezier(.22,.61,.36,1) both;}
+.menu-handle{display:none;}
+.menu-close-row{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:4px;}
+.menu-logo{font-size:15px;font-weight:700;color:#eee;}
+.menu-logo span{color:#4d9a82;}
+.menu-x{width:26px;height:26px;border-radius:50%;background:rgba(192,71,42,.06);border:1px solid rgba(192,71,42,.25);display:flex;align-items:center;justify-content:center;font-size:12px;color:#c0472a;cursor:pointer;}
+.menu-section-title{font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#444;padding:8px 14px 3px;}
+.menu-item{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;transition:background .15s;}
+.menu-item:hover{background:#1a1a1a;}
+.menu-item-ico{width:32px;height:32px;background:#1a1a1a;border:1px solid #252525;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.menu-item-text{font-size:12.5px;font-weight:500;color:#eee;}
+.menu-item-sub{font-size:10px;color:#555;margin-top:1px;}
+.menu-sep{height:1px;background:#1e1e1e;margin:3px 0;}
+
+/* Mobile — bottom sheet like dp on mobile */
+@media(max-width:768px){
+  #menu-sheet{bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;width:100% !important;max-width:100% !important;transform:none !important;max-height:80vh !important;border-radius:18px 18px 0 0 !important;}
+  #menu-sheet.open{animation:slideUp .26s ease both !important;}
+}
 
 /* ══ SEARCH DROPDOWN ══ */
 #s-dd{
-  display:none;position:fixed;top:92px;left:50%;transform:translateX(-50%);
+  display:none;position:fixed;top:62px;left:50%;transform:translateX(-50%);
   width:calc(100% - 40px);max-width:580px;z-index:2000;
-  background:#1a1a1a;border:1px solid #2a2a2a;border-radius:14px;
+  background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;
   box-shadow:0 12px 40px rgba(0,0,0,.4);max-height:50vh;overflow-y:auto;
 }
 #s-dd.open{display:block;}
 .dd-sec{padding:6px 0;}
-.dd-label{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#555;padding:0 14px 5px;font-weight:500;}
+.dd-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#555;padding:0 14px 5px;font-weight:500;}
 .dd-row{padding:9px 14px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:10px;transition:background .1s;}
 .dd-row:hover{background:#252525;}
 .dd-name{font-weight:500;color:#eee;}
@@ -239,562 +239,385 @@ body{min-height:100%;font-family:var(--ff);background:var(--bg);color:var(--ink)
 .dd-sep{height:1px;background:#252525;margin:3px 0;}
 
 /* ══ FILTER MODAL ══ */
-#gm-filter-overlay{
-  display:none;position:fixed;inset:0;z-index:1700;
-  background:rgba(0,0,0,.5);backdrop-filter:blur(4px);
-  align-items:center;justify-content:center;
-}
+#gm-filter-overlay{display:none;position:fixed;inset:0;z-index:1700;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);align-items:center;justify-content:flex-end;padding:12px;}
 #gm-filter-overlay.open{display:flex;}
-.gm-filter-modal{
-  background:#151515;border:1px solid #252525;border-radius:16px;
-  padding:24px 22px;width:calc(100% - 32px);max-width:440px;
-  max-height:85vh;overflow-y:auto;position:relative;animation:fadeUp .25s ease;
-}
+.gm-filter-modal{background:#151515;border:1px solid #252525;border-radius:14px;padding:20px 20px 24px;width:400px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);overflow-y:auto;position:relative;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
 .gm-filter-modal::-webkit-scrollbar{width:3px;}
 .gm-filter-modal::-webkit-scrollbar-thumb{background:#333;border-radius:4px;}
+.gf-handle{width:36px;height:4px;background:#2a2a2a;border-radius:4px;margin:0 auto 16px;}
 .gf-title{font-size:17px;font-weight:700;color:#eee;margin-bottom:4px;}
 .gf-sub{font-size:12px;color:#666;margin-bottom:20px;}
-.gf-close{position:absolute;top:12px;right:14px;background:none;border:none;color:#666;font-size:18px;cursor:pointer;}
+.gf-close{position:absolute;top:18px;right:18px;background:none;border:none;color:#666;font-size:18px;cursor:pointer;}
 .gf-section{margin-bottom:18px;}
-.gf-label{font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#666;margin-bottom:8px;}
+.gf-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#666;margin-bottom:8px;}
 .gf-chips{display:flex;flex-wrap:wrap;gap:6px;}
-.gf-chip{
-  padding:8px 14px;border-radius:20px;border:1px solid #2a2a2a;
-  background:transparent;color:#999;font-size:12px;font-weight:500;
-  cursor:pointer;font-family:var(--ff);transition:all .15s;
-}
-.gf-chip:hover{border-color:var(--green-mid);color:#ccc;}
+.gf-chip{padding:8px 14px;border-radius:20px;border:1px solid #2a2a2a;background:transparent;color:#999;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--ff);transition:all .15s;}
+.gf-chip:hover{border-color:var(--green-mid);}
 .gf-chip.on{background:#2d6a5a;border-color:#2d6a5a;color:#fff;}
-/* Range slider */
 .gf-range-wrap{position:relative;height:4px;background:#252525;border-radius:4px;margin:12px 0 8px;}
-.gf-range-fill{position:absolute;height:100%;background:var(--green-mid);border-radius:4px;left:0;right:0;}
-.gf-range-wrap input[type="range"]{
-  -webkit-appearance:none;position:absolute;width:100%;height:4px;
-  top:0;left:0;background:transparent;pointer-events:none;margin:0;cursor:pointer;
-}
-.gf-range-wrap input[type="range"]::-webkit-slider-thumb{
-  -webkit-appearance:none;width:18px;height:18px;border-radius:50%;
-  background:#eee;border:2px solid var(--green-mid);cursor:pointer;
-  pointer-events:all;box-shadow:0 2px 6px rgba(0,0,0,.4);
-}
-.gf-range-wrap input[type="range"]::-moz-range-thumb{
-  width:18px;height:18px;border-radius:50%;
-  background:#eee;border:2px solid var(--green-mid);cursor:pointer;pointer-events:all;
-}
+.gf-range-fill{position:absolute;height:100%;background:var(--green-mid);border-radius:4px;}
+.gf-range-wrap input[type="range"]{-webkit-appearance:none;position:absolute;width:100%;height:4px;top:0;left:0;background:transparent;pointer-events:none;margin:0;cursor:pointer;}
+.gf-range-wrap input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#eee;border:2px solid var(--green-mid);cursor:pointer;pointer-events:all;}
+.gf-range-wrap input[type="range"]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#eee;border:2px solid var(--green-mid);cursor:pointer;pointer-events:all;}
 .gf-range-labels{display:flex;justify-content:space-between;font-size:10px;color:#444;}
 .gf-range-readout{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
 .gf-range-val{font-size:13px;font-weight:700;color:var(--green-mid);}
-.gf-range-sep{font-size:11px;color:#444;}
-/* Filter buttons */
 .gf-actions{display:flex;gap:8px;margin-top:20px;}
-.gf-reset{
-  flex:1;padding:12px;border-radius:10px;border:1px solid #252525;
-  background:transparent;color:#999;font-size:13px;font-family:var(--ff);cursor:pointer;
-}
-.gf-apply{
-  flex:2;padding:12px;border-radius:10px;border:none;
-  background:var(--green-mid);color:#fff;font-size:13px;font-weight:600;
-  font-family:var(--ff);cursor:pointer;
-}
+.gf-reset{flex:1;padding:12px;border-radius:10px;border:1px solid #252525;background:transparent;color:#999;font-size:13px;font-family:var(--ff);cursor:pointer;}
+.gf-apply{flex:2;padding:12px;border-radius:10px;border:none;background:var(--green-mid);color:#fff;font-size:13px;font-weight:600;font-family:var(--ff);cursor:pointer;}
 
-/* ══ DETAIL PANEL — right-side floating card ══ */
+/* ══ DETAIL PANEL ══ */
 #dp{
   display:none;
   position:fixed;right:12px;top:50%;transform:translateY(-50%);
   width:340px;max-height:calc(100vh - 80px);
   z-index:800;background:#111;border:1px solid #1e1e1e;
   border-radius:14px;flex-direction:column;
-  box-shadow:-4px 8px 40px rgba(0,0,0,.55);
-  overflow:hidden;
+  box-shadow:0 8px 40px rgba(0,0,0,.5);overflow:hidden;
 }
 #dp.open{display:flex;animation:slideInRight .28s cubic-bezier(.22,.61,.36,1) both;}
 @keyframes slideInRight{from{transform:translateY(-50%) translateX(20px);opacity:0}to{transform:translateY(-50%) translateX(0);opacity:1}}
-
+@keyframes slideFromRight{from{transform:translateX(24px);opacity:0}to{transform:translateX(0);opacity:1}}
 .dp-hd{flex-shrink:0;padding:12px 14px 10px;border-bottom:1px solid #1e1e1e;}
 .dp-hd-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-.dp-type{font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--green-mid);display:flex;align-items:center;gap:5px;}
+.dp-type{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--green-mid);display:flex;align-items:center;gap:5px;}
 .v-dot{width:6px;height:6px;border-radius:50%;background:var(--green-mid);animation:vPulse 2s infinite;}
 @keyframes vPulse{0%,100%{opacity:1}50%{opacity:.5}}
 .dp-actions{display:flex;gap:5px;}
-.dp-btn{
-  width:30px;height:30px;border-radius:50%;border:1px solid #252525;background:transparent;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  font-size:12px;color:#666;transition:all .15s;
-}
+.dp-btn{width:30px;height:30px;border-radius:50%;border:1px solid #252525;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:#666;transition:all .15s;}
 .dp-btn:hover{border-color:#999;color:#eee;}
 .dp-btn.saved{border-color:var(--gold);color:var(--gold);}
-.dp-close{
-  width:30px;height:30px;border-radius:50%;
-  border:1px solid rgba(192,71,42,.25);background:rgba(192,71,42,.06);
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  font-size:12px;color:var(--rust);transition:all .15s;
-}
-
+.dp-close{width:30px;height:30px;border-radius:50%;border:1px solid rgba(192,71,42,.25);background:rgba(192,71,42,.06);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--rust);}
 .dp-price{font-size:24px;font-weight:700;color:#eee;line-height:1;display:flex;align-items:baseline;gap:5px;margin-bottom:6px;}
 .dp-price-unit{font-size:12px;color:#666;font-weight:400;}
-.dp-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-.dp-tag{display:flex;align-items:center;gap:4px;padding:4px 9px;border-radius:20px;border:1px solid #252525;font-size:11px;font-weight:500;color:#999;background:#1a1a1a;}
-.dp-status-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
-.s-pill{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;}
+.dp-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.dp-tag{padding:3px 8px;border-radius:14px;border:1px solid #252525;font-size:11px;color:#888;background:#1a1a1a;}
+.dp-status-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.s-pill{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:3px 9px;font-size:11px;font-weight:600;}
 .s-avail{background:rgba(45,106,90,.15);color:var(--green-mid);border:1px solid rgba(45,106,90,.18);}
-.avg-badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;}
+.avg-badge{font-size:11px;font-weight:600;padding:2px 7px;border-radius:6px;}
 .avg-below{background:rgba(45,106,90,.15);color:var(--green-mid);}
 .avg-above{background:rgba(192,71,42,.12);color:var(--rust);}
 .avg-fair{background:rgba(196,148,58,.1);color:var(--gold);}
-
-/* Verified badge in detail */
-.v-badge-wrap{display:flex;align-items:center;gap:8px;background:rgba(45,106,90,.1);border:1px solid rgba(45,106,90,.15);border-radius:8px;padding:8px 12px;margin-top:10px;}
-.v-badge-txt{font-size:12px;color:var(--green-mid);font-weight:500;line-height:1.4;}
-.v-badge-date{font-size:10px;color:#4d9a82;margin-top:1px;}
-
+.v-badge-wrap{display:flex;align-items:center;gap:8px;background:rgba(45,106,90,.1);border:1px solid rgba(45,106,90,.15);border-radius:8px;padding:7px 10px;margin-top:8px;}
+.v-badge-txt{font-size:11px;color:var(--green-mid);font-weight:500;line-height:1.4;}
+.v-badge-date{font-size:10px;color:#4d9a82;}
 .dp-body{flex:1;overflow-y:auto;}
 .dp-body::-webkit-scrollbar{width:3px;}
 .dp-body::-webkit-scrollbar-thumb{background:#333;border-radius:4px;}
-
 .dp-sec{padding:10px 14px;border-bottom:1px solid #1e1e1e;}
-.dp-sec-lbl{font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#555;margin-bottom:8px;}
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.det-item{display:flex;flex-direction:column;gap:3px;}
+.dp-sec-lbl{font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#555;margin-bottom:8px;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.det-item{display:flex;flex-direction:column;gap:2px;}
 .det-lbl{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.5px;}
 .det-val{font-size:13px;font-weight:500;color:#ccc;}
-
-.agent-note{background:#1a1a1a;border-left:3px solid var(--green-mid);border-radius:0 8px 8px 0;padding:12px 14px;}
-.agent-note-txt{font-size:13px;color:#999;line-height:1.65;}
-.agent-note-by{font-size:11px;color:#555;margin-top:6px;}
-
-/* What to Know */
-.what-to-know{background:rgba(196,148,58,.08);border:1px solid rgba(196,148,58,.3);border-left:3px solid var(--gold);border-radius:10px;padding:12px 14px;margin:12px 0 4px;display:flex;gap:11px;}
-.wtk-ico{font-size:18px;flex-shrink:0;}
-.wtk-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
-.wtk-text{font-size:13px;color:#ccc;line-height:1.55;}
-
-/* Cost card */
-.cost-card{background:#1a1a1a;border:1px solid #1e1e1e;border-radius:10px;padding:14px;}
-.cost-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;}
-.cost-row.total{border-top:1px solid #252525;padding-top:10px;margin-top:6px;font-weight:700;font-size:15px;}
+.agent-note{background:#1a1a1a;border-left:3px solid var(--green-mid);border-radius:0 8px 8px 0;padding:10px 12px;}
+.agent-note-txt{font-size:12px;color:#888;line-height:1.6;}
+.agent-note-by{font-size:10px;color:#555;margin-top:5px;}
+.what-to-know{background:rgba(196,148,58,.08);border:1px solid rgba(196,148,58,.3);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 12px;margin:10px 0 4px;display:flex;gap:10px;}
+.wtk-ico{font-size:16px;flex-shrink:0;}
+.wtk-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
+.wtk-text{font-size:12px;color:#ccc;line-height:1.5;}
+.cost-card{background:#1a1a1a;border:1px solid #1e1e1e;border-radius:8px;padding:12px;}
+.cost-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:12px;}
+.cost-row.total{border-top:1px solid #252525;padding-top:8px;margin-top:4px;font-weight:700;font-size:14px;}
 .cost-label{color:#888;}
 .cost-value{color:#ccc;font-weight:500;}
-.cost-row.total .cost-value{color:var(--green-mid);font-size:18px;}
-.cost-note{font-size:11px;color:#555;margin-top:4px;}
-
-/* Neg history */
-.neg-list{display:flex;flex-direction:column;gap:7px;}
-.neg-row{display:flex;align-items:center;justify-content:space-between;background:#1a1a1a;padding:9px 12px;border-radius:8px;}
-.neg-month{font-size:12px;color:#666;}
-.neg-price{font-size:16px;font-weight:700;color:#ccc;}
-.neg-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;}
+.cost-row.total .cost-value{color:var(--green-mid);}
+.cost-note{font-size:10px;color:#555;margin-top:4px;}
+.neg-list{display:flex;flex-direction:column;gap:6px;}
+.neg-row{display:flex;align-items:center;justify-content:space-between;background:#1a1a1a;padding:8px 10px;border-radius:7px;}
+.neg-month{font-size:11px;color:#666;}
+.neg-price{font-size:14px;font-weight:700;color:#ccc;}
+.neg-tag{font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;}
 .neg-below{background:rgba(45,106,90,.15);color:var(--green-mid);}
 .neg-at{background:rgba(196,148,58,.1);color:var(--gold);}
-.neg-note{font-size:11px;color:#555;margin-top:7px;line-height:1.5;}
-
-/* Scores */
-.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.score-card{padding:10px 12px;background:#1a1a1a;border-radius:8px;}
-.score-lbl{font-size:11px;color:#666;margin-bottom:6px;}
-.score-bar{height:4px;background:#252525;border-radius:4px;overflow:hidden;margin-bottom:4px;}
-.score-fill{height:100%;border-radius:4px;transition:width .6s;}
-.score-val{font-size:11px;font-weight:600;color:#888;}
-
-/* Visit booking */
-.slots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;}
-.slot-btn{padding:9px 4px;border-radius:8px;border:1.5px solid #252525;background:transparent;cursor:pointer;font-family:var(--ff);text-align:center;transition:all .15s;}
+.neg-note{font-size:10px;color:#555;margin-top:6px;line-height:1.5;}
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.score-card{padding:8px 10px;background:#1a1a1a;border-radius:7px;}
+.score-lbl{font-size:10px;color:#666;margin-bottom:5px;}
+.score-bar{height:3px;background:#252525;border-radius:3px;overflow:hidden;margin-bottom:3px;}
+.score-fill{height:100%;border-radius:3px;}
+.score-val{font-size:10px;font-weight:600;color:#777;}
+.slots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px;}
+.slot-btn{padding:8px 4px;border-radius:7px;border:1.5px solid #252525;background:transparent;cursor:pointer;font-family:var(--ff);text-align:center;transition:all .15s;}
 .slot-btn:hover,.slot-btn.sel{border-color:var(--green-mid);background:rgba(45,106,90,.1);}
-.slot-day{font-size:11px;font-weight:600;color:#ccc;}
-.slot-time{font-size:10px;color:#666;margin-top:1px;}
-.slot-avail{font-size:9px;color:var(--green-mid);font-weight:600;margin-top:1px;}
-
+.slot-day{font-size:10px;font-weight:600;color:#ccc;}
+.slot-time{font-size:9px;color:#666;margin-top:1px;}
+.slot-avail{font-size:8px;color:var(--green-mid);font-weight:600;margin-top:1px;}
 .v-form{display:none;}
 .v-form.show{display:block;}
-.v-input{width:100%;background:#1a1a1a;border:1px solid #252525;border-radius:8px;padding:9px 12px;font-size:13px;color:#eee;font-family:var(--ff);outline:none;margin-bottom:7px;}
+.v-input{width:100%;background:#1a1a1a;border:1px solid #252525;border-radius:7px;padding:8px 10px;font-size:13px;color:#eee;font-family:var(--ff);outline:none;margin-bottom:6px;}
 .v-input:focus{border-color:var(--green-mid);}
-.v-row{display:flex;gap:7px;}
-.v-note{font-size:11px;color:#666;margin-bottom:9px;line-height:1.6;}
-.btn-book{width:100%;padding:12px;border-radius:10px;border:none;background:var(--green);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ff);display:flex;align-items:center;justify-content:center;gap:7px;}
-.v-confirm{display:none;background:rgba(45,106,90,.1);border:1px solid rgba(45,106,90,.18);border-radius:10px;padding:14px;text-align:center;}
+.v-row{display:flex;gap:6px;}
+.v-note{font-size:10px;color:#666;margin-bottom:8px;line-height:1.6;}
+.btn-book{width:100%;padding:11px;border-radius:9px;border:none;background:var(--green);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ff);display:flex;align-items:center;justify-content:center;gap:6px;}
+.v-confirm{display:none;background:rgba(45,106,90,.1);border:1px solid rgba(45,106,90,.18);border-radius:9px;padding:12px;text-align:center;}
 .v-confirm.show{display:block;}
-.vc-ico{font-size:26px;margin-bottom:7px;}
-.vc-title{font-size:14px;font-weight:600;color:var(--green-mid);margin-bottom:3px;}
-.vc-sub{font-size:12px;color:#888;line-height:1.5;}
-
-/* Similar */
-.sim-grid{display:flex;flex-direction:column;gap:7px;}
-.sim-card{display:flex;align-items:flex-start;gap:11px;padding:10px 12px;border:1.5px solid #252525;border-radius:10px;cursor:pointer;transition:all .15s;}
+.vc-ico{font-size:24px;margin-bottom:6px;}
+.vc-title{font-size:13px;font-weight:600;color:var(--green-mid);margin-bottom:3px;}
+.vc-sub{font-size:11px;color:#888;line-height:1.5;}
+.sim-grid{display:flex;flex-direction:column;gap:6px;}
+.sim-card{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;border:1.5px solid #252525;border-radius:9px;cursor:pointer;transition:all .15s;}
 .sim-card:hover{border-color:var(--green-mid);background:#1a1a1a;}
-.sim-price{font-size:15px;font-weight:700;color:#ccc;}
-.sim-det{font-size:11px;color:#666;margin-top:1px;}
-.sim-match{margin-left:auto;font-size:10px;font-weight:600;padding:2px 7px;background:rgba(45,106,90,.15);color:var(--green-mid);border-radius:6px;white-space:nowrap;}
-
-/* dp footer */
+.sim-price{font-size:14px;font-weight:700;color:#ccc;}
+.sim-det{font-size:10px;color:#666;margin-top:1px;}
+.sim-match{margin-left:auto;font-size:9px;font-weight:600;padding:2px 6px;background:rgba(45,106,90,.15);color:var(--green-mid);border-radius:5px;white-space:nowrap;}
 .dp-foot{flex-shrink:0;background:#111;border-top:1px solid #1e1e1e;padding:10px 14px;}
-.btn-interest{width:100%;padding:10px;border-radius:10px;border:none;background:var(--green);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ff);display:flex;align-items:center;justify-content:center;gap:7px;}
+.btn-interest{width:100%;padding:10px;border-radius:9px;border:none;background:var(--green);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ff);display:flex;align-items:center;justify-content:center;gap:6px;}
 .dp-foot-note{font-size:10px;color:#555;text-align:center;margin-top:5px;}
 
-/* Popups — white for light map */
-.leaflet-popup-content-wrapper{background:#fff !important;border:1px solid #e8e8e8 !important;border-radius:12px !important;color:#1a1a1a !important;box-shadow:0 4px 20px rgba(0,0,0,.12) !important;}
-.leaflet-popup-tip{background:#fff !important;}
-.leaflet-popup-content{margin:12px 15px !important;min-width:170px;}
-.pp-view{display:block;margin-top:10px;font-size:12px;color:#fff;background:#2d6a5a;padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:600;border:none;font-family:var(--ff);width:100%;text-align:center;}
-.pp-t{font-size:10px;padding:2px 7px;border-radius:6px;background:#f5f5f5;border:1px solid #e8e8e8;color:#666;}
+/* dp extras */
+.viewing-signal{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:500;color:var(--rust);background:rgba(192,71,42,.12);border:1px solid rgba(192,71,42,.15);border-radius:5px;padding:2px 7px;}
+.vs-dot{width:4px;height:4px;border-radius:50%;background:var(--rust);animation:vsPulse 1.2s ease infinite;flex-shrink:0;}
+@keyframes vsPulse{0%,100%{opacity:1}50%{opacity:.3}}
+.price-drop{display:inline-flex;align-items:center;gap:3px;background:rgba(192,71,42,.12);border:1px solid rgba(192,71,42,.2);border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--rust);}
+.dp-neg{display:inline-flex;align-items:center;gap:3px;background:rgba(196,148,58,.1);border:1px solid rgba(196,148,58,.22);border-radius:5px;padding:2px 7px;font-size:10px;font-weight:600;color:var(--gold);margin-bottom:6px;}
 
-/* Cluster */
-.km-cluster{width:36px;height:36px;border-radius:50%;background:var(--green);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid rgba(255,255,255,.3);box-shadow:0 2px 8px rgba(0,0,0,.3);}
+/* ══ SAVED DRAWER ══ */
+#saved-drawer{
+  display:none;position:fixed;right:12px;top:50%;transform:translateY(-50%);
+  width:340px;max-height:calc(100vh - 80px);
+  z-index:810;background:#111;border:1px solid #1e1e1e;
+  border-radius:14px;flex-direction:column;
+  box-shadow:0 8px 40px rgba(0,0,0,.5);overflow:hidden;
+}
+#saved-drawer.open{display:flex;animation:slideInRight .28s cubic-bezier(.22,.61,.36,1) both;}
+#saved-list-wrap{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:12px;}
+#saved-list-wrap::-webkit-scrollbar{width:3px;}
+#saved-list-wrap::-webkit-scrollbar-thumb{background:#333;border-radius:4px;}
+.saved-card{background:#1a1a1a;border:1px solid #252525;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:7px;}
+.saved-card:hover{border-color:#4d9a82;}
+.saved-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.saved-card-price{font-size:19px;font-weight:700;color:#eee;}
+.saved-card-price small{font-size:10px;color:#666;font-weight:400;}
+.saved-card-remove{background:rgba(192,71,42,.08);border:1px solid rgba(192,71,42,.2);border-radius:5px;padding:2px 7px;font-size:10px;color:#c0472a;cursor:pointer;flex-shrink:0;}
+.saved-card-area{font-size:11px;color:#888;}
+.saved-card-tags{display:flex;gap:4px;flex-wrap:wrap;}
+.saved-card-tag{font-size:9px;background:#222;border:1px solid #2a2a2a;border-radius:5px;padding:2px 6px;color:#777;}
+.saved-card-cta{width:100%;padding:8px;border-radius:7px;border:none;background:#2d6a5a;color:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--ff);}
+.saved-empty{text-align:center;padding:36px 16px;color:#555;}
+.saved-empty-ico{font-size:32px;margin-bottom:8px;}
+.saved-empty-t{font-size:13px;font-weight:600;color:#666;margin-bottom:4px;}
+.saved-empty-s{font-size:11px;color:#444;line-height:1.5;}
 
-/* ══ MODALS — all centered ══ */
-.overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.5);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:20px;}
-.overlay.open{display:flex;align-items:center;justify-content:center;}
-.modal{background:#181818;border:1px solid #252525;border-radius:20px;width:100%;max-width:460px;padding:26px 22px;max-height:90vh;overflow-y:auto;animation:fadeUp .22s ease;position:relative;color:#eee;}
-.m-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:17px;cursor:pointer;color:#666;line-height:1;padding:4px;}
-.m-ey{font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--green-mid);margin-bottom:5px;}
-.m-title{font-size:22px;font-weight:700;color:#eee;margin-bottom:4px;}
-.m-sub{font-size:13px;color:#888;margin-bottom:18px;line-height:1.5;}
-.m-note{background:rgba(45,106,90,.15);border-radius:8px;padding:10px 13px;font-size:12px;color:#6dbfa7;margin-bottom:16px;line-height:1.65;}
-.m-lbl{font-size:11px;font-weight:600;color:#888;margin-bottom:6px;display:block;}
-.m-input,.m-select{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px;font-size:13px;color:#eee;font-family:var(--ff);outline:none;margin-bottom:13px;}
+/* ══ TOAST ══ */
+#toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%);background:#151515;border:1px solid #252525;color:#eee;padding:9px 18px;border-radius:20px;font-size:12px;z-index:3000;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
+#toast.show{opacity:1;}
+
+/* ══ EMPTY STATE ══ */
+#empty-state{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:490;text-align:center;pointer-events:none;}
+.es-ico{font-size:32px;margin-bottom:8px;}
+.es-t{font-size:14px;font-weight:600;color:#eee;margin-bottom:4px;}
+.es-s{font-size:12px;color:#888;}
+
+/* ══ ACTIVITY TOAST ══ */
+#gm-activity-toast{
+  position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(60px);
+  z-index:850;background:rgba(20,20,20,.92);border:1px solid #2a2a2a;
+  border-radius:20px;padding:9px 16px;font-size:11px;color:#888;
+  backdrop-filter:blur(12px);
+  box-shadow:0 6px 24px rgba(0,0,0,.3);display:flex;align-items:center;gap:8px;
+  transition:transform .4s cubic-bezier(.22,.61,.36,1),opacity .4s;opacity:0;white-space:nowrap;
+}
+#gm-activity-toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+.gm-toast-dot{width:5px;height:5px;border-radius:50%;background:var(--green-mid);animation:livePulse 1.2s ease infinite;}
+
+/* ══ MODALS ══ */
+.overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);backdrop-filter:blur(5px);align-items:center;justify-content:flex-end;padding:12px;}
+.overlay.open{display:flex;}
+.modal{background:#181818;border:1px solid #252525;border-radius:14px;width:380px;max-width:calc(100vw - 24px);padding:20px 20px 24px;max-height:calc(100vh - 24px);overflow-y:auto;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;position:relative;color:#eee;}
+.m-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:17px;cursor:pointer;color:#666;padding:4px;}
+.m-ey{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--green-mid);margin-bottom:5px;}
+.m-title{font-size:20px;font-weight:700;color:#eee;margin-bottom:4px;}
+.m-sub{font-size:13px;color:#888;margin-bottom:16px;line-height:1.5;}
+.m-note{background:rgba(45,106,90,.15);border-radius:8px;padding:10px 12px;font-size:12px;color:#6dbfa7;margin-bottom:14px;line-height:1.6;}
+.m-lbl{font-size:11px;font-weight:600;color:#888;margin-bottom:5px;display:block;}
+.m-input,.m-select{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px;font-size:16px;color:#eee;font-family:var(--ff);outline:none;margin-bottom:12px;}
 .m-input:focus,.m-select:focus{border-color:var(--green-mid);}
-.m-row{display:flex;gap:9px;}
+.m-row{display:flex;gap:8px;}
 .m-row .m-group{flex:1;}
-.m-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px;}
-.m-chip{padding:6px 12px;border-radius:20px;border:1px solid #2a2a2a;background:transparent;font-size:12px;font-weight:500;color:#999;cursor:pointer;transition:all .15s;font-family:var(--ff);}
-.m-chip:hover{border-color:var(--green-mid);}
+.m-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.m-chip{padding:6px 11px;border-radius:20px;border:1px solid #2a2a2a;background:transparent;font-size:12px;font-weight:500;color:#999;cursor:pointer;transition:all .15s;font-family:var(--ff);}
 .m-chip.on{background:#2d6a5a;border-color:#2d6a5a;color:#fff;}
 .btn-pri{width:100%;padding:12px;border-radius:10px;border:none;background:var(--green-mid);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ff);}
 .btn-sec{width:100%;padding:10px;border-radius:10px;border:1px solid #252525;background:transparent;color:#888;font-size:13px;cursor:pointer;font-family:var(--ff);margin-top:8px;}
 
-/* Dark overlay modals */
-.dark-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;}
-.dark-overlay.open{display:flex;align-items:center;justify-content:center;}
-.dark-modal{background:#1a1a1a;border:1px solid rgba(255,255,255,.1);border-radius:16px;width:100%;max-width:420px;padding:26px 22px;max-height:88vh;overflow-y:auto;position:relative;animation:fadeUp .22s ease;}
-.dm-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.08);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#888;cursor:pointer;}
+/* dark overlay modals */
+.dark-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);align-items:center;justify-content:flex-end;padding:12px;}
+.dark-overlay.open{display:flex;}
+.dark-modal,.guide-modal{background:#111;border:1px solid #1e1e1e;border-radius:14px;width:420px;max-width:calc(100vw - 24px);padding:20px 20px 24px;max-height:calc(100vh - 24px);overflow-y:auto;position:relative;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;}
+.dark-modal::-webkit-scrollbar,.guide-modal::-webkit-scrollbar{width:3px;}
+.dark-modal::-webkit-scrollbar-thumb,.guide-modal::-webkit-scrollbar-thumb{background:#333;border-radius:4px;}
+.dm-handle{display:none;}
+.dm-close{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.08);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#888;cursor:pointer;}
 .dm-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;}
-.dm-date{font-size:11px;color:#555;margin-bottom:18px;}
+.dm-date{font-size:11px;color:#555;margin-bottom:16px;}
 .dm-body{font-size:13px;color:#888;line-height:1.75;}
 .dm-body b{color:#ccc;}
-.dm-step{display:flex;gap:13px;margin-bottom:14px;align-items:flex-start;}
-.dm-step-n{width:28px;height:28px;border-radius:50%;background:#2d6a5a;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.dm-step-t{font-size:13px;font-weight:600;color:#ccc;margin-bottom:3px;}
-.dm-step-d{font-size:12px;color:#777;line-height:1.6;}
+.dm-sec{margin-bottom:14px;}
+.dm-sec-title{font-size:12px;font-weight:600;color:#aaa;margin-bottom:5px;}
 .dm-cta{width:100%;padding:12px;border-radius:10px;border:none;background:#2d6a5a;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ff);margin-top:6px;}
-.dm-sec{margin-bottom:16px;}
-.dm-sec-title{font-size:13px;font-weight:600;color:#aaa;margin-bottom:6px;}
 
-/* Share modal */
-#share-modal{display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.5);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:20px;}
-#share-modal.open{display:flex;align-items:center;justify-content:center;}
-.share-card{background:#1e1e1e;border-radius:20px;padding:24px;width:100%;max-width:360px;text-align:center;position:relative;}
+/* share modal */
+#share-modal{display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.45);backdrop-filter:blur(5px);align-items:center;justify-content:flex-end;padding:12px;}
+#share-modal.open{display:flex;}
+.share-card{background:#1e1e1e;border-radius:14px;padding:20px 20px 24px;width:340px;max-width:calc(100vw - 24px);text-align:center;position:relative;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;}
 
-/* Saved drawer — identical position/style to detail panel */
-#saved-drawer{
-  display:none;
-  position:fixed;right:12px;top:50%;transform:translateY(-50%);
-  width:340px;max-height:calc(100vh - 80px);
-  z-index:810;background:#111;border:1px solid #1e1e1e;
-  border-radius:14px;flex-direction:column;
-  box-shadow:-4px 8px 40px rgba(0,0,0,.55);
-  overflow:hidden;
-}
-#saved-drawer.open{display:flex;animation:slideInRight .28s cubic-bezier(.22,.61,.36,1) both;}
-#saved-list-wrap{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:14px;}
-#saved-list-wrap::-webkit-scrollbar{width:3px;}
-#saved-list-wrap::-webkit-scrollbar-thumb{background:#333;border-radius:4px;}
-/* Saved card */
-.saved-card{
-  background:#1a1a1a;border:1px solid #252525;border-radius:12px;
-  padding:13px 14px;cursor:pointer;transition:all .2s;
-  display:flex;flex-direction:column;gap:8px;
-}
-.saved-card:hover{border-color:#4d9a82;transform:translateY(-1px);}
-.saved-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
-.saved-card-price{font-size:20px;font-weight:700;color:#eee;line-height:1;}
-.saved-card-price small{font-size:11px;color:#666;font-weight:400;}
-.saved-card-remove{background:rgba(192,71,42,.08);border:1px solid rgba(192,71,42,.2);border-radius:6px;padding:3px 8px;font-size:11px;color:#c0472a;cursor:pointer;white-space:nowrap;flex-shrink:0;}
-.saved-card-area{font-size:12px;color:#888;display:flex;align-items:center;gap:4px;}
-.saved-card-tags{display:flex;gap:5px;flex-wrap:wrap;}
-.saved-card-tag{font-size:10px;background:#222;border:1px solid #2a2a2a;border-radius:6px;padding:2px 7px;color:#777;}
-.saved-card-cta{
-  width:100%;padding:9px;border-radius:8px;border:none;
-  background:#2d6a5a;color:#fff;font-size:12px;font-weight:600;
-  cursor:pointer;font-family:var(--ff);text-align:center;
-}
-.saved-empty{text-align:center;padding:40px 20px;color:#555;}
-.saved-empty-ico{font-size:36px;margin-bottom:10px;}
-.saved-empty-t{font-size:14px;font-weight:600;color:#666;margin-bottom:5px;}
-.saved-empty-s{font-size:12px;color:#444;line-height:1.5;}
-
-/* Toast */
-#toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:#151515;border:1px solid #252525;color:#eee;padding:10px 20px;border-radius:20px;font-size:13px;z-index:3000;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
-#toast.show{opacity:1;}
-
-/* Empty state */
-#empty-state{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:490;text-align:center;pointer-events:none;}
-.es-ico{font-size:34px;margin-bottom:8px;}
-.es-t{font-size:15px;font-weight:600;color:#eee;margin-bottom:4px;}
-.es-s{font-size:13px;color:#888;}
-
-/* Activity toast */
-#gm-activity-toast{
-  position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(60px);
-  z-index:850;background:#1a1a1a;border:1px solid #2a2a2a;
-  border-radius:20px;padding:10px 18px;font-size:12px;color:#999;
-  box-shadow:0 8px 30px rgba(0,0,0,.4);display:flex;align-items:center;gap:10px;
-  transition:transform .4s cubic-bezier(.22,.61,.36,1),opacity .4s;opacity:0;white-space:nowrap;
-}
-#gm-activity-toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-.gm-toast-dot{width:6px;height:6px;border-radius:50%;background:var(--green-mid);animation:livePulse 1.2s ease infinite;}
-
-/* Tooltip */
-.gm-tip{background:#151515 !important;border:1px solid #252525 !important;border-radius:8px !important;padding:5px 10px !important;font-family:var(--ff) !important;font-size:12px !important;color:#eee !important;box-shadow:0 4px 16px rgba(0,0,0,.4) !important;}
-
-/* ══ RESPONSIVE ══ */
-@media(max-width:768px){
-  #dp{bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;width:100% !important;max-width:100% !important;transform:none !important;max-height:78vh !important;border-radius:14px 14px 0 0 !important;z-index:1900 !important;}
-  #dp.open{animation:slideUpSheet .26s ease both !important;transform:none !important;}
-  #dp .dp-hd::before{content:'';display:block;width:36px;height:4px;background:#333;border-radius:4px;margin:0 auto 8px;}
-  #saved-drawer{bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;width:100% !important;max-width:100% !important;transform:none !important;max-height:78vh !important;border-radius:14px 14px 0 0 !important;z-index:1850 !important;}
-  #gm-right-toolbar{top:auto;bottom:50px;right:8px;transform:none;}
-  .gm-rt-btn{width:34px;height:34px;font-size:13px;border-radius:8px;}
-  #gm-stats-row{bottom:8px;left:8px;}
-  .gm-stat-chip{font-size:10px;padding:4px 8px;}
-  #gm-activity-toast{font-size:11px;padding:8px 14px;bottom:50px;}
-  /* Filter modal as bottom sheet on mobile */
-  #gm-filter-overlay{align-items:flex-end !important;padding:0 !important;}
-  .gm-filter-modal{max-width:100% !important;border-radius:18px 18px 0 0 !important;max-height:92dvh !important;animation:slideUpSheet .26s ease both !important;}
-  @keyframes slideUpSheet{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
-  /* Modals as bottom sheets */
-  .dark-overlay,.overlay,#share-modal{padding:0 !important;align-items:flex-end !important;}
-  .dark-modal,.modal,.share-card{width:100% !important;max-width:100% !important;border-radius:18px 18px 0 0 !important;max-height:92dvh !important;animation:slideUpSheet .26s ease both !important;}
-}
-
-@keyframes pop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
-
-/* ══ STEP-BY-STEP GUIDE ══ */
-.guide-modal{
-  background:#111;border:1px solid #1e1e1e;border-radius:18px;
-  width:100%;max-width:460px;max-height:88vh;
-  overflow-y:auto;position:relative;animation:fadeUp .25s ease;
-  -webkit-overflow-scrolling:touch;
-}
-.guide-modal::-webkit-scrollbar{width:3px;}
-.guide-modal::-webkit-scrollbar-thumb{background:#333;border-radius:4px;}
-
-.guide-header{
-  padding:22px 20px 16px;border-bottom:1px solid #1e1e1e;
-  background:linear-gradient(135deg,#111 0%,#161e1b 100%);
-  border-radius:18px 18px 0 0;
-}
-.guide-logo{font-size:18px;font-weight:700;color:#eee;margin-bottom:8px;}
+/* ══ GUIDE MODAL ══ */
+.guide-header{padding:0 0 14px;border-bottom:1px solid #1e1e1e;margin-bottom:14px;}
+.guide-logo{font-size:17px;font-weight:700;color:#eee;margin-bottom:6px;}
 .guide-logo span{color:#4d9a82;}
-.guide-title{font-size:22px;font-weight:700;color:#eee;letter-spacing:-.3px;margin-bottom:4px;}
-.guide-sub{font-size:13px;color:#666;}
-
-.guide-steps{padding:16px 16px 8px;}
-
-.guide-step{
-  display:flex;gap:0;margin-bottom:0;
-}
-.guide-step-left{
-  display:flex;flex-direction:column;align-items:center;
-  width:44px;flex-shrink:0;
-}
-.guide-step-num{
-  width:32px;height:32px;border-radius:50%;
-  background:#2d6a5a;color:#fff;
-  font-size:13px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;z-index:1;border:2px solid #111;
-}
-.guide-step-line{
-  width:2px;flex:1;background:#1e1e1e;
-  margin:4px 0;min-height:20px;
-}
+.guide-title{font-size:20px;font-weight:700;color:#eee;margin-bottom:3px;}
+.guide-sub{font-size:12px;color:#666;}
+.guide-steps{display:flex;flex-direction:column;gap:0;margin-bottom:6px;}
+.guide-step{display:flex;gap:0;}
+.guide-step-left{display:flex;flex-direction:column;align-items:center;width:42px;flex-shrink:0;}
+.guide-step-num{width:30px;height:30px;border-radius:50%;background:#2d6a5a;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid #111;}
+.guide-step-line{width:2px;flex:1;background:#1e1e1e;margin:3px 0;min-height:16px;}
 .guide-step.last .guide-step-line{display:none;}
-
-.guide-step-card{
-  flex:1;
-  border:1px solid #1e1e1e;border-radius:12px;
-  padding:13px 14px;margin-bottom:10px;
-  background:#141414;
-  transition:border-color .2s;
-}
+.guide-step-card{flex:1;border:1px solid #1e1e1e;border-radius:10px;padding:11px 12px;margin-bottom:8px;background:#141414;}
 .guide-step-card:hover{border-color:#2d6a5a;}
-.guide-step-ico{font-size:22px;margin-bottom:7px;}
-.guide-step-content{}
-.guide-step-title{
-  font-size:14px;font-weight:700;color:#eee;
-  margin-bottom:5px;letter-spacing:-.1px;
-}
-.guide-step-desc{
-  font-size:12.5px;color:#888;line-height:1.65;margin-bottom:8px;
-}
+.guide-step-ico{font-size:20px;margin-bottom:5px;}
+.guide-step-title{font-size:13px;font-weight:700;color:#eee;margin-bottom:4px;}
+.guide-step-desc{font-size:12px;color:#888;line-height:1.6;margin-bottom:6px;}
 .guide-step-desc b{color:#bbb;}
-.guide-step-tip{
-  background:#1a1a1a;border:1px solid #222;border-left:3px solid #2d6a5a;
-  border-radius:0 8px 8px 0;padding:8px 11px;
-  font-size:11.5px;color:#666;line-height:1.5;
-}
+.guide-step-tip{background:#1a1a1a;border:1px solid #222;border-left:3px solid #2d6a5a;border-radius:0 7px 7px 0;padding:7px 10px;font-size:11px;color:#666;line-height:1.5;}
 .guide-step-tip b{color:#4d9a82;}
-
-.guide-footer{padding:12px 16px 20px;}
-.guide-cta{
-  width:100%;padding:14px;border-radius:12px;border:none;
-  background:#2d6a5a;color:#fff;font-size:14px;font-weight:700;
-  cursor:pointer;font-family:var(--ff);
-  transition:opacity .15s;margin-bottom:8px;
-  display:flex;align-items:center;justify-content:center;
-}
-.guide-cta:hover{opacity:.88;}
+.guide-footer{padding-top:8px;}
+.guide-cta{width:100%;padding:13px;border-radius:10px;border:none;background:#2d6a5a;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ff);display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
 .guide-footer-note{font-size:11px;color:#444;text-align:center;}
 
-/* ══ COMPREHENSIVE MOBILE FIXES ══ */
+/* Cluster */
+.km-cluster{width:36px;height:36px;border-radius:50%;background:var(--green);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid rgba(255,255,255,.3);}
+
+/* ══ MOBILE — clean single block ══ */
 @media(max-width:768px){
+  html,body{-webkit-text-size-adjust:100%;}
+  body{background:#f0ede5;}
 
-  /* Splash */
-  #splash{padding:12px;}
-  .sp{max-width:100%;border-radius:14px;padding:22px 18px 18px;}
-  .sp-headline{font-size:18px;}
-  .sp-sub{font-size:12px;}
+  /* Splash bottom sheet */
+  #splash{padding:0;align-items:flex-end;}
+  .sp{max-width:100%;border-radius:18px 18px 0 0;padding:22px 18px calc(20px + env(safe-area-inset-bottom,0px));}
+  .sp-headline{font-size:19px;}
 
-  /* Top controls */
+  /* Top controls full width */
   #gm-top-controls{top:8px;width:calc(100% - 16px);max-width:100%;}
-  .gm-search-block{border-radius:10px;}
-  .gm-search-row{height:44px;padding:5px 5px 5px 12px;}
-  .gm-search-box input{font-size:16px !important;height:32px;}
-  .gm-filter-btn{padding:6px 12px;font-size:12px;min-height:34px;}
-  .gm-hood-chip{font-size:11px;padding:5px 10px;min-height:30px;}
-  .gm-action-row{border-radius:10px;}
-  .gm-act-btn{font-size:11.5px;padding:6px 8px;min-height:36px;}
-  .gm-mode-btn{padding:5px 10px;min-height:28px;}
+  .gm-search-row{height:46px;}
+  .gm-search-box input{font-size:16px !important;}
 
   /* Detail panel — bottom sheet */
-  #dp{
-    bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;
-    width:100% !important;max-width:100% !important;transform:none !important;
-    max-height:82vh !important;border-radius:16px 16px 0 0 !important;
-    z-index:1900 !important;
-  }
-  #dp.open{animation:slideUpSheet .28s ease both !important;transform:none !important;}
-  #dp .dp-hd::before{content:'';display:block;width:40px;height:4px;background:#2a2a2a;border-radius:4px;margin:0 auto 10px;}
+  #dp{bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;width:100% !important;max-width:100% !important;transform:none !important;max-height:84vh !important;border-radius:18px 18px 0 0 !important;z-index:1900 !important;}
+  #dp.open{animation:slideUp .28s ease both !important;transform:none !important;}
+  #dp .dp-hd::before{content:'';display:block;width:36px;height:4px;background:#2a2a2a;border-radius:4px;margin:0 auto 10px;}
+  #dp .dp-foot{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));}
 
-  /* Saved drawer */
-  #saved-drawer{
-    bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;
-    width:100% !important;max-width:100% !important;transform:none !important;
-    max-height:82vh !important;border-radius:16px 16px 0 0 !important;
-    z-index:1850 !important;
-  }
-  #saved-drawer.open{animation:slideUpSheet .28s ease both !important;}
+  /* Saved drawer — bottom sheet */
+  #saved-drawer{bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;width:100% !important;max-width:100% !important;transform:none !important;max-height:84vh !important;border-radius:18px 18px 0 0 !important;z-index:1850 !important;}
+  #saved-drawer.open{animation:slideUp .28s ease both !important;}
 
-  /* Right toolbar — bottom right */
-  #gm-right-toolbar{top:auto;bottom:14px;right:10px;transform:none;gap:6px;}
-  .gm-rt-btn{width:38px;height:38px;border-radius:10px;font-size:14px;}
+  /* Right toolbar — above footer bar */
+  #gm-right-toolbar{top:auto;bottom:calc(86px + env(safe-area-inset-bottom,0px));right:10px;transform:none;gap:5px;}
+  .gm-rt-btn{width:34px;height:34px;font-size:13px;}
   .gm-rt-label{display:none;}
 
-  /* Stats */
-  #gm-stats-row{bottom:14px;left:10px;gap:5px;}
-  .gm-stat-chip{font-size:10.5px;padding:5px 9px;border-radius:16px;}
+  /* Stats — hidden on mobile */
+  #gm-stats-row{display:none;}
+
+  /* CTA buttons — floating pills ON the map, no background strip */
+  #bottom-cta-row{
+    bottom:calc(14px + env(safe-area-inset-bottom,0px));
+    left:12px;right:12px;
+    background:transparent;
+    border-top:none;
+    backdrop-filter:none;-webkit-backdrop-filter:none;
+    gap:8px;
+  }
+  #list-btn{
+    flex:1;justify-content:center;font-size:12px;padding:11px;
+    border-radius:12px;
+    background:rgba(14,14,14,.88);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.1);
+    box-shadow:0 4px 20px rgba(0,0,0,.35);
+  }
+  #talk-btn{
+    flex:1;justify-content:center;font-size:12px;padding:11px;
+    border-radius:12px;
+    box-shadow:0 4px 20px rgba(45,106,90,.45);
+  }
+
+  /* Menu sheet — center pop on mobile, not bottom sheet */
+  #menu-sheet{
+    position:fixed !important;
+    top:50% !important;left:50% !important;
+    right:auto !important;bottom:auto !important;
+    transform:translate(-50%,-50%) !important;
+    width:calc(100% - 40px) !important;max-width:340px !important;
+    max-height:85dvh !important;border-radius:18px !important;
+  }
+  #menu-sheet.open{animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;}
 
   /* Activity toast */
-  #gm-activity-toast{font-size:11px;padding:9px 14px;bottom:70px;white-space:normal;text-align:center;max-width:calc(100vw - 40px);}
+  #gm-activity-toast{font-size:11px;padding:8px 14px;bottom:calc(64px + env(safe-area-inset-bottom,0px));max-width:calc(100vw - 32px);}
 
-  /* Filter sheet */
-  #gm-filter-overlay{align-items:flex-end !important;padding:0 !important;}
-  .gm-filter-modal{
-    max-width:100% !important;width:100% !important;
-    border-radius:18px 18px 0 0 !important;
-    max-height:92dvh !important;
-    animation:slideUpSheet .26s ease both !important;
-    padding-bottom:calc(20px + env(safe-area-inset-bottom)) !important;
+  /* Slots 2 col on mobile */
+  .slots-grid{grid-template-columns:repeat(2,1fr);}
+  .v-input{font-size:16px !important;}
+
+  /* ── MODALS: center scale-in on mobile (not bottom sheets) ── */
+  .overlay,.dark-overlay,#share-modal,#gm-filter-overlay{
+    align-items:center !important;
+    justify-content:center !important;
+    padding:16px !important;
   }
-
-  /* All modals as bottom sheets */
-  .dark-overlay,.overlay,#share-modal{
-    padding:0 !important;
-    align-items:flex-end !important;
+  .modal,.dark-modal,.guide-modal,.share-card,.gm-filter-modal{
+    border-radius:18px !important;
+    max-height:88dvh !important;
+    width:100% !important;
+    max-width:100% !important;
+    padding:20px 18px 24px !important;
+    animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;
   }
-  .dark-modal,.modal,.share-card,.guide-modal{
-    width:100% !important;max-width:100% !important;
-    border-radius:18px 18px 0 0 !important;
-    max-height:92dvh !important;
-    animation:slideUpSheet .26s ease both !important;
-    padding-bottom:calc(24px + env(safe-area-inset-bottom)) !important;
+  @keyframes scaleIn{
+    from{transform:scale(.88);opacity:0}
+    to{transform:scale(1);opacity:1}
   }
-  .guide-header{border-radius:18px 18px 0 0;}
-
-  /* Guide steps on mobile */
-  .guide-step-card{padding:12px 12px;}
-  .guide-step-title{font-size:13.5px;}
-  .guide-step-desc{font-size:12px;}
-  .guide-cta{padding:15px;font-size:14px;}
-
-  /* Minimum tap targets */
-  button,.dp-btn,.dp-close,.gm-rt-btn{min-height:40px;min-width:40px;}
-  .btn-interest,.btn-book,.btn-pri,.sp-btn-main,.guide-cta{min-height:48px;}
-
-  /* Safe area padding */
-  #dp .dp-foot{padding-bottom:calc(14px + env(safe-area-inset-bottom));}
-  #saved-drawer{padding-bottom:calc(20px + env(safe-area-inset-bottom));}
-
-  @keyframes slideUpSheet{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+  /* Guide modal header radius fix */
+  .guide-header{border-radius:14px 14px 0 0;}
 }
-@keyframes searchPulse{0%{transform:translateX(-50%) scale(0.6);opacity:0.9}100%{transform:translateX(-50%) scale(2.2);opacity:0}}
-
-/* Viewing signal */
-.viewing-signal{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:var(--rust);background:rgba(192,71,42,.12);border:1px solid rgba(192,71,42,.15);border-radius:6px;padding:3px 8px;}
-.vs-dot{width:5px;height:5px;border-radius:50%;background:var(--rust);animation:vsPulse 1.2s ease infinite;flex-shrink:0;}
-@keyframes vsPulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* Price drop */
-.price-drop{display:inline-flex;align-items:center;gap:4px;background:rgba(192,71,42,.12);border:1px solid rgba(192,71,42,.2);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:700;color:var(--rust);}
-
-/* Neg badge */
-.dp-neg{display:inline-flex;align-items:center;gap:4px;background:rgba(196,148,58,.1);border:1px solid rgba(196,148,58,.22);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;color:var(--gold);margin-bottom:8px;}
+@keyframes pop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
 
-<!-- ══ SPLASH — FIX #1: Stays open until user clicks Explore ══ -->
+<!-- ══ SPLASH ══ -->
 <div id="splash">
   <div class="sp">
     <div class="sp-logo">Ghar<span>Map</span></div>
     <div class="sp-tag">Making the biggest Properties Map in India</div>
-
     <div class="sp-headline">Find your place in the Map.<br>Every listing verified.</div>
-    <div class="sp-sub">Real rents, real properties, zero broker spam. Book a site visit in 60 seconds — our team confirms every listing before it goes live.</div>
-
+    <div class="sp-sub">Real rents, real properties, zero broker spam. Book a site visit in 60 seconds.</div>
     <div class="sp-pills">
       <span class="sp-pill">🏠 Flats</span>
       <span class="sp-pill">🛏 PG / Rooms</span>
-      <span class="sp-pill">🔑 Sale</span>
+      <span class="sp-pill">🔑 Buy</span>
       <span class="sp-pill">📅 Book a Visit</span>
       <span class="sp-pill">✓ Verified Only</span>
     </div>
-
-    <div class="sp-trust">
-      <b id="sp-count">—</b> verified listings · Lucknow · Zero fake listings
-    </div>
-
+    <div class="sp-trust"><b id="sp-count">—</b> verified listings · Lucknow · Zero fake listings</div>
     <div class="sp-activity">
       <div class="sp-act-dot"></div>
-      <div class="sp-act-text">
-        <b>Last week:</b>
-        <span id="sp-act-visits">0</span> visits booked ·
-        <span id="sp-act-deals">0</span> deals closed ·
-        <span id="sp-act-listings">3</span> new listings verified
-      </div>
+      <div class="sp-act-text"><b>Last week:</b> <span id="sp-act-visits">0</span> visits booked · <span id="sp-act-deals">0</span> deals closed · <span id="sp-act-listings">3</span> new listings verified</div>
     </div>
-
     <button class="sp-btn-main" onclick="enterApp()">🗺 Explore the Map →</button>
     <button class="sp-btn-how" onclick="openHowModal()">How does this work?</button>
     <button class="sp-btn-sec" onclick="shareToWhatsApp()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      Share with Friends on WhatsApp
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Share on WhatsApp
     </button>
-
-    <div class="sp-footer">
-      By continuing you agree to our
-      <a onclick="event.preventDefault();openPrivacyModal()">Privacy Policy</a> &amp;
-      <a onclick="event.preventDefault();openTncModal()">Terms &amp; Conditions</a>
-      <div style="margin-top:4px;opacity:.8;">Built by Team GharMap</div>
-    </div>
+    <div class="sp-footer">By continuing you agree to our <a onclick="event.preventDefault();openPrivacyModal()">Privacy Policy</a> &amp; <a onclick="event.preventDefault();openTncModal()">Terms</a><div style="margin-top:4px;opacity:.7;">Built by Team GharMap</div></div>
   </div>
 </div>
 
@@ -802,20 +625,29 @@ body{min-height:100%;font-family:var(--ff);background:var(--bg);color:var(--ink)
 <div id="app">
   <div id="map-wrap"><div id="map"></div></div>
 
-  <!-- FIX #5: Floating controls — NO "Verified" badge, aligned properly -->
+  <!-- ONE UNIFIED SEARCH BLOCK -->
   <div id="gm-top-controls">
-    <!-- Search + neighbourhood in ONE block -->
     <div class="gm-search-block">
+      <!-- Row 1: search + rent/buy + filter + menu -->
       <div class="gm-search-row">
+        <span class="gm-search-ico">🔍</span>
         <div class="gm-search-box">
-          <span class="gm-search-ico">🔍</span>
           <input type="text" id="gm-search-input" placeholder="Search area or landmark…" autocomplete="off"
             oninput="onSearch(this.value)" onfocus="onSearchFocus()" onkeydown="onSearchKey(event)"/>
         </div>
-        <div class="gm-search-div"></div>
-        <button class="gm-filter-btn" onclick="openGmFilter()">Filter <span id="gm-filter-count" style="background:#4d9a82;color:#fff;border-radius:50%;font-size:10px;font-weight:700;padding:1px 6px;min-width:18px;text-align:center;">0</span></button>
+        <div class="gm-divider"></div>
+        <div class="gm-mode-toggle">
+          <button class="gm-mode-btn on" id="gm-rent-btn" onclick="setMode('rent')">Rent</button>
+          <button class="gm-mode-btn" id="gm-sale-btn" onclick="setMode('sale')">Buy</button>
+        </div>
+        <button class="gm-filter-btn" onclick="openGmFilter()">Filter <span id="gm-filter-count" style="background:#4d9a82;color:#fff;border-radius:50%;font-size:9px;font-weight:700;padding:0 5px;margin-left:2px;">0</span></button>
+        <button class="gm-menu-btn" onclick="openMenuSheet()" aria-label="Menu">
+          <div class="gm-menu-line"></div>
+          <div class="gm-menu-line"></div>
+          <div class="gm-menu-line"></div>
+        </button>
       </div>
-      <!-- Neighbourhood chips inside search block -->
+      <!-- Row 2: neighbourhood chips -->
       <div class="gm-hood-row" id="gm-hood-row">
         <button class="gm-hood-chip on" data-zone="all" data-lat="26.8467" data-lng="80.9462" data-zoom="13" onclick="selectHood(this)">All areas</button>
         <button class="gm-hood-chip" data-zone="gomti" data-lat="26.8650" data-lng="80.9962" data-zoom="14" onclick="selectHood(this)">Gomti Nagar</button>
@@ -826,151 +658,101 @@ body{min-height:100%;font-family:var(--ff);background:var(--bg);color:var(--ink)
         <button class="gm-hood-chip" data-zone="indira" data-lat="26.8820" data-lng="80.9600" data-zoom="14" onclick="selectHood(this)">Indira Nagar</button>
       </div>
     </div>
-    <!-- Action row separate -->
-    <div class="gm-action-row">
-      <div class="gm-mode-toggle">
-        <button class="gm-mode-btn on" id="gm-rent-btn" onclick="setMode('rent')">Rent</button>
-        <button class="gm-mode-btn" id="gm-sale-btn" onclick="setMode('sale')">Buy</button>
-      </div>
-      <div style="width:1px;height:18px;background:#2a2a2a;margin:0 4px;flex-shrink:0;"></div>
-      <button class="gm-act-btn" onclick="openMatchMe()">🔍 Find a Place</button>
-      <button class="gm-act-btn" onclick="openOwnerModal()">💼 List Property</button>
-      <button class="gm-act-btn" onclick="openHowModal()">❓ How it works</button>
-    </div>
   </div>
 
-  <!-- Right toolbar -->
+  <!-- RIGHT TOOLBAR (satellite + near me) -->
   <div id="gm-right-toolbar">
-    <button class="gm-rt-btn" onclick="toggleSatellite()" title="Satellite"><span class="gm-rt-label">Satellite</span>🛰</button>
-    <button class="gm-rt-btn" onclick="nearMe()" title="Near Me"><span class="gm-rt-label">Near Me</span>📍</button>
-    <button class="gm-rt-btn" onclick="toggleSavedDrawer()" title="Saved"><span class="gm-rt-label">Saved</span>🔖</button>
+    <button class="gm-rt-btn" onclick="toggleSatellite()"><span class="gm-rt-label">Satellite</span>🛰</button>
+    <button class="gm-rt-btn" onclick="nearMe()"><span class="gm-rt-label">Near Me</span>📍</button>
   </div>
 
-  <!-- Bottom stats -->
+  <!-- BOTTOM STATS -->
   <div id="gm-stats-row">
     <div class="gm-stat-chip"><b id="gm-s-total">—</b> verified</div>
     <div class="gm-stat-chip">avg <b id="gm-s-avg">₹—</b></div>
     <div class="gm-stat-chip">low <b id="gm-s-low">₹—</b></div>
   </div>
-  <div id="gm-bottom-attr"><a onclick="event.preventDefault();openHowModal();">How to use</a><span>Built by Team GharMap</span></div>
 
-  <!-- Activity toast -->
+  <!-- BOTTOM CTA ROW — two pills, one for each user type -->
+  <div id="bottom-cta-row">
+    <button id="list-btn" onclick="openOwnerModal()">💼 List Property</button>
+    <button id="talk-btn" onclick="openMatchMe()">Talk to Team</button>
+  </div>
+
+  <!-- ACTIVITY TOAST -->
   <div id="gm-activity-toast">
     <span class="gm-toast-dot"></span>
     <span id="gm-toast-msg">🏠 New listing verified</span>
-    <span style="color:#444;font-size:10px;margin-left:4px;" id="gm-toast-time">2 min ago</span>
+    <span style="color:#444;font-size:9px;margin-left:4px;" id="gm-toast-time">2 min ago</span>
   </div>
 
-  <!-- FIX #2: FILTER MODAL — Bedrooms, Neighbourhood, Slider, Furnishing, Posted time, Society type -->
-  <div id="gm-filter-overlay">
-    <div class="gm-filter-modal">
-      <button class="gf-close" onclick="closeGmFilter()">✕</button>
-      <div class="gf-title">Filter Properties</div>
-      <div class="gf-sub">Narrow down to what matters</div>
-
-      <!-- Bedrooms -->
-      <div class="gf-section">
-        <div class="gf-label">Bedrooms</div>
-        <div class="gf-chips" id="gf-bhk">
-          <button class="gf-chip on" data-v="all" onclick="gfChip(this,'gf-bhk')">Any</button>
-          <button class="gf-chip" data-v="1" onclick="gfChip(this,'gf-bhk')">1 BHK</button>
-          <button class="gf-chip" data-v="2" onclick="gfChip(this,'gf-bhk')">2 BHK</button>
-          <button class="gf-chip" data-v="3" onclick="gfChip(this,'gf-bhk')">3 BHK</button>
-          <button class="gf-chip" data-v="4" onclick="gfChip(this,'gf-bhk')">4 BHK</button>
-          <button class="gf-chip" data-v="3+" onclick="gfChip(this,'gf-bhk')">3+</button>
-        </div>
-      </div>
-
-      <!-- Neighbourhood -->
-      <div class="gf-section">
-        <div class="gf-label">Neighbourhood</div>
-        <div class="gf-chips" id="gf-zone">
-          <button class="gf-chip on" data-v="all" onclick="gfChipMulti(this,'gf-zone')">All Lucknow</button>
-          <button class="gf-chip" data-v="gomti" onclick="gfChipMulti(this,'gf-zone')">Gomti Nagar</button>
-          <button class="gf-chip" data-v="hazrat" onclick="gfChipMulti(this,'gf-zone')">Hazratganj</button>
-          <button class="gf-chip" data-v="alambagh" onclick="gfChipMulti(this,'gf-zone')">Alambagh</button>
-          <button class="gf-chip" data-v="university" onclick="gfChipMulti(this,'gf-zone')">University Belt</button>
-          <button class="gf-chip" data-v="aashiana" onclick="gfChipMulti(this,'gf-zone')">Aashiana</button>
-        </div>
-      </div>
-
-      <!-- Budget Slider -->
-      <div class="gf-section">
-        <div class="gf-label">Budget (₹)</div>
-        <div class="gf-range-readout">
-          <span class="gf-range-val" id="gf-min-lbl">₹5K</span>
-          <span class="gf-range-sep">to</span>
-          <span class="gf-range-val" id="gf-max-lbl">₹2L</span>
-        </div>
-        <div class="gf-range-wrap">
-          <div class="gf-range-fill" id="gf-fill"></div>
-          <input type="range" id="gf-rmin" min="5000" max="200000" step="1000" value="5000" oninput="gfRange()">
-          <input type="range" id="gf-rmax" min="5000" max="200000" step="1000" value="200000" oninput="gfRange()">
-        </div>
-        <div class="gf-range-labels"><span>₹5K</span><span id="gf-range-ceil">₹2L</span></div>
-      </div>
-
-      <!-- Furnishing -->
-      <div class="gf-section">
-        <div class="gf-label">Furnishing</div>
-        <div class="gf-chips" id="gf-fur">
-          <button class="gf-chip on" data-v="all" onclick="gfChip(this,'gf-fur')">Any</button>
-          <button class="gf-chip" data-v="furnished" onclick="gfChip(this,'gf-fur')">Furnished</button>
-          <button class="gf-chip" data-v="semi" onclick="gfChip(this,'gf-fur')">Semi</button>
-          <button class="gf-chip" data-v="unfurnished" onclick="gfChip(this,'gf-fur')">Bare</button>
-        </div>
-      </div>
-
-      <!-- Posted Time -->
-      <div class="gf-section">
-        <div class="gf-label">Posted Time</div>
-        <div class="gf-chips" id="gf-posted">
-          <button class="gf-chip on" data-v="all" onclick="gfChip(this,'gf-posted')">Any time</button>
-          <button class="gf-chip" data-v="7" onclick="gfChip(this,'gf-posted')">Last 7 days</button>
-          <button class="gf-chip" data-v="30" onclick="gfChip(this,'gf-posted')">Last 30 days</button>
-          <button class="gf-chip" data-v="90" onclick="gfChip(this,'gf-posted')">Last 3 months</button>
-        </div>
-      </div>
-
-      <!-- Society Type -->
-      <div class="gf-section">
-        <div class="gf-label">Society Type</div>
-        <div class="gf-chips" id="gf-society">
-          <button class="gf-chip on" data-v="all" onclick="gfChip(this,'gf-society')">Any</button>
-          <button class="gf-chip" data-v="gated" onclick="gfChip(this,'gf-society')">Gated Community</button>
-          <button class="gf-chip" data-v="standalone" onclick="gfChip(this,'gf-society')">Standalone</button>
-          <button class="gf-chip" data-v="builder" onclick="gfChip(this,'gf-society')">Builder Floor</button>
-          <button class="gf-chip" data-v="independent" onclick="gfChip(this,'gf-society')">Independent House</button>
-        </div>
-      </div>
-
-      <!-- Property Type -->
-      <div class="gf-section">
-        <div class="gf-label">Property Type</div>
-        <div class="gf-chips" id="gf-type">
-          <button class="gf-chip on" data-v="all" onclick="gfChip(this,'gf-type')">All</button>
-          <button class="gf-chip" data-v="flat" onclick="gfChip(this,'gf-type')">Flat</button>
-          <button class="gf-chip" data-v="pg" onclick="gfChip(this,'gf-type')">PG / Room</button>
-          <button class="gf-chip" data-v="commercial" onclick="gfChip(this,'gf-type')">Commercial</button>
-          <button class="gf-chip" data-v="house" onclick="gfChip(this,'gf-type')">House</button>
-        </div>
-      </div>
-
-      <div class="gf-actions">
-        <button class="gf-reset" onclick="gfReset()">Reset</button>
-        <button class="gf-apply" onclick="gfApply()">Show Results</button>
-      </div>
+  <!-- HAMBURGER MENU SHEET -->
+  <div id="menu-overlay" onclick="closeMenuSheet()"></div>
+  <div id="menu-sheet">
+    <div class="menu-close-row">
+      <div class="menu-logo">Ghar<span>Map</span></div>
+      <div class="menu-x" onclick="closeMenuSheet()">✕</div>
+    </div>
+    <div class="menu-section-title">Quick actions</div>
+    <div class="menu-item" onclick="closeMenuSheet();openMatchMe()">
+      <div class="menu-item-ico">🔍</div>
+      <div><div class="menu-item-text">Find a Place</div><div class="menu-item-sub">Tell us your needs — we match personally</div></div>
+    </div>
+    <div class="menu-item" onclick="closeMenuSheet();openOwnerModal()">
+      <div class="menu-item-ico">💼</div>
+      <div><div class="menu-item-text">List Property</div><div class="menu-item-sub">Get verified, attract serious tenants</div></div>
+    </div>
+    <div class="menu-sep"></div>
+    <div class="menu-section-title">More</div>
+    <div class="menu-item" onclick="closeMenuSheet();toggleSavedDrawer()">
+      <div class="menu-item-ico">🔖</div>
+      <div><div class="menu-item-text">Saved Properties</div><div class="menu-item-sub" id="saved-menu-count">0 saved</div></div>
+    </div>
+    <div class="menu-item" onclick="closeMenuSheet();openHowModal()">
+      <div class="menu-item-ico">❓</div>
+      <div><div class="menu-item-text">How it works</div><div class="menu-item-sub">4 step guide</div></div>
+    </div>
+    <div class="menu-item" onclick="closeMenuSheet();toggleSatellite()">
+      <div class="menu-item-ico">🛰</div>
+      <div><div class="menu-item-text">Toggle Satellite</div></div>
+    </div>
+    <div class="menu-item" onclick="closeMenuSheet();nearMe()">
+      <div class="menu-item-ico">📍</div>
+      <div><div class="menu-item-text">Near Me</div><div class="menu-item-sub">Show properties near your location</div></div>
     </div>
   </div>
 
-  <!-- FIX #4: DETAIL PANEL — Clean, minimalist, no photo placeholder -->
+  <!-- FILTER MODAL -->
+  <div id="gm-filter-overlay">
+    <div class="gm-filter-modal">
+      <div class="gf-handle"></div>
+      <button class="gf-close" onclick="closeGmFilter()">✕</button>
+      <div class="gf-title">Filter Properties</div>
+      <div class="gf-sub">Narrow down to what matters</div>
+      <div class="gf-section"><div class="gf-label">Bedrooms</div><div class="gf-chips" id="gf-bhk"><button class="gf-chip on" data-v="all" onclick="gfChip(this,'gf-bhk')">Any</button><button class="gf-chip" data-v="1" onclick="gfChip(this,'gf-bhk')">1 BHK</button><button class="gf-chip" data-v="2" onclick="gfChip(this,'gf-bhk')">2 BHK</button><button class="gf-chip" data-v="3" onclick="gfChip(this,'gf-bhk')">3 BHK</button><button class="gf-chip" data-v="4" onclick="gfChip(this,'gf-bhk')">4 BHK</button><button class="gf-chip" data-v="3+" onclick="gfChip(this,'gf-bhk')">3+</button></div></div>
+      <div class="gf-section"><div class="gf-label">Neighbourhood</div><div class="gf-chips" id="gf-zone"><button class="gf-chip on" data-v="all" onclick="gfChipMulti(this,'gf-zone')">All Lucknow</button><button class="gf-chip" data-v="gomti" onclick="gfChipMulti(this,'gf-zone')">Gomti Nagar</button><button class="gf-chip" data-v="hazrat" onclick="gfChipMulti(this,'gf-zone')">Hazratganj</button><button class="gf-chip" data-v="alambagh" onclick="gfChipMulti(this,'gf-zone')">Alambagh</button><button class="gf-chip" data-v="university" onclick="gfChipMulti(this,'gf-zone')">University</button><button class="gf-chip" data-v="aashiana" onclick="gfChipMulti(this,'gf-zone')">Aashiana</button></div></div>
+      <div class="gf-section">
+        <div class="gf-label">Budget (₹)</div>
+        <div class="gf-range-readout"><span class="gf-range-val" id="gf-min-lbl">₹5K</span><span style="font-size:11px;color:#444;">to</span><span class="gf-range-val" id="gf-max-lbl">₹2L</span></div>
+        <div class="gf-range-wrap"><div class="gf-range-fill" id="gf-fill"></div><input type="range" id="gf-rmin" min="5000" max="200000" step="1000" value="5000" oninput="gfRange()"><input type="range" id="gf-rmax" min="5000" max="200000" step="1000" value="200000" oninput="gfRange()"></div>
+        <div class="gf-range-labels"><span>₹5K</span><span id="gf-range-ceil">₹2L</span></div>
+      </div>
+      <div class="gf-section"><div class="gf-label">Furnishing</div><div class="gf-chips" id="gf-fur"><button class="gf-chip on" data-v="all" onclick="gfChip(this,'gf-fur')">Any</button><button class="gf-chip" data-v="furnished" onclick="gfChip(this,'gf-fur')">Furnished</button><button class="gf-chip" data-v="semi" onclick="gfChip(this,'gf-fur')">Semi</button><button class="gf-chip" data-v="unfurnished" onclick="gfChip(this,'gf-fur')">Bare</button></div></div>
+      <div class="gf-section"><div class="gf-label">Posted Time</div><div class="gf-chips" id="gf-posted"><button class="gf-chip on" data-v="all" onclick="gfChip(this,'gf-posted')">Any time</button><button class="gf-chip" data-v="7" onclick="gfChip(this,'gf-posted')">Last 7 days</button><button class="gf-chip" data-v="30" onclick="gfChip(this,'gf-posted')">Last 30 days</button><button class="gf-chip" data-v="90" onclick="gfChip(this,'gf-posted')">Last 3 months</button></div></div>
+      <div class="gf-section"><div class="gf-label">Society Type</div><div class="gf-chips" id="gf-society"><button class="gf-chip on" data-v="all" onclick="gfChip(this,'gf-society')">Any</button><button class="gf-chip" data-v="gated" onclick="gfChip(this,'gf-society')">Gated</button><button class="gf-chip" data-v="standalone" onclick="gfChip(this,'gf-society')">Standalone</button><button class="gf-chip" data-v="builder" onclick="gfChip(this,'gf-society')">Builder Floor</button><button class="gf-chip" data-v="independent" onclick="gfChip(this,'gf-society')">Independent</button></div></div>
+      <div class="gf-section"><div class="gf-label">Property Type</div><div class="gf-chips" id="gf-type"><button class="gf-chip on" data-v="all" onclick="gfChip(this,'gf-type')">All</button><button class="gf-chip" data-v="flat" onclick="gfChip(this,'gf-type')">Flat</button><button class="gf-chip" data-v="pg" onclick="gfChip(this,'gf-type')">PG / Room</button><button class="gf-chip" data-v="commercial" onclick="gfChip(this,'gf-type')">Commercial</button><button class="gf-chip" data-v="house" onclick="gfChip(this,'gf-type')">House</button></div></div>
+      <div class="gf-actions"><button class="gf-reset" onclick="gfReset()">Reset</button><button class="gf-apply" onclick="gfApply()">Show Results</button></div>
+    </div>
+  </div>
+
+  <!-- DETAIL PANEL -->
   <div id="dp">
     <div class="dp-hd">
       <div class="dp-hd-row">
         <div class="dp-type"><span class="v-dot"></span><span id="dp-type-lbl">VERIFIED FLAT</span></div>
         <div class="dp-actions">
-          <button class="dp-btn" id="dp-save-btn" onclick="toggleSave()" title="Save">☆</button>
-          <button class="dp-btn" onclick="shareProperty()" title="Share">↑</button>
+          <button class="dp-btn" id="dp-save-btn" onclick="toggleSave()">☆</button>
+          <button class="dp-btn" onclick="shareProperty()">↑</button>
           <button class="dp-close" onclick="closeDetail()">✕</button>
         </div>
       </div>
@@ -983,92 +765,43 @@ body{min-height:100%;font-family:var(--ff);background:var(--bg);color:var(--ink)
         <span class="avg-badge" id="dp-avg" style="display:none;"></span>
         <span class="viewing-signal" id="dp-viewing" style="display:none;"></span>
       </div>
-      <div class="v-badge-wrap" id="dp-verified-badge" style="margin-top:10px;"></div>
+      <div class="v-badge-wrap" id="dp-verified-badge" style="margin-top:8px;"></div>
     </div>
-
     <div class="dp-body">
-      <!-- NO photo placeholder — removed per Fix #4 -->
-
-      <!-- Total cost calculator -->
-      <div class="dp-sec" id="dp-cost-sec">
-        <div class="dp-sec-lbl">Total Monthly Cost</div>
-        <div class="cost-card" id="dp-cost-card"></div>
-      </div>
-
-      <!-- What to Know -->
-      <div id="dp-wtk-wrap" style="padding:0 20px;display:none;">
-        <div class="what-to-know">
-          <span class="wtk-ico">💡</span>
-          <div class="wtk-content">
-            <div class="wtk-label">What to know</div>
-            <div class="wtk-text" id="dp-wtk-text"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="dp-sec">
-        <div class="dp-sec-lbl">Property Details</div>
-        <div class="detail-grid" id="dp-grid"></div>
-      </div>
-
-      <div class="dp-sec" id="dp-note-sec" style="display:none;">
-        <div class="dp-sec-lbl">Our Take</div>
-        <div class="agent-note">
-          <div class="agent-note-txt" id="dp-note-txt"></div>
-          <div class="agent-note-by">— GharMap Team</div>
-        </div>
-      </div>
-
-      <div class="dp-sec">
-        <div class="dp-sec-lbl">Rent Negotiation History</div>
-        <div class="neg-list" id="dp-neg-list"></div>
-        <div class="neg-note" id="dp-neg-note"></div>
-      </div>
-
-      <div class="dp-sec">
-        <div class="dp-sec-lbl">Building Report Card</div>
-        <div class="score-grid" id="dp-scores"></div>
-      </div>
-
+      <div class="dp-sec" id="dp-cost-sec"><div class="dp-sec-lbl">Total Monthly Cost</div><div class="cost-card" id="dp-cost-card"></div></div>
+      <div id="dp-wtk-wrap" style="padding:0 14px;display:none;"><div class="what-to-know"><span class="wtk-ico">💡</span><div><div class="wtk-label">What to know</div><div class="wtk-text" id="dp-wtk-text"></div></div></div></div>
+      <div class="dp-sec"><div class="dp-sec-lbl">Property Details</div><div class="detail-grid" id="dp-grid"></div></div>
+      <div class="dp-sec" id="dp-note-sec" style="display:none;"><div class="dp-sec-lbl">Our Take</div><div class="agent-note"><div class="agent-note-txt" id="dp-note-txt"></div><div class="agent-note-by">— GharMap Team</div></div></div>
+      <div class="dp-sec"><div class="dp-sec-lbl">Rent Negotiation History</div><div class="neg-list" id="dp-neg-list"></div><div class="neg-note" id="dp-neg-note"></div></div>
+      <div class="dp-sec"><div class="dp-sec-lbl">Building Report Card</div><div class="score-grid" id="dp-scores"></div></div>
       <div class="dp-sec" id="dp-visit-sec">
-        <div class="dp-sec-lbl" style="margin-bottom:12px;">Book a Site Visit</div>
+        <div class="dp-sec-lbl" style="margin-bottom:10px;">Book a Site Visit</div>
         <div class="slots-grid" id="slots-grid"></div>
         <div class="v-form" id="v-form">
-          <div style="font-size:12px;color:#888;margin-bottom:9px;">Booking for <b id="v-slot-lbl">—</b></div>
-          <div class="v-row">
-            <input class="v-input" id="vf-name" type="text" placeholder="Your name *"/>
-            <input class="v-input" id="vf-phone" type="tel" placeholder="+91 phone *"/>
-          </div>
+          <div style="font-size:11px;color:#888;margin-bottom:8px;">Booking for <b id="v-slot-lbl">—</b></div>
+          <div class="v-row"><input class="v-input" id="vf-name" type="text" placeholder="Your name *"/><input class="v-input" id="vf-phone" type="tel" placeholder="+91 phone *"/></div>
           <input class="v-input" id="vf-budget" type="text" placeholder="Budget range e.g. ₹15K–18K"/>
-          <div class="v-note">📞 Our team calls to confirm within 2 hours. Visit is free.</div>
-          <button class="btn-book" onclick="submitVisit()">📅 Confirm Visit Booking</button>
+          <div class="v-note">📞 Our team confirms within 2 hours. Visit is free.</div>
+          <button class="btn-book" onclick="submitVisit()">📅 Confirm Visit</button>
         </div>
-        <div class="v-confirm" id="v-confirm">
-          <div class="vc-ico">✅</div>
-          <div class="vc-title">Visit Booked!</div>
-          <div class="vc-sub" id="vc-msg">We'll confirm your slot shortly via WhatsApp.</div>
-        </div>
+        <div class="v-confirm" id="v-confirm"><div class="vc-ico">✅</div><div class="vc-title">Visit Booked!</div><div class="vc-sub" id="vc-msg">We'll confirm via WhatsApp shortly.</div></div>
       </div>
-
-      <div class="dp-sec" id="dp-sim-sec">
-        <div class="dp-sec-lbl">Similar Properties</div>
-        <div class="sim-grid" id="dp-sim-list"></div>
-      </div>
+      <div class="dp-sec" id="dp-sim-sec"><div class="dp-sec-lbl">Similar Properties</div><div class="sim-grid" id="dp-sim-list"></div></div>
     </div>
-
     <div class="dp-foot">
       <button class="btn-interest" onclick="scrollToVisit()">📅 Book a visit · Chat with Team</button>
       <div class="dp-foot-note">🔒 Your details only shared with our verified team</div>
     </div>
   </div>
 
+  <!-- SAVED DRAWER -->
   <div id="saved-drawer">
-    <div style="flex-shrink:0;padding:12px 14px 10px;border-bottom:1px solid #1e1e1e;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-        <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#4d9a82;">🔖 SAVED PROPERTIES</div>
-        <button onclick="toggleSavedDrawer()" style="width:30px;height:30px;border-radius:50%;border:1px solid rgba(192,71,42,.25);background:rgba(192,71,42,.06);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:#c0472a;">✕</button>
+    <div style="flex-shrink:0;padding:10px 14px 8px;border-bottom:1px solid #1e1e1e;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#4d9a82;">🔖 Saved Properties</div>
+        <button onclick="closeSavedDrawer()" style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(192,71,42,.25);background:rgba(192,71,42,.06);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:#c0472a;">✕</button>
       </div>
-      <div style="font-size:11px;color:#555;" id="saved-count-lbl">0 saved</div>
+      <div style="font-size:10px;color:#555;" id="saved-count-lbl">0 saved</div>
     </div>
     <div id="saved-list-wrap"></div>
   </div>
@@ -1077,184 +810,87 @@ body{min-height:100%;font-family:var(--ff);background:var(--bg);color:var(--ink)
   <div id="empty-state">
     <div class="es-ico" id="es-ico">🔨</div>
     <div class="es-t" id="es-t">New listings being verified — back soon.</div>
-    <div class="es-s" id="es-s">Tell us what you're looking for and our team will reach out personally.</div>
-    <button id="es-cta" onclick="openMatchMe()" style="margin-top:14px;padding:9px 18px;border-radius:20px;border:none;background:var(--green);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ff);pointer-events:all;">Tell us what you need →</button>
+    <div class="es-s" id="es-s">Tell us what you need and we'll reach out personally.</div>
+    <button onclick="openMatchMe()" style="margin-top:12px;padding:8px 18px;border-radius:20px;border:none;background:var(--green);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ff);pointer-events:all;">Tell us what you need →</button>
   </div>
   <div id="s-dd"></div>
 </div>
 
-<!-- MATCH ME MODAL — FIX #6: centered -->
+<!-- MATCH ME -->
 <div class="overlay" id="matchme-modal">
   <div class="modal">
+    <div style="width:36px;height:4px;background:#2a2a2a;border-radius:4px;margin:0 auto 14px;"></div>
     <button class="m-close" onclick="closeMatchMe()">✕</button>
     <div class="m-ey">Curated Property Matching</div>
     <div class="m-title">Find your perfect place</div>
-    <div class="m-sub">Tell us what you need. Our team personally calls you within 24 hours with matched properties.</div>
-    <div class="m-note">🔒 A real person from our team will call — not a bot. Zero brokerage to tenants.</div>
-
+    <div class="m-sub">Tell us what you need. Our team calls within 24 hours.</div>
+    <div class="m-note">🔒 A real person calls — not a bot. Zero brokerage to tenants.</div>
     <label class="m-lbl">Looking to</label>
-    <div class="m-chips" id="mc-purpose">
-      <button class="m-chip on" data-v="rent">Rent</button>
-      <button class="m-chip" data-v="buy">Buy</button>
-      <button class="m-chip" data-v="commercial">Commercial</button>
-      <button class="m-chip" data-v="pg">PG / Room</button>
-    </div>
-
+    <div class="m-chips" id="mc-purpose"><button class="m-chip on" data-v="rent">Rent</button><button class="m-chip" data-v="buy">Buy</button><button class="m-chip" data-v="commercial">Commercial</button><button class="m-chip" data-v="pg">PG / Room</button></div>
     <label class="m-lbl">BHK needed</label>
-    <div class="m-chips" id="mc-bhk">
-      <button class="m-chip" data-v="1">1 BHK</button>
-      <button class="m-chip on" data-v="2">2 BHK</button>
-      <button class="m-chip" data-v="3">3 BHK</button>
-      <button class="m-chip" data-v="4+">4+ BHK</button>
-    </div>
-
+    <div class="m-chips" id="mc-bhk"><button class="m-chip" data-v="1">1 BHK</button><button class="m-chip on" data-v="2">2 BHK</button><button class="m-chip" data-v="3">3 BHK</button><button class="m-chip" data-v="4+">4+ BHK</button></div>
     <label class="m-lbl">Budget</label>
-    <div class="m-chips" id="mc-budget">
-      <button class="m-chip" data-v="under15k">Under ₹15K</button>
-      <button class="m-chip on" data-v="15-30k">₹15K–30K</button>
-      <button class="m-chip" data-v="30-50k">₹30K–50K</button>
-      <button class="m-chip" data-v="50k+">₹50K+</button>
-    </div>
-
+    <div class="m-chips" id="mc-budget"><button class="m-chip" data-v="under15k">Under ₹15K</button><button class="m-chip on" data-v="15-30k">₹15K–30K</button><button class="m-chip" data-v="30-50k">₹30K–50K</button><button class="m-chip" data-v="50k+">₹50K+</button></div>
     <label class="m-lbl">Preferred areas</label>
-    <div class="m-chips" id="mc-areas">
-      <button class="m-chip" data-v="gomti">Gomti Nagar</button>
-      <button class="m-chip" data-v="hazrat">Hazratganj</button>
-      <button class="m-chip" data-v="indira">Indira Nagar</button>
-      <button class="m-chip" data-v="aliganj">Aliganj</button>
-      <button class="m-chip" data-v="alambagh">Alambagh</button>
-      <button class="m-chip" data-v="open">Open to suggestions</button>
-    </div>
-
-    <div class="m-row" style="margin-top:4px;">
-      <div class="m-group"><label class="m-lbl">Your name *</label><input class="m-input" id="mc-name" type="text" placeholder="Full name"/></div>
-      <div class="m-group"><label class="m-lbl">WhatsApp *</label><input class="m-input" id="mc-phone" type="tel" maxlength="10" placeholder="98765 43210" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"/></div>
-    </div>
+    <div class="m-chips" id="mc-areas"><button class="m-chip" data-v="gomti">Gomti Nagar</button><button class="m-chip" data-v="hazrat">Hazratganj</button><button class="m-chip" data-v="indira">Indira Nagar</button><button class="m-chip" data-v="alambagh">Alambagh</button><button class="m-chip" data-v="open">Open to suggestions</button></div>
+    <div class="m-row" style="margin-top:4px;"><div class="m-group"><label class="m-lbl">Your name *</label><input class="m-input" id="mc-name" type="text" placeholder="Full name"/></div><div class="m-group"><label class="m-lbl">WhatsApp *</label><input class="m-input" id="mc-phone" type="tel" maxlength="10" placeholder="98765 43210" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"/></div></div>
     <label class="m-lbl">Anything specific?</label>
-    <input class="m-input" id="mc-note" type="text" placeholder="Lake-facing, parking, pet friendly…"/>
-
+    <input class="m-input" id="mc-note" type="text" placeholder="Parking, pet friendly, near school…"/>
     <button class="btn-pri" onclick="submitMatchMe()">🔍 Find My Match</button>
     <button class="btn-sec" onclick="closeMatchMe()">Cancel</button>
   </div>
 </div>
 
-<!-- OWNER MODAL — centered -->
+<!-- LIST PROPERTY -->
 <div class="overlay" id="owner-modal">
   <div class="modal">
+    <div style="width:36px;height:4px;background:#2a2a2a;border-radius:4px;margin:0 auto 14px;"></div>
     <button class="m-close" onclick="closeOwnerModal()">✕</button>
     <div class="m-ey">List on GharMap</div>
     <div class="m-title">Submit your property</div>
-    <div class="m-sub">We verify every listing before it goes live. You'll hear from us within 24 hours.</div>
+    <div class="m-sub">We verify before going live. You'll hear from us within 24 hours.</div>
     <div class="m-note">✓ Physical verification · ✓ Verified badge · ✓ Serious tenants only</div>
-
     <label class="m-lbl">Property type</label>
     <div class="m-chips" id="ow-type"><button class="m-chip on" data-v="flat">Flat</button><button class="m-chip" data-v="pg">PG</button><button class="m-chip" data-v="house">House</button><button class="m-chip" data-v="commercial">Commercial</button></div>
-
     <label class="m-lbl">Listing for</label>
     <div class="m-chips" id="ow-purpose"><button class="m-chip on" data-v="rent">Rent</button><button class="m-chip" data-v="sale">Sale</button></div>
-
-    <div class="m-row">
-      <div class="m-group"><label class="m-lbl">BHK</label><select class="m-select" id="ow-bhk"><option value="1">1 BHK</option><option value="2">2 BHK</option><option value="3">3 BHK</option><option value="3+">3+</option></select></div>
-      <div class="m-group"><label class="m-lbl">Rent / Price (₹) *</label><input class="m-input" id="ow-price" type="number" placeholder="e.g. 18000"/></div>
-    </div>
+    <div class="m-row"><div class="m-group"><label class="m-lbl">BHK</label><select class="m-select" id="ow-bhk"><option value="1">1 BHK</option><option value="2">2 BHK</option><option value="3">3 BHK</option><option value="3+">3+</option></select></div><div class="m-group"><label class="m-lbl">Rent / Price (₹) *</label><input class="m-input" id="ow-price" type="number" placeholder="e.g. 18000"/></div></div>
     <label class="m-lbl">Area / Colony *</label><input class="m-input" id="ow-area" type="text" placeholder="e.g. Gomti Nagar Sector D"/>
     <label class="m-lbl">Your name *</label><input class="m-input" id="ow-name" type="text" placeholder="Owner name"/>
     <label class="m-lbl">WhatsApp *</label><input class="m-input" id="ow-phone" type="tel" placeholder="+91 98765 43210"/>
-
     <button class="btn-pri" onclick="submitOwnerRequest()">Submit for Verification →</button>
     <button class="btn-sec" onclick="closeOwnerModal()">Cancel</button>
   </div>
 </div>
 
-<!-- SHARE MODAL — centered -->
+<!-- SHARE -->
 <div id="share-modal">
   <div class="share-card">
-    <button onclick="closeShareModal()" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:17px;cursor:pointer;color:#666;">✕</button>
-    <div style="font-size:20px;font-weight:700;margin-bottom:5px;color:#eee;">Share this property</div>
-    <div style="font-size:13px;color:#888;margin-bottom:14px;" id="share-sub">—</div>
-    <div style="background:#1a1a1a;border:1px solid #252525;border-radius:8px;padding:10px 12px;font-size:12px;color:#888;margin-bottom:12px;word-break:break-all;text-align:left;" id="share-url">—</div>
-    <div style="display:flex;gap:8px;">
-      <button onclick="copyShareUrl()" style="flex:1;padding:11px;border-radius:8px;border:none;background:#333;color:#fff;font-size:13px;font-weight:500;cursor:pointer;">⧉ Copy</button>
-      <button onclick="waShareUrl()" style="flex:1;padding:11px;border-radius:8px;border:none;background:#25d366;color:#fff;font-size:13px;font-weight:500;cursor:pointer;">💬 WhatsApp</button>
-    </div>
+    <div style="width:36px;height:4px;background:#2a2a2a;border-radius:4px;margin:0 auto 14px;"></div>
+    <button onclick="closeShareModal()" style="position:absolute;top:18px;right:18px;background:none;border:none;font-size:17px;cursor:pointer;color:#666;">✕</button>
+    <div style="font-size:18px;font-weight:700;margin-bottom:5px;color:#eee;">Share this property</div>
+    <div style="font-size:12px;color:#888;margin-bottom:12px;" id="share-sub">—</div>
+    <div style="background:#1a1a1a;border:1px solid #252525;border-radius:8px;padding:9px 12px;font-size:12px;color:#888;margin-bottom:10px;word-break:break-all;text-align:left;" id="share-url">—</div>
+    <div style="display:flex;gap:8px;"><button onclick="copyShareUrl()" style="flex:1;padding:10px;border-radius:8px;border:none;background:#333;color:#fff;font-size:12px;font-weight:500;cursor:pointer;">⧉ Copy</button><button onclick="waShareUrl()" style="flex:1;padding:10px;border-radius:8px;border:none;background:#25d366;color:#fff;font-size:12px;font-weight:500;cursor:pointer;">💬 WhatsApp</button></div>
   </div>
 </div>
 
-<!-- HOW IT WORKS MODAL — centered -->
-<!-- STEP-BY-STEP GUIDE MODAL -->
+<!-- HOW IT WORKS -->
 <div class="dark-overlay" id="how-modal">
   <div class="guide-modal">
-    <button class="dm-close" onclick="closeHowModal()" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,.08);border:none;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#888;cursor:pointer;z-index:2;">✕</button>
-
+    <div class="dm-handle"></div>
+    <button class="dm-close" onclick="closeHowModal()">✕</button>
     <div class="guide-header">
       <div class="guide-logo">Ghar<span>Map</span></div>
       <div class="guide-title">How it works</div>
-      <div class="guide-sub">From map to move-in — in 4 simple steps</div>
+      <div class="guide-sub">From map to move-in — 4 simple steps</div>
     </div>
-
     <div class="guide-steps">
-
-      <div class="guide-step">
-        <div class="guide-step-left">
-          <div class="guide-step-num">1</div>
-          <div class="guide-step-line"></div>
-        </div>
-        <div class="guide-step-card">
-          <div class="guide-step-ico">🗺</div>
-          <div class="guide-step-content">
-            <div class="guide-step-title">Browse the Map</div>
-            <div class="guide-step-desc">Every pin is a verified property. Use the <b>neighbourhood chips</b> to zoom into your preferred area. Filter by BHK, budget, and furnishing.</div>
-            <div class="guide-step-tip">💡 Tap <b>All areas</b> to see everything, or pick a zone to zoom in with a boundary circle.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="guide-step">
-        <div class="guide-step-left">
-          <div class="guide-step-num">2</div>
-          <div class="guide-step-line"></div>
-        </div>
-        <div class="guide-step-card">
-          <div class="guide-step-ico">🏠</div>
-          <div class="guide-step-content">
-            <div class="guide-step-title">Chat with This House</div>
-            <div class="guide-step-desc">Tap any pin → <b>Chat with this house</b>. See the real rent, total monthly cost estimate, building report card, and anonymous negotiation history.</div>
-            <div class="guide-step-tip">💡 The <b>negotiation history</b> shows what past tenants actually paid — use it to negotiate.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="guide-step">
-        <div class="guide-step-left">
-          <div class="guide-step-num">3</div>
-          <div class="guide-step-line"></div>
-        </div>
-        <div class="guide-step-card">
-          <div class="guide-step-ico">📅</div>
-          <div class="guide-step-content">
-            <div class="guide-step-title">Book a Site Visit</div>
-            <div class="guide-step-desc">Pick any open slot — morning or evening. Enter your name and number. Our team <b>confirms within 2 hours</b> via WhatsApp.</div>
-            <div class="guide-step-tip">💡 All visits are <b>100% free</b>. No broker. No surprise charges. Ever.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="guide-step last">
-        <div class="guide-step-left">
-          <div class="guide-step-num">4</div>
-        </div>
-        <div class="guide-step-card">
-          <div class="guide-step-ico">🤝</div>
-          <div class="guide-step-content">
-            <div class="guide-step-title">Move In with Confidence</div>
-            <div class="guide-step-desc">Our team accompanies you on the visit, helps negotiate, and supports till agreement signing. <b>Zero brokerage to tenants.</b></div>
-            <div class="guide-step-tip">💡 Can't find what you need? Tap <b>Find a Place</b> — we source from our private network within 24 hrs.</div>
-          </div>
-        </div>
-      </div>
-
+      <div class="guide-step"><div class="guide-step-left"><div class="guide-step-num">1</div><div class="guide-step-line"></div></div><div class="guide-step-card"><div class="guide-step-ico">🗺</div><div class="guide-step-title">Browse the Map</div><div class="guide-step-desc">Every pin is a verified property. Use the <b>neighbourhood chips</b> to zoom into your area. Filter by BHK, budget, furnishing.</div><div class="guide-step-tip">💡 Pick a zone to zoom in with a <b>boundary circle</b>.</div></div></div>
+      <div class="guide-step"><div class="guide-step-left"><div class="guide-step-num">2</div><div class="guide-step-line"></div></div><div class="guide-step-card"><div class="guide-step-ico">🏠</div><div class="guide-step-title">Chat with This House</div><div class="guide-step-desc">Tap any pin. See real rent, total monthly cost, building scores, and <b>anonymous negotiation history</b>.</div><div class="guide-step-tip">💡 Past tenants' data helps you <b>negotiate better</b>.</div></div></div>
+      <div class="guide-step"><div class="guide-step-left"><div class="guide-step-num">3</div><div class="guide-step-line"></div></div><div class="guide-step-card"><div class="guide-step-ico">📅</div><div class="guide-step-title">Book a Site Visit</div><div class="guide-step-desc">Pick a slot. Our team <b>confirms within 2 hours</b> via WhatsApp. All visits are 100% free.</div><div class="guide-step-tip">💡 <b>No broker. No surprise charges.</b> Ever.</div></div></div>
+      <div class="guide-step last"><div class="guide-step-left"><div class="guide-step-num">4</div></div><div class="guide-step-card"><div class="guide-step-ico">🤝</div><div class="guide-step-title">Move In with Confidence</div><div class="guide-step-desc">Our team accompanies you, helps negotiate, supports till signing. <b>Zero brokerage to tenants.</b></div><div class="guide-step-tip">💡 Can't find it? Tap <b>Talk to Team</b> — we source within 24 hrs.</div></div></div>
     </div>
-
     <div class="guide-footer">
       <button class="guide-cta" onclick="closeHowModal()">Got it — Start Exploring 🗺</button>
       <div class="guide-footer-note">📞 Questions? WhatsApp our team anytime</div>
@@ -1262,31 +898,32 @@ body{min-height:100%;font-family:var(--ff);background:var(--bg);color:var(--ink)
   </div>
 </div>
 
-
-<!-- PRIVACY MODAL -->
+<!-- PRIVACY -->
 <div class="dark-overlay" id="privacy-modal">
   <div class="dark-modal">
+    <div class="dm-handle"></div>
     <button class="dm-close" onclick="closePrivacyModal()">✕</button>
     <div class="dm-title">Privacy Policy</div>
     <div class="dm-date">Last updated: May 2025</div>
     <div class="dm-body">
       <div class="dm-sec"><div class="dm-sec-title">What we collect</div>Property details, contact details for bookings, and anonymous usage data. <b>We never sell your data.</b></div>
-      <div class="dm-sec"><div class="dm-sec-title">Your phone</div>Your WhatsApp number is <b>never shown publicly</b>. Only used by our team.</div>
-      <div class="dm-sec"><div class="dm-sec-title">Deletion</div>Contact <b>privacy@gharmap.in</b> — we process within 7 days.</div>
+      <div class="dm-sec"><div class="dm-sec-title">Your phone</div>Your WhatsApp is <b>never shown publicly</b>. Only used by our team.</div>
+      <div class="dm-sec"><div class="dm-sec-title">Deletion</div>Contact <b>privacy@gharmap.in</b> — processed within 7 days.</div>
     </div>
     <button class="dm-cta" onclick="closePrivacyModal()">Understood →</button>
   </div>
 </div>
 
-<!-- T&C MODAL -->
+<!-- T&C -->
 <div class="dark-overlay" id="tnc-modal">
   <div class="dark-modal">
+    <div class="dm-handle"></div>
     <button class="dm-close" onclick="closeTncModal()">✕</button>
     <div class="dm-title">Terms &amp; Conditions</div>
     <div class="dm-date">Last updated: May 2025</div>
     <div class="dm-body">
-      <div class="dm-sec"><div class="dm-sec-title">Verified listings</div>Every listing is physically verified. However, always verify directly before payment.</div>
-      <div class="dm-sec"><div class="dm-sec-title">No payments here</div>GharMap does not collect rent or deposits. <b>Never pay anyone claiming to be GharMap.</b></div>
+      <div class="dm-sec"><div class="dm-sec-title">Verified listings</div>Physically verified before going live. Always verify before payment.</div>
+      <div class="dm-sec"><div class="dm-sec-title">No payments here</div><b>Never pay anyone claiming to be GharMap.</b> All transactions are direct owner-to-tenant.</div>
       <div class="dm-sec"><div class="dm-sec-title">Contact</div>For queries: <b>legal@gharmap.in</b></div>
     </div>
     <button class="dm-cta" onclick="closeTncModal()">I Agree →</button>
@@ -1294,24 +931,14 @@ body{min-height:100%;font-family:var(--ff);background:var(--bg);color:var(--ink)
 </div>
 
 <script>
-// ══════════════════════════════════════
-// CONFIG
-// ══════════════════════════════════════
+// ══ CONFIG ══
 const SUPABASE_URL = 'https://nefyaqjolvglodomshcx.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lZnlhcWpvbHZnbG9kb21zaGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMTQ1MDcsImV4cCI6MjA5MjY5MDUwN30.N2oNOSvUGa0oDELrMYn4ib5541zxz58F7NXTiuYCaxk';
 const AGENT_WA = '919336297656';
 const SHEET_API = 'https://script.google.com/macros/s/AKfycbyfZ9bnxTVcJZR_NbxlFcM1GYSzKI8CpsWUN6c80qUfmWFWp0hXZt_qkbdRSKvkZv_u/exec';
-
 function sbH(x={}){return{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,...x};}
 
-const LISTINGS = [];
-const ZONES=[
-  {id:'gomti',label:'Gomti Nagar'},{id:'hazrat',label:'Hazratganj'},
-  {id:'alambagh',label:'Alambagh'},{id:'university',label:'University Belt'},
-  {id:'aashiana',label:'Aashiana'},
-];
-
-// ══ STATE ══
+const LISTINGS=[];
 let map=null,cluster=null,markers=[];
 let activeDetail=null,selectedSlot=null;
 let activeZones=new Set();
@@ -1319,68 +946,54 @@ let savedIds=JSON.parse(localStorage.getItem('gm_saved')||'[]');
 let listingMode='rent';
 let flt={type:'all',bhk:'all',fur:'all',minP:5000,maxP:200000,posted:'all',society:'all'};
 let _shareUrl='';
+let tileNormal,tileSat,satOn=false;
+let _hoodCircle=null;
 
 // ══ UTILS ══
 function showToast(m,d=3000){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
-function fmtP(v,mode='rent'){
-  if(mode==='sale'){if(v>=10000000)return'₹'+(v/10000000).toFixed(2)+' Cr';if(v>=100000)return'₹'+(v/100000).toFixed(1)+' L';return'₹'+v.toLocaleString('en-IN');}
-  if(v>=100000)return'₹'+(v/100000).toFixed(1)+'L';
-  if(v>=1000)return'₹'+(v%1000===0?v/1000:(v/1000).toFixed(1))+'K';return'₹'+v;
-}
+function fmtP(v,mode='rent'){if(mode==='sale'){if(v>=10000000)return'₹'+(v/10000000).toFixed(2)+' Cr';if(v>=100000)return'₹'+(v/100000).toFixed(1)+' L';return'₹'+v.toLocaleString('en-IN');}if(v>=100000)return'₹'+(v/100000).toFixed(1)+'L';if(v>=1000)return'₹'+(v%1000===0?v/1000:(v/1000).toFixed(1))+'K';return'₹'+v;}
 function fmtRent(v){return v>=100000?'₹'+(v/100000).toFixed(1)+'L':v>=1000?'₹'+(v/1000).toFixed(0)+'K':'₹'+v;}
 
-// ══ FIX #1: SPLASH — ONLY closes on button click ══
+// ══ SPLASH ══
 function enterApp(){
-  const sp=document.getElementById('splash');
-  if(!sp)return;
+  const sp=document.getElementById('splash');if(!sp)return;
   sp.style.opacity='0';sp.style.transition='opacity .35s ease';
   setTimeout(()=>{
     sp.style.display='none';
     if(map)map.invalidateSize(true);
-    // Show guide on first visit
-    const seen = localStorage.getItem('gm_guide_seen');
-    if(!seen){ setTimeout(()=>openHowModal(), 500); }
+    if(!localStorage.getItem('gm_guide_seen'))setTimeout(()=>openHowModal(),500);
   },350);
 }
 
-// ══ MAP — FIX #3: Dark tiles ══
-let tileNormal,tileSat,satOn=false;
+// ══ MAP ══
 function initMap(){
   if(map)return;
-  map=L.map('map',{zoomControl:true,maxBounds:[[26.60,80.65],[27.10,81.30]],maxBoundsViscosity:.6,preferCanvas:true}).setView([26.8467,80.9462],13);
-  // FIX #3: Dark map tiles
-  // White map, dark UI elements
-  tileNormal=L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
-    attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:20,detectRetina:true
-  }).addTo(map);
-  tileSat=L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-    subdomains:['0','1','2','3'],maxZoom:21,detectRetina:true
-  });
+  const isMob=window.innerWidth<768;
+  map=L.map('map',{zoomControl:true,maxBounds:[[26.60,80.65],[27.10,81.30]],maxBoundsViscosity:.6,preferCanvas:true}).setView([26.8467,80.9462],isMob?15:13);
+  tileNormal=L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:20,detectRetina:true}).addTo(map);
+  tileSat=L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{subdomains:['0','1','2','3'],maxZoom:21,detectRetina:true});
   cluster=L.markerClusterGroup({maxClusterRadius:50,showCoverageOnHover:false,spiderfyOnMaxZoom:true,
-    iconCreateFunction:c=>L.divIcon({html:'<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;background:#151515;border:1.5px solid #252525;border-radius:10px;padding:4px 10px;box-shadow:0 4px 16px rgba(0,0,0,.5);text-align:center;line-height:1.2;"><div style="font-size:13px;font-weight:700;color:#eee;">'+c.getChildCount()+'</div><div style="font-size:8px;color:var(--green-mid);font-weight:600;letter-spacing:.5px;text-transform:uppercase;">listings</div></div>',className:'',iconSize:[70,34]})
+    iconCreateFunction:c=>L.divIcon({html:'<div style="background:#151515;border:1.5px solid #252525;border-radius:10px;padding:4px 10px;box-shadow:0 4px 16px rgba(0,0,0,.5);text-align:center;line-height:1.2;"><div style="font-size:13px;font-weight:700;color:#eee;">'+c.getChildCount()+'</div><div style="font-size:8px;color:#4d9a82;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">listings</div></div>',className:'',iconSize:[70,34]})
   });
   map.addLayer(cluster);
+  map.on('click',()=>closeAll(null));
 }
 
-// FIX #7: Pin icons show amount + area ALWAYS visible (no click needed)
 function mkIcon(type,mode,status,price,area){
   const op=status==='rented'?'0.35':'1';
   const colors={flat:'#4d9a82',pg:'#c4943a',flatmate:'#5b8ed4',house:'#4d9a82',commercial:'#8b6cc4'};
-  let bg=colors[type]||'#4d9a82';
-  if(mode==='sale')bg='#5b8ed4';
-  if(status==='rented')bg='#555';
-  const areaShort=(area||'').split(',')[0].split('·')[0].trim().substring(0,18);
-  return L.divIcon({
-    className:'',
+  let bg=colors[type]||'#4d9a82';if(mode==='sale')bg='#5b8ed4';if(status==='rented')bg='#555';
+  const areaShort=(area||'').split(',')[0].trim().substring(0,16);
+  return L.divIcon({className:'',
     html:`<div style="display:flex;flex-direction:column;align-items:center;pointer-events:auto;opacity:${op};">
       <div style="background:#151515;border:1px solid #2a2a2a;border-radius:8px;padding:4px 9px;box-shadow:0 2px 10px rgba(0,0,0,.4);white-space:nowrap;text-align:center;cursor:pointer;">
         <div style="font-size:12px;font-weight:700;color:#eee;font-family:var(--ff);line-height:1.2;">${price||''}</div>
         <div style="font-size:9px;color:#666;font-family:var(--ff);line-height:1.2;">${areaShort}</div>
       </div>
-      <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #151515;margin-top:-1px;"></div>
+      <div style="width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:4px solid #151515;margin-top:-1px;"></div>
       <div style="width:8px;height:8px;border-radius:50%;background:${bg};border:2px solid rgba(255,255,255,.5);box-shadow:0 2px 6px rgba(0,0,0,.4);margin-top:2px;"></div>
     </div>`,
-    iconSize:[80,50],iconAnchor:[40,50],popupAnchor:[0,-52]
+    iconSize:[80,48],iconAnchor:[40,48],popupAnchor:[0,-50]
   });
 }
 
@@ -1402,88 +1015,60 @@ function draw(){
   vis.forEach(p=>{
     const fl={furnished:'Furnished',semi:'Semi',unfurnished:'Bare'}[p.fur]||'';
     const m=L.marker([p.lat,p.lng],{icon:mkIcon(p.type,p.mode,p.status,fmtP(p.rent,p.mode),p.area)});
-    m.bindPopup('<div style="min-width:200px;"><div style="font-size:20px;font-weight:700;color:#1a1a1a;">'+fmtP(p.rent,p.mode)+(p.mode==='rent'?'<span style="font-size:12px;color:#aaa;font-weight:400;">/mo</span>':'')+'</div><div style="font-size:12px;color:#888;margin-top:4px;">📍 '+p.area+'</div><div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">'+(p.bhk?'<span class="pp-t">'+p.bhk+' BHK</span>':'')+'<span class="pp-t">'+fl+'</span><span class="pp-t" style="background:#e8f5f0;color:#2d6a5a;border-color:#c0ddd5;">✓ Verified</span></div><button class="pp-view" onclick="openDetail(\''+p.id+'\')">🏠 Chat with this house →</button></div>',{maxWidth:260});
+    m.bindPopup('<div style="min-width:190px;"><div style="font-size:20px;font-weight:700;color:#1a1a1a;">'+fmtP(p.rent,p.mode)+(p.mode==='rent'?'<span style="font-size:11px;color:#aaa;font-weight:400;">/mo</span>':'')+'</div><div style="font-size:11px;color:#888;margin-top:4px;">📍 '+p.area+'</div><div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">'+(p.bhk?'<span class="pp-t">'+p.bhk+' BHK</span>':'')+'<span class="pp-t">'+fl+'</span><span class="pp-t" style="background:#e8f5f0;color:#2d6a5a;border-color:#c0ddd5;">✓ Verified</span></div><button class="pp-view" onclick="openDetail(\''+p.id+'\')">🏠 Chat with this house →</button></div>',{maxWidth:250});
     cluster.addLayer(m);markers.push(m);
   });
-  // Close open panels when clicking the map background
-  map.on('click', function(){ closeAll(null); });
   // Stats
-  const gt=document.getElementById('gm-s-total'),ga=document.getElementById('gm-s-avg'),gl=document.getElementById('gm-s-low');
-  gt.textContent=vis.length;
+  document.getElementById('gm-s-total').textContent=vis.length;
   if(vis.length){
     const avg=Math.round(vis.reduce((s,p)=>s+p.rent,0)/vis.length);
-    const low=Math.min(...vis.map(p=>p.rent));
-    ga.textContent=fmtRent(avg);gl.textContent=fmtRent(low);
-  }else{ga.textContent='₹—';gl.textContent='₹—';}
-  // Empty state
+    document.getElementById('gm-s-avg').textContent=fmtRent(avg);
+    document.getElementById('gm-s-low').textContent=fmtRent(Math.min(...vis.map(p=>p.rent)));
+  }else{document.getElementById('gm-s-avg').textContent='₹—';document.getElementById('gm-s-low').textContent='₹—';}
   const es=document.getElementById('empty-state');
-  if(vis.length===0){
-    es.style.display='block';
-    if(LISTINGS.length===0){document.getElementById('es-t').textContent='New listings being verified — back soon.';}
-    else{document.getElementById('es-ico').textContent='🔍';document.getElementById('es-t').textContent='No matches for your filters.';}
-  }else es.style.display='none';
+  if(vis.length===0){es.style.display='block';if(LISTINGS.length===0){document.getElementById('es-t').textContent='New listings being verified — back soon.';}else{document.getElementById('es-ico').textContent='🔍';document.getElementById('es-t').textContent='No matches for your filters.';}}
+  else es.style.display='none';
 }
 
-// ══ DETAIL — FIX #4: Clean, minimal ══
+// ══ DETAIL ══
 function openDetail(id){
   closeAll('dp');
   const p=LISTINGS.find(x=>x.id===id);if(!p)return;
   activeDetail=p;
-  const fl={furnished:'Furnished',semi:'Semi-Furnished',unfurnished:'Unfurnished'}[p.fur]||'';
-  const tl={flat:'VERIFIED FLAT',pg:'VERIFIED PG',flatmate:'FLATMATE',house:'VERIFIED HOUSE',commercial:'VERIFIED COMMERCIAL'}[p.type]||'VERIFIED';
-  document.getElementById('dp-type-lbl').textContent=tl;
+  document.getElementById('dp-type-lbl').textContent={flat:'VERIFIED FLAT',pg:'VERIFIED PG',house:'VERIFIED HOUSE',commercial:'VERIFIED COMMERCIAL'}[p.type]||'VERIFIED';
   document.getElementById('dp-price').textContent=fmtP(p.rent,p.mode);
   document.getElementById('dp-price-unit').textContent=p.mode==='rent'?'/month':'';
-  // What to know
+  const fl={furnished:'Furnished',semi:'Semi-Furnished',unfurnished:'Unfurnished'}[p.fur]||'';
   const wtkW=document.getElementById('dp-wtk-wrap');
   if(p.whatToKnow){wtkW.style.display='block';document.getElementById('dp-wtk-text').textContent=p.whatToKnow;}else wtkW.style.display='none';
-  // Neg badge
   const negEl=document.getElementById('dp-neg');
   if(p.neg&&p.neg.length){const lo=Math.min(...p.neg.map(n=>n.price)),hi=Math.max(...p.neg.map(n=>n.price));document.getElementById('dp-neg-txt').textContent='Typical: '+fmtP(lo,p.mode)+' – '+fmtP(hi,p.mode);negEl.style.display='inline-flex';}else negEl.style.display='none';
-  // Price drop
   const pdEl=document.getElementById('dp-price-drop');
   if(p.price_drop){pdEl.style.display='inline-flex';pdEl.innerHTML='⬇ Price dropped '+fmtP(p.price_drop,p.mode);}else pdEl.style.display='none';
-  // Tags
   const tags=[];
   if(p.bhk&&p.type!=='pg')tags.push('<span class="dp-tag">'+p.bhk+' BHK</span>');
   if(p.sqft)tags.push('<span class="dp-tag">📐 '+p.sqft+' sqft</span>');
   tags.push('<span class="dp-tag">'+fl+'</span>');
   tags.push('<span class="dp-tag">📍 '+p.area+'</span>');
   document.getElementById('dp-tags').innerHTML=tags.join('');
-  // Status
   const stEl=document.getElementById('dp-status');
   if(p.status==='rented'){stEl.className='s-pill';stEl.style.cssText='background:rgba(192,71,42,.12);color:#c0472a;border:1px solid rgba(192,71,42,.18);';stEl.textContent='🔴 Rented';}
   else{stEl.className='s-pill s-avail';stEl.style.cssText='';stEl.textContent=p.mode==='rent'?'🟢 Available':'🟢 For Sale';}
-  // Avg badge
-  const ab=document.getElementById('dp-avg');
-  const badge=getAvgBadge(p);
+  const ab=document.getElementById('dp-avg');const badge=getAvgBadge(p);
   if(badge){ab.style.display='inline-flex';ab.className='avg-badge '+badge.cls;ab.textContent=badge.label;}else ab.style.display='none';
-  // Verified badge
-  document.getElementById('dp-verified-badge').innerHTML='<span style="font-size:16px;">✓</span><div><div class="v-badge-txt">Physically verified by GharMap Team</div><div class="v-badge-date">Verified '+(p.verified_date||'May 2025')+' · Visit free</div></div>';
-  // Viewing signal
-  const vs=document.getElementById('dp-viewing');vs.style.display='inline-flex';vs.innerHTML='<span class="vs-dot"></span>'+(Math.floor(Math.random()*4)+2)+' people viewing';
-  // Save
+  document.getElementById('dp-verified-badge').innerHTML='<span style="font-size:14px;">✓</span><div><div class="v-badge-txt">Physically verified by GharMap Team</div><div class="v-badge-date">Verified '+(p.verified_date||'May 2025')+' · Visit free</div></div>';
+  const vs=document.getElementById('dp-viewing');vs.style.display='inline-flex';vs.innerHTML='<span class="vs-dot"></span>'+(Math.floor(Math.random()*4)+2)+' viewing';
   const sb=document.getElementById('dp-save-btn');sb.textContent=savedIds.includes(p.id)?'★':'☆';sb.classList.toggle('saved',savedIds.includes(p.id));
-  // Details grid
   const dItems=[['Type',{flat:'Apartment',pg:'PG Room',house:'House',commercial:'Commercial'}[p.type]||p.type],p.bhk?['BHK',p.bhk+' BHK']:null,['Furnishing',fl],p.sqft?['Area',p.sqft+' sqft']:null,p.parking?['Parking',p.parking]:null,p.lift?['Lift',p.lift]:null,p.power?['Power',p.power]:null].filter(Boolean);
   document.getElementById('dp-grid').innerHTML=dItems.map(([l,v])=>'<div class="det-item"><div class="det-lbl">'+l+'</div><div class="det-val">'+(v||'—')+'</div></div>').join('');
-  // Note
-  const ns=document.getElementById('dp-note-sec');
-  if(p.note){ns.style.display='block';document.getElementById('dp-note-txt').textContent=p.note;}else ns.style.display='none';
-  // Neg history
+  const ns=document.getElementById('dp-note-sec');if(p.note){ns.style.display='block';document.getElementById('dp-note-txt').textContent=p.note;}else ns.style.display='none';
   const nl=document.getElementById('dp-neg-list');
-  if(p.neg&&p.neg.length){nl.innerHTML=p.neg.map(n=>'<div class="neg-row"><div class="neg-month">'+n.month+'</div><div class="neg-price">'+fmtP(n.price,p.mode)+'</div><span class="neg-tag '+(n.tag==='below'?'neg-below':'neg-at')+'">'+(n.tag==='below'?'↓ Below ask':'= At ask')+'</span></div>').join('');}else{nl.innerHTML='<div style="font-size:13px;color:#666;">First listing — no history yet.</div>';}
-  document.getElementById('dp-neg-note').textContent=p.neg&&p.neg.length?'Listings typically close 5–15% below asking.':'Be the first to set the benchmark.';
-  // Scores
+  if(p.neg&&p.neg.length){nl.innerHTML=p.neg.map(n=>'<div class="neg-row"><div class="neg-month">'+n.month+'</div><div class="neg-price">'+fmtP(n.price,p.mode)+'</div><span class="neg-tag '+(n.tag==='below'?'neg-below':'neg-at')+'">'+(n.tag==='below'?'↓ Below ask':'= At ask')+'</span></div>').join('');}
+  else{nl.innerHTML='<div style="font-size:12px;color:#666;">First listing — no history yet.</div>';}
+  document.getElementById('dp-neg-note').textContent=p.neg&&p.neg.length?'Typically close 5–15% below asking.':'Be the first to set the benchmark.';
   const sc=p.scores||{safety:75,connectivity:75,water:70,noise:70};
   document.getElementById('dp-scores').innerHTML=[['Safety','safety','#2d6a5a'],['Connectivity','connectivity','#1e4fa0'],['Water','water','#2d6a5a'],['Noise','noise','#c0472a']].map(([l,k,c])=>'<div class="score-card"><div class="score-lbl">'+l+'</div><div class="score-bar"><div class="score-fill" style="width:'+(sc[k]||0)+'%;background:'+c+';"></div></div><div class="score-val">'+(sc[k]||'—')+'/100</div></div>').join('');
-  // Visit slots
-  buildSlots(p);
-  // Cost
-  buildCost(p);
-  // Similar
-  buildSimilar(p);
-  // Fly
+  buildSlots(p);buildCost(p);buildSimilar(p);
   map&&map.flyTo([p.lat,p.lng],16,{duration:.8});
   document.getElementById('dp').classList.add('open');
 }
@@ -1491,9 +1076,8 @@ function openDetail(id){
 function closeDetail(){document.getElementById('dp').classList.remove('open');activeDetail=null;}
 
 function scrollToVisit(){
-  const sec=document.getElementById('dp-visit-sec');
-  const body=document.querySelector('.dp-body');
-  if(sec&&body)body.scrollTo({top:sec.offsetTop-12,behavior:'smooth'});
+  const sec=document.getElementById('dp-visit-sec'),body=document.querySelector('.dp-body');
+  if(sec&&body)body.scrollTo({top:sec.offsetTop-10,behavior:'smooth'});
 }
 
 function getAvgBadge(p){
@@ -1506,144 +1090,72 @@ function getAvgBadge(p){
   return{label:'⬆ '+diff.toFixed(0)+'% above avg',cls:'avg-above'};
 }
 
-// ══ VISIT SLOTS ══
 function buildSlots(p){
   if(p.status==='rented'){document.getElementById('dp-visit-sec').style.display='none';return;}
   document.getElementById('dp-visit-sec').style.display='block';
-  document.getElementById('v-form').classList.remove('show');
-  document.getElementById('v-confirm').classList.remove('show');
-  selectedSlot=null;
-  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const mons=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const slots=[];const now=new Date();
+  document.getElementById('v-form').classList.remove('show');document.getElementById('v-confirm').classList.remove('show');selectedSlot=null;
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],mons=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],slots=[],now=new Date();
   for(let i=1;i<=3;i++){const d=new Date(now);d.setDate(d.getDate()+i);const lbl=days[d.getDay()]+', '+d.getDate()+' '+mons[d.getMonth()];slots.push({id:p.id+'-'+i+'-am',lbl,time:'11:00 AM'});slots.push({id:p.id+'-'+i+'-pm',lbl,time:'4:00 PM'});}
   document.getElementById('slots-grid').innerHTML=slots.map(s=>'<div class="slot-btn" onclick="selSlot(\''+s.id+'\',\''+s.lbl+' '+s.time+'\',this)"><div class="slot-day">'+s.lbl+'</div><div class="slot-time">'+s.time+'</div><div class="slot-avail">Open</div></div>').join('');
 }
 function selSlot(id,lbl,el){
-  document.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('sel'));
-  el.classList.add('sel');selectedSlot={id,lbl};
-  document.getElementById('v-slot-lbl').textContent=lbl;
-  document.getElementById('v-form').classList.add('show');
+  document.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');selectedSlot={id,lbl};
+  document.getElementById('v-slot-lbl').textContent=lbl;document.getElementById('v-form').classList.add('show');
 }
 async function submitVisit(){
-  const name=document.getElementById('vf-name').value.trim();
-  const phone=document.getElementById('vf-phone').value.trim();
+  const name=document.getElementById('vf-name').value.trim(),phone=document.getElementById('vf-phone').value.trim();
   if(!name||!phone||phone.length<10||!selectedSlot||!activeDetail)return showToast('⚠️ Fill all fields');
-  const p=activeDetail;
-  const payload={property_id:p.id,property_area:p.area,property_price:p.rent,visitor_name:name,visitor_phone:phone,slot:selectedSlot.lbl,status:'pending',created_at:new Date().toISOString()};
+  const p=activeDetail,payload={property_id:p.id,property_area:p.area,property_price:p.rent,visitor_name:name,visitor_phone:phone,slot:selectedSlot.lbl,status:'pending',created_at:new Date().toISOString()};
   try{await fetch(SUPABASE_URL+'/rest/v1/visit_bookings',{method:'POST',headers:sbH({'Content-Type':'application/json','Prefer':'return=minimal'}),body:JSON.stringify(payload)});}catch(e){}
   const waMsg=encodeURIComponent('🏠 VISIT BOOKING\nProperty: '+p.area+' | '+fmtP(p.rent,p.mode)+'\nVisitor: '+name+'\nPhone: '+phone+'\nSlot: '+selectedSlot.lbl);
-  document.getElementById('v-form').classList.remove('show');
-  document.getElementById('v-confirm').classList.add('show');
-  document.getElementById('vc-msg').textContent='Visit confirmed for '+selectedSlot.lbl+'. We\'ll call you within 2 hours.';
-  setTimeout(()=>window.open('https://wa.me/'+AGENT_WA+'?text='+waMsg,'_blank'),600);
-  showToast('✅ Visit booked!',4000);
+  document.getElementById('v-form').classList.remove('show');document.getElementById('v-confirm').classList.add('show');
+  document.getElementById('vc-msg').textContent='Confirmed for '+selectedSlot.lbl+'. We\'ll call within 2 hours.';
+  setTimeout(()=>window.open('https://wa.me/'+AGENT_WA+'?text='+waMsg,'_blank'),600);showToast('✅ Visit booked!',4000);
 }
-
 function buildCost(p){
-  const sec=document.getElementById('dp-cost-sec');
-  if(p.mode!=='rent'){sec.style.display='none';return;}
-  sec.style.display='block';
-  const rent=p.rent,maint=p.maintenance||Math.round(rent*0.08/100)*100,elec=p.est_electricity||(p.bhk==='1'?1200:p.bhk==='2'?1800:2500);
-  const total=rent+maint+elec;
-  document.getElementById('dp-cost-card').innerHTML=`
-    <div class="cost-row"><span class="cost-label">Rent</span><span class="cost-value">₹${rent.toLocaleString('en-IN')}</span></div>
-    ${maint?`<div class="cost-row"><span class="cost-label">Maintenance</span><span class="cost-value">₹${maint.toLocaleString('en-IN')}</span></div>`:''}
-    <div class="cost-row"><span class="cost-label">Electricity (avg)</span><span class="cost-value">₹${elec.toLocaleString('en-IN')}</span></div>
-    <div class="cost-row total"><span class="cost-label">Total estimate</span><span class="cost-value">~₹${total.toLocaleString('en-IN')}/mo</span></div>
-    <div class="cost-note">Estimates based on similar buildings. Actual may vary.</div>`;
+  const sec=document.getElementById('dp-cost-sec');if(p.mode!=='rent'){sec.style.display='none';return;}
+  sec.style.display='block';const rent=p.rent,maint=p.maintenance||Math.round(rent*0.08/100)*100,elec=p.est_electricity||(p.bhk==='1'?1200:p.bhk==='2'?1800:2500),total=rent+maint+elec;
+  document.getElementById('dp-cost-card').innerHTML=`<div class="cost-row"><span class="cost-label">Rent</span><span class="cost-value">₹${rent.toLocaleString('en-IN')}</span></div>${maint?`<div class="cost-row"><span class="cost-label">Maintenance</span><span class="cost-value">₹${maint.toLocaleString('en-IN')}</span></div>`:''}<div class="cost-row"><span class="cost-label">Electricity (avg)</span><span class="cost-value">₹${elec.toLocaleString('en-IN')}</span></div><div class="cost-row total"><span class="cost-label">Total estimate</span><span class="cost-value">~₹${total.toLocaleString('en-IN')}/mo</span></div><div class="cost-note">Estimates based on similar buildings. Actual may vary.</div>`;
 }
-
 function buildSimilar(cur){
-  const scored=LISTINGS.filter(p=>p.id!==cur.id&&p.mode===cur.mode).map(p=>{
-    let s=0;if(p.type===cur.type)s+=30;if(p.zone===cur.zone)s+=25;if(p.bhk===cur.bhk)s+=20;if(p.fur===cur.fur)s+=10;
-    const rd=Math.abs(p.rent-cur.rent)/(cur.rent||1);if(rd<.1)s+=20;else if(rd<.25)s+=10;return{...p,score:s};
-  }).filter(p=>p.score>20).sort((a,b)=>b.score-a.score).slice(0,3);
-  const sec=document.getElementById('dp-sim-sec');
-  if(!scored.length){sec.style.display='none';return;}
+  const scored=LISTINGS.filter(p=>p.id!==cur.id&&p.mode===cur.mode).map(p=>{let s=0;if(p.type===cur.type)s+=30;if(p.zone===cur.zone)s+=25;if(p.bhk===cur.bhk)s+=20;if(p.fur===cur.fur)s+=10;const rd=Math.abs(p.rent-cur.rent)/(cur.rent||1);if(rd<.1)s+=20;else if(rd<.25)s+=10;return{...p,score:s};}).filter(p=>p.score>20).sort((a,b)=>b.score-a.score).slice(0,3);
+  const sec=document.getElementById('dp-sim-sec');if(!scored.length){sec.style.display='none';return;}
   sec.style.display='block';
   const ico={flat:'🏠',pg:'🛏',flatmate:'🤝',house:'🏡',commercial:'🏢'};
-  document.getElementById('dp-sim-list').innerHTML=scored.map(p=>{
-    const fl={furnished:'Furnished',semi:'Semi',unfurnished:'Bare'}[p.fur];
-    return'<div class="sim-card" onclick="openDetail(\''+p.id+'\')"><span style="font-size:17px;">'+(ico[p.type]||'🏠')+'</span><div style="flex:1"><div class="sim-price">'+fmtP(p.rent,p.mode)+'</div><div class="sim-det">'+(p.bhk?p.bhk+' BHK · ':'')+fl+' · '+p.area+'</div></div><span class="sim-match">'+Math.min(98,Math.round(p.score*1.5))+'%</span></div>';
-  }).join('');
+  document.getElementById('dp-sim-list').innerHTML=scored.map(p=>{const fl={furnished:'Furnished',semi:'Semi',unfurnished:'Bare'}[p.fur];return'<div class="sim-card" onclick="openDetail(\''+p.id+'\')"><span style="font-size:16px;">'+(ico[p.type]||'🏠')+'</span><div style="flex:1"><div class="sim-price">'+fmtP(p.rent,p.mode)+'</div><div class="sim-det">'+(p.bhk?p.bhk+' BHK · ':'')+fl+' · '+p.area+'</div></div><span class="sim-match">'+Math.min(98,Math.round(p.score*1.5))+'%</span></div>';}).join('');
 }
 
 // ══ SAVE ══
 function toggleSave(){
-  if(!activeDetail)return;
-  const id=activeDetail.id,btn=document.getElementById('dp-save-btn');
-  const idx=savedIds.indexOf(id);
-  if(idx>=0){savedIds.splice(idx,1);btn.textContent='☆';btn.classList.remove('saved');showToast('Removed from saved');}
+  if(!activeDetail)return;const id=activeDetail.id,btn=document.getElementById('dp-save-btn');
+  const idx=savedIds.indexOf(id);if(idx>=0){savedIds.splice(idx,1);btn.textContent='☆';btn.classList.remove('saved');showToast('Removed');}
   else{savedIds.push(id);btn.textContent='★';btn.classList.add('saved');showToast('⭐ Saved!');}
   localStorage.setItem('gm_saved',JSON.stringify(savedIds));
-  const d=document.getElementById('saved-drawer');
-  if(d.classList.contains('open')) renderSavedDrawer();
+  updateSavedCount();
+  if(document.getElementById('saved-drawer').classList.contains('open'))renderSavedDrawer();
 }
+function updateSavedCount(){
+  const n=savedIds.length;
+  const m=document.getElementById('saved-menu-count');if(m)m.textContent=n+' saved';
+  const lbl=document.getElementById('saved-count-lbl');if(lbl)lbl.textContent=n+' saved';
+}
+function closeSavedDrawer(){document.getElementById('saved-drawer').classList.remove('open');}
 function toggleSavedDrawer(){
-  const d = document.getElementById('saved-drawer');
-  const willOpen = !d.classList.contains('open');
+  const d=document.getElementById('saved-drawer');
+  if(d.classList.contains('open')){d.classList.remove('open');return;}
   closeAll('saved');
-  if(willOpen){d.classList.add('open');renderSavedDrawer();}
+  d.classList.add('open');renderSavedDrawer();
 }
-
 function renderSavedDrawer(){
-  const wrap = document.getElementById('saved-list-wrap');
-  const lbl = document.getElementById('saved-count-lbl');
-  if(lbl) lbl.textContent = savedIds.length + ' saved';
-
-  if(!savedIds.length){
-    wrap.innerHTML = `<div class="saved-empty">
-      <div class="saved-empty-ico">🔖</div>
-      <div class="saved-empty-t">Nothing saved yet</div>
-      <div class="saved-empty-s">Tap ☆ on any property<br>to save it here for later.</div>
-    </div>`;
-    return;
-  }
-
-  const ico = {flat:'🏠',pg:'🛏',flatmate:'🤝',house:'🏡',commercial:'🏢'};
-  wrap.innerHTML = savedIds.map(id => {
-    const p = LISTINGS.find(x => x.id === id);
-    if(!p) return '';
-    const fl = {furnished:'Furnished',semi:'Semi',unfurnished:'Bare'}[p.fur] || '';
-    const badge = getAvgBadge(p);
-    const badgeHtml = badge ? `<span style="font-size:10px;padding:2px 7px;border-radius:6px;background:${badge.cls.includes('below')?'rgba(45,106,90,.15)':badge.cls.includes('above')?'rgba(192,71,42,.12)':'rgba(196,148,58,.1)'};color:${badge.cls.includes('below')?'#4d9a82':badge.cls.includes('above')?'#c0472a':'#c4943a'};">${badge.label}</span>` : '';
-    return `<div class="saved-card">
-      <div class="saved-card-top">
-        <div>
-          <div class="saved-card-price">${fmtP(p.rent,p.mode)}<small>${p.mode==='rent'?' /mo':''}</small></div>
-        </div>
-        <button class="saved-card-remove" onclick="event.stopPropagation();removeSaved('${id}')">✕ Remove</button>
-      </div>
-      <div class="saved-card-area">${ico[p.type]||'📍'} ${p.area}</div>
-      <div class="saved-card-tags">
-        ${p.bhk && p.type!=='pg' ? `<span class="saved-card-tag">${p.bhk} BHK</span>` : ''}
-        <span class="saved-card-tag">${fl}</span>
-        ${p.sqft ? `<span class="saved-card-tag">${p.sqft} sqft</span>` : ''}
-        <span class="saved-card-tag" style="color:#4d9a82;border-color:rgba(45,106,90,.3);">✓ Verified</span>
-        ${badgeHtml}
-      </div>
-      <button class="saved-card-cta" onclick="openDetail('${id}');toggleSavedDrawer();">🏠 Chat with this house →</button>
-    </div>`;
-  }).join('');
+  const wrap=document.getElementById('saved-list-wrap');updateSavedCount();
+  if(!savedIds.length){wrap.innerHTML='<div class="saved-empty"><div class="saved-empty-ico">🔖</div><div class="saved-empty-t">Nothing saved yet</div><div class="saved-empty-s">Tap ☆ on any property.</div></div>';return;}
+  const ico={flat:'🏠',pg:'🛏',flatmate:'🤝',house:'🏡',commercial:'🏢'};
+  wrap.innerHTML=savedIds.map(id=>{const p=LISTINGS.find(x=>x.id===id);if(!p)return'';const fl={furnished:'Furnished',semi:'Semi',unfurnished:'Bare'}[p.fur]||'';const badge=getAvgBadge(p);const bHtml=badge?`<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:${badge.cls.includes('below')?'rgba(45,106,90,.15)':badge.cls.includes('above')?'rgba(192,71,42,.12)':'rgba(196,148,58,.1)'};color:${badge.cls.includes('below')?'#4d9a82':badge.cls.includes('above')?'#c0472a':'#c4943a'};">${badge.label}</span>`:'';return`<div class="saved-card"><div class="saved-card-top"><div><div class="saved-card-price">${fmtP(p.rent,p.mode)}<small>${p.mode==='rent'?' /mo':''}</small></div></div><button class="saved-card-remove" onclick="event.stopPropagation();removeSaved('${id}')">✕</button></div><div class="saved-card-area">${ico[p.type]||'📍'} ${p.area}</div><div class="saved-card-tags">${p.bhk&&p.type!=='pg'?`<span class="saved-card-tag">${p.bhk} BHK</span>`:''}<span class="saved-card-tag">${fl}</span>${p.sqft?`<span class="saved-card-tag">${p.sqft} sqft</span>`:''}<span class="saved-card-tag" style="color:#4d9a82;">✓ Verified</span>${bHtml}</div><button class="saved-card-cta" onclick="openDetail('${id}');toggleSavedDrawer();">🏠 Chat with this house →</button></div>`;}).join('');
 }
-
-function removeSaved(id){
-  savedIds = savedIds.filter(x => x !== id);
-  localStorage.setItem('gm_saved', JSON.stringify(savedIds));
-  renderSavedDrawer();
-  showToast('Removed from saved');
-}
+function removeSaved(id){savedIds=savedIds.filter(x=>x!==id);localStorage.setItem('gm_saved',JSON.stringify(savedIds));renderSavedDrawer();showToast('Removed');}
 
 // ══ SHARE ══
-function shareProperty(){
-  closeAll('share');
-  const p=activeDetail;if(!p)return;
-  _shareUrl=location.origin+location.pathname+'?p='+p.id;
-  document.getElementById('share-sub').textContent=fmtP(p.rent,p.mode)+' · '+p.area;
-  document.getElementById('share-url').textContent=_shareUrl;
-  document.getElementById('share-modal').classList.add('open');
-}
+function shareProperty(){closeAll('share');const p=activeDetail;if(!p)return;_shareUrl=location.origin+location.pathname+'?p='+p.id;document.getElementById('share-sub').textContent=fmtP(p.rent,p.mode)+' · '+p.area;document.getElementById('share-url').textContent=_shareUrl;document.getElementById('share-modal').classList.add('open');}
 function copyShareUrl(){navigator.clipboard.writeText(_shareUrl).then(()=>{showToast('✅ Copied!');closeShareModal();});}
 function waShareUrl(){const p=activeDetail;if(!p)return;window.open('https://wa.me/?text='+encodeURIComponent('Verified on GharMap: '+p.area+' — '+fmtP(p.rent,p.mode)+'\n'+_shareUrl),'_blank');closeShareModal();}
 function closeShareModal(){document.getElementById('share-modal').classList.remove('open');}
@@ -1652,225 +1164,102 @@ function closeShareModal(){document.getElementById('share-modal').classList.remo
 let sTimer=null;
 function onSearch(q){
   if(!q.trim()){closeDd();return;}
-  const ql=q.toLowerCase().trim();
-  // Search listings first
-  const seen=new Set(),results=[];
-  for(const lst of LISTINGS){
-    if(seen.has(lst.area))continue;
-    if(lst.area.toLowerCase().includes(ql)){
-      seen.add(lst.area);
-      const cnt=LISTINGS.filter(x=>x.area===lst.area).length;
-      results.push({n:lst.area,lat:lst.lat,lng:lst.lng,ico:'🏠',sub:cnt+' verified here',inv:true});
-    }
-  }
+  const ql=q.toLowerCase().trim(),seen=new Set(),results=[];
+  for(const lst of LISTINGS){if(seen.has(lst.area))continue;if(lst.area.toLowerCase().includes(ql)){seen.add(lst.area);const cnt=LISTINGS.filter(x=>x.area===lst.area).length;results.push({n:lst.area,lat:lst.lat,lng:lst.lng,ico:'🏠',sub:cnt+' verified here',inv:true});}}
   if(results.length)renderDd(results);
-  // Also search Photon
-  clearTimeout(sTimer);
-  if(ql.length>=2)sTimer=setTimeout(()=>photonSearch(q,results),250);
+  clearTimeout(sTimer);if(ql.length>=2)sTimer=setTimeout(()=>photonSearch(q,results),250);
 }
 function renderDd(res){
-  const dd=document.getElementById('s-dd');
-  let h='';
+  const dd=document.getElementById('s-dd');let h='';
   const inv=res.filter(r=>r.inv),places=res.filter(r=>!r.inv);
-  if(inv.length){
-    h+='<div class="dd-sec"><div class="dd-label" style="color:var(--green-mid);">🏠 Your properties</div>';
-    inv.forEach(r=>{h+='<div class="dd-row" onclick="selPlace('+r.lat+','+r.lng+',\''+r.n.replace(/'/g,"\\'")+'\')" style="background:rgba(45,106,90,.04);"><span style="font-size:15px;">'+r.ico+'</span><div><div class="dd-name">'+r.n+'</div><div class="dd-sub" style="color:var(--green-mid);">'+r.sub+'</div></div></div>';});
-    h+='</div>';
-  }
-  if(places.length){
-    if(inv.length)h+='<div class="dd-sep"></div>';
-    h+='<div class="dd-sec"><div class="dd-label">Places & landmarks</div>';
-    places.forEach(r=>{h+='<div class="dd-row" onclick="selPlace('+r.lat+','+r.lng+',\''+r.n.replace(/'/g,"\\'")+'\')"><span style="font-size:15px;">'+r.ico+'</span><div><div class="dd-name">'+r.n+'</div><div class="dd-sub">'+r.sub+'</div></div></div>';});
-    h+='</div>';
-  }
+  if(inv.length){h+='<div class="dd-sec"><div class="dd-label" style="color:#4d9a82;">🏠 Your properties</div>';inv.forEach(r=>{h+='<div class="dd-row" onclick="selPlace('+r.lat+','+r.lng+',\''+r.n.replace(/'/g,"\\'")+'\')" style="background:rgba(45,106,90,.04);"><span style="font-size:14px;">'+r.ico+'</span><div><div class="dd-name">'+r.n+'</div><div class="dd-sub" style="color:#4d9a82;">'+r.sub+'</div></div></div>';});h+='</div>';}
+  if(places.length){if(inv.length)h+='<div class="dd-sep"></div>';h+='<div class="dd-sec"><div class="dd-label">Places & landmarks</div>';places.forEach(r=>{h+='<div class="dd-row" onclick="selPlace('+r.lat+','+r.lng+',\''+r.n.replace(/'/g,"\\'")+'\')"><span style="font-size:14px;">'+r.ico+'</span><div><div class="dd-name">'+r.n+'</div><div class="dd-sub">'+r.sub+'</div></div></div>';});h+='</div>';}
   if(!h)h='<div style="padding:14px;font-size:13px;color:#666;text-align:center;">No matches found.</div>';
   dd.innerHTML=h;dd.classList.add('open');
 }
 async function photonSearch(q,inv){
-  try{
-    const res=await fetch('https://photon.komoot.io/api/?q='+encodeURIComponent(q+', Lucknow')+'&lat=26.8467&lon=80.9462&zoom=13&limit=6&lang=en');
-    const data=await res.json();
-    const places=[];
-    for(const f of(data.features||[])){
-      const[lng,lat]=f.geometry.coordinates;
-      if(Math.sqrt(Math.pow(lat-26.8467,2)+Math.pow(lng-80.9462,2))>0.6)continue;
-      const name=f.properties?.name;if(!name)continue;
-      const sub=f.properties?.street||f.properties?.district||'Lucknow';
-      places.push({n:name,lat,lng,sub,ico:'📍',inv:false});
-    }
-    renderDd([...(inv||[]),...places.slice(0,5)]);
-  }catch(e){}
+  try{const res=await fetch('https://photon.komoot.io/api/?q='+encodeURIComponent(q+', Lucknow')+'&lat=26.8467&lon=80.9462&zoom=13&limit=6&lang=en');const data=await res.json();const places=[];for(const f of(data.features||[])){const[lng,lat]=f.geometry.coordinates;if(Math.sqrt(Math.pow(lat-26.8467,2)+Math.pow(lng-80.9462,2))>0.6)continue;const name=f.properties?.name;if(!name)continue;places.push({n:name,lat,lng,sub:f.properties?.street||f.properties?.district||'Lucknow',ico:'📍',inv:false});}renderDd([...(inv||[]),...places.slice(0,5)]);}catch(e){}
 }
-function selPlace(lat,lng,name){
-  document.getElementById('gm-search-input').value=name;closeDd();
-  map&&map.flyTo([lat,lng],16,{duration:.8});
-}
+function selPlace(lat,lng,name){document.getElementById('gm-search-input').value=name;closeDd();map&&map.flyTo([lat,lng],16,{duration:.8});}
 function onSearchFocus(){const v=document.getElementById('gm-search-input').value;if(v)onSearch(v);}
 function onSearchKey(e){if(e.key==='Escape'){closeDd();document.getElementById('gm-search-input').value='';}}
 function closeDd(){const dd=document.getElementById('s-dd');dd.classList.remove('open');dd.innerHTML='';}
 document.addEventListener('click',e=>{if(!e.target.closest('#gm-top-controls')&&!e.target.closest('#s-dd'))closeDd();});
 
-// ══ NEIGHBOURHOOD SELECT — zoom + proper covering circle ══
-let _hoodCircle = null;
-const HOOD_DATA = {
-  gomti:      {radius:4000, color:'#4d9a82'},
-  hazrat:     {radius:2400, color:'#c4943a'},
-  alambagh:   {radius:3500, color:'#5b8ed4'},
-  university: {radius:3000, color:'#8b6cc4'},
-  aashiana:   {radius:3800, color:'#4d9a82'},
-  indira:     {radius:3200, color:'#c0472a'},
-};
-
+// ══ NEIGHBOURHOOD ══
+const HOOD_DATA={gomti:{radius:4000,color:'#4d9a82'},hazrat:{radius:2400,color:'#c4943a'},alambagh:{radius:3500,color:'#5b8ed4'},university:{radius:3000,color:'#8b6cc4'},aashiana:{radius:3800,color:'#4d9a82'},indira:{radius:3200,color:'#c0472a'}};
 function selectHood(el){
-  document.querySelectorAll('.gm-hood-chip').forEach(c => c.classList.remove('on'));
-  el.classList.add('on');
-  const zone = el.dataset.zone;
-  const lat = parseFloat(el.dataset.lat);
-  const lng = parseFloat(el.dataset.lng);
-  const zoom = parseInt(el.dataset.zoom);
-
-  if(_hoodCircle){ map.removeLayer(_hoodCircle); _hoodCircle = null; }
-
-  if(zone === 'all'){
-    map.flyTo([26.8467, 80.9462], 13, {duration:1});
-    activeZones.clear();
-    draw();
-    return;
-  }
-
-  const h = HOOD_DATA[zone] || {radius:3500, color:'#4d9a82'};
-
-  // Draw circle first so fitBounds works
-  _hoodCircle = L.circle([lat, lng], {
-    radius: h.radius,
-    color: h.color,
-    fillColor: h.color,
-    fillOpacity: 0.08,
-    weight: 2.5,
-    opacity: 0.85,
-    dashArray: '10 6'
-  }).addTo(map);
-
-  // fitBounds pads the circle so entire area is visible
-  map.flyToBounds(_hoodCircle.getBounds(), {padding:[50,50], duration:1.2});
-
-  activeZones.clear();
-  activeZones.add(zone);
-  draw();
-  showToast('📍 ' + el.textContent.trim());
+  document.querySelectorAll('.gm-hood-chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');
+  const zone=el.dataset.zone,lat=parseFloat(el.dataset.lat),lng=parseFloat(el.dataset.lng);
+  if(_hoodCircle){map.removeLayer(_hoodCircle);_hoodCircle=null;}
+  if(zone==='all'){map.flyTo([26.8467,80.9462],13,{duration:1});activeZones.clear();draw();return;}
+  const h=HOOD_DATA[zone]||{radius:3500,color:'#4d9a82'};
+  _hoodCircle=L.circle([lat,lng],{radius:h.radius,color:h.color,fillColor:h.color,fillOpacity:.08,weight:2.5,opacity:.85,dashArray:'10 6'}).addTo(map);
+  map.flyToBounds(_hoodCircle.getBounds(),{padding:[50,50],duration:1.2});
+  activeZones.clear();activeZones.add(zone);draw();showToast('📍 '+el.textContent.trim());
 }
 
-// ══ MUTUAL CLOSE — always close everything else first ══
+// ══ MENU SHEET ══
+function openMenuSheet(){
+  closeAll('menu');
+  document.getElementById('menu-overlay').classList.add('open');
+  document.getElementById('menu-sheet').classList.add('open');
+}
+function closeMenuSheet(){
+  document.getElementById('menu-overlay').classList.remove('open');
+  document.getElementById('menu-sheet').classList.remove('open');
+}
+
+// ══ MUTUAL CLOSE ══
 function closeAll(except){
-  if(except!=='dp') { const d=document.getElementById('dp'); if(d) d.classList.remove('open'); activeDetail=null; }
-  if(except!=='saved') document.getElementById('saved-drawer').classList.remove('open');
-  if(except!=='filter') { const f=document.getElementById('gm-filter-overlay'); if(f) f.classList.remove('open'); }
-  if(except!=='matchme') document.getElementById('matchme-modal').classList.remove('open');
-  if(except!=='owner') document.getElementById('owner-modal').classList.remove('open');
-  if(except!=='how') document.getElementById('how-modal').classList.remove('open');
-  if(except!=='share') document.getElementById('share-modal').classList.remove('open');
+  if(except!=='dp'){const d=document.getElementById('dp');if(d)d.classList.remove('open');activeDetail=null;}
+  if(except!=='saved'){document.getElementById('saved-drawer').classList.remove('open');}
+  if(except!=='filter'){const f=document.getElementById('gm-filter-overlay');if(f)f.classList.remove('open');}
+  if(except!=='matchme')document.getElementById('matchme-modal').classList.remove('open');
+  if(except!=='owner')document.getElementById('owner-modal').classList.remove('open');
+  if(except!=='how')document.getElementById('how-modal').classList.remove('open');
+  if(except!=='share')document.getElementById('share-modal').classList.remove('open');
+  if(except!=='menu')closeMenuSheet();
   closeDd();
 }
 
-function toggleSatellite(){
-  if(!map)return;
-  if(satOn){map.removeLayer(tileSat);map.addLayer(tileNormal);satOn=false;}
-  else{map.removeLayer(tileNormal);map.addLayer(tileSat);satOn=true;}
-}
-
-// ══ NEAR ME ══
-function nearMe(){
-  if(!navigator.geolocation){showToast('Location not supported');return;}
-  navigator.geolocation.getCurrentPosition(
-    pos=>{map&&map.flyTo([pos.coords.latitude,pos.coords.longitude],15,{duration:1.2});showToast('Showing properties near you!');},
-    ()=>showToast('Location unavailable'),{timeout:10000}
-  );
-}
+// ══ MAP CONTROLS ══
+function toggleSatellite(){if(!map)return;if(satOn){map.removeLayer(tileSat);map.addLayer(tileNormal);satOn=false;}else{map.removeLayer(tileNormal);map.addLayer(tileSat);satOn=true;}}
+function nearMe(){if(!navigator.geolocation){showToast('Location not supported');return;}navigator.geolocation.getCurrentPosition(pos=>{map&&map.flyTo([pos.coords.latitude,pos.coords.longitude],15,{duration:1.2});showToast('Showing properties near you!');},()=>showToast('Location unavailable'),{timeout:10000});}
 
 // ══ MODE ══
 function setMode(mode){
-  listingMode=mode;
-  document.getElementById('gm-rent-btn').classList.toggle('on',mode==='rent');
-  document.getElementById('gm-sale-btn').classList.toggle('on',mode==='sale');
-  // Adjust filter slider for mode
+  listingMode=mode;document.getElementById('gm-rent-btn').classList.toggle('on',mode==='rent');document.getElementById('gm-sale-btn').classList.toggle('on',mode==='sale');
   const rmin=document.getElementById('gf-rmin'),rmax=document.getElementById('gf-rmax');
-  if(mode==='sale'){
-    rmin.min=1000000;rmin.max=100000000;rmin.step=500000;rmin.value=1000000;
-    rmax.min=1000000;rmax.max=100000000;rmax.step=500000;rmax.value=100000000;
-    flt.minP=1000000;flt.maxP=100000000;
-    document.getElementById('gf-range-ceil').textContent='₹10Cr';
-  }else{
-    rmin.min=5000;rmin.max=200000;rmin.step=1000;rmin.value=5000;
-    rmax.min=5000;rmax.max=200000;rmax.step=1000;rmax.value=200000;
-    flt.minP=5000;flt.maxP=200000;
-    document.getElementById('gf-range-ceil').textContent='₹2L';
-  }
+  if(mode==='sale'){rmin.min=1000000;rmin.max=100000000;rmin.step=500000;rmin.value=1000000;rmax.min=1000000;rmax.max=100000000;rmax.step=500000;rmax.value=100000000;flt.minP=1000000;flt.maxP=100000000;document.getElementById('gf-range-ceil').textContent='₹10Cr';}
+  else{rmin.min=5000;rmin.max=200000;rmin.step=1000;rmin.value=5000;rmax.min=5000;rmax.max=200000;rmax.step=1000;rmax.value=200000;flt.minP=5000;flt.maxP=200000;document.getElementById('gf-range-ceil').textContent='₹2L';}
   gfRange();draw();
 }
 
-// ══ FIX #2: FILTER FUNCTIONS — all working ══
+// ══ FILTER ══
 function openGmFilter(){closeAll('filter');document.getElementById('gm-filter-overlay').classList.add('open');}
 function closeGmFilter(){document.getElementById('gm-filter-overlay').classList.remove('open');}
-
-function gfChip(el,grpId){
-  document.querySelectorAll('#'+grpId+' .gf-chip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');
-}
-function gfChipMulti(el,grpId){
-  if(el.dataset.v==='all'){
-    document.querySelectorAll('#'+grpId+' .gf-chip').forEach(c=>c.classList.remove('on'));
-    el.classList.add('on');
-  }else{
-    document.querySelector('#'+grpId+' .gf-chip[data-v="all"]').classList.remove('on');
-    el.classList.toggle('on');
-    if(!document.querySelector('#'+grpId+' .gf-chip.on'))
-      document.querySelector('#'+grpId+' .gf-chip[data-v="all"]').classList.add('on');
-  }
-}
+function gfChip(el,grpId){document.querySelectorAll('#'+grpId+' .gf-chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
+function gfChipMulti(el,grpId){if(el.dataset.v==='all'){document.querySelectorAll('#'+grpId+' .gf-chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');}else{document.querySelector('#'+grpId+' .gf-chip[data-v="all"]').classList.remove('on');el.classList.toggle('on');if(!document.querySelector('#'+grpId+' .gf-chip.on'))document.querySelector('#'+grpId+' .gf-chip[data-v="all"]').classList.add('on');}}
 function gfRange(){
-  let mn=parseInt(document.getElementById('gf-rmin').value);
-  let mx=parseInt(document.getElementById('gf-rmax').value);
+  let mn=parseInt(document.getElementById('gf-rmin').value),mx=parseInt(document.getElementById('gf-rmax').value);
   if(mn>mx){let t=mn;mn=mx;mx=t;}
   function f(v){if(v>=10000000)return'₹'+(v/10000000).toFixed(1)+'Cr';if(v>=100000)return'₹'+(v/100000).toFixed(0)+'L';if(v>=1000)return'₹'+(v/1000)+'K';return'₹'+v;}
-  document.getElementById('gf-min-lbl').textContent=f(mn);
-  document.getElementById('gf-max-lbl').textContent=f(mx);
+  document.getElementById('gf-min-lbl').textContent=f(mn);document.getElementById('gf-max-lbl').textContent=f(mx);
   const lo=parseInt(document.getElementById('gf-rmin').min),hi=parseInt(document.getElementById('gf-rmin').max);
   const pL=((mn-lo)/(hi-lo))*100,pR=((mx-lo)/(hi-lo))*100;
-  const fill=document.getElementById('gf-fill');
-  if(fill){fill.style.left=pL+'%';fill.style.width=(pR-pL)+'%';}
+  const fill=document.getElementById('gf-fill');if(fill){fill.style.left=pL+'%';fill.style.width=(pR-pL)+'%';}
 }
-function gfReset(){
-  ['gf-bhk','gf-fur','gf-type','gf-posted','gf-society','gf-zone'].forEach(id=>{
-    document.querySelectorAll('#'+id+' .gf-chip').forEach(c=>c.classList.remove('on'));
-    const first=document.querySelector('#'+id+' .gf-chip');if(first)first.classList.add('on');
-  });
-  const rmin=document.getElementById('gf-rmin'),rmax=document.getElementById('gf-rmax');
-  rmin.value=rmin.min;rmax.value=rmax.max;gfRange();
-  flt={type:'all',bhk:'all',fur:'all',minP:parseInt(rmin.min),maxP:parseInt(rmax.max),posted:'all',society:'all'};
-  activeZones.clear();draw();closeGmFilter();showToast('Filters reset');
-}
+function gfReset(){['gf-bhk','gf-fur','gf-type','gf-posted','gf-society','gf-zone'].forEach(id=>{document.querySelectorAll('#'+id+' .gf-chip').forEach(c=>c.classList.remove('on'));const first=document.querySelector('#'+id+' .gf-chip');if(first)first.classList.add('on');});const rmin=document.getElementById('gf-rmin'),rmax=document.getElementById('gf-rmax');rmin.value=rmin.min;rmax.value=rmax.max;gfRange();flt={type:'all',bhk:'all',fur:'all',minP:parseInt(rmin.min),maxP:parseInt(rmax.max),posted:'all',society:'all'};activeZones.clear();draw();closeGmFilter();showToast('Filters reset');}
 function gfApply(){
   const getVal=id=>{const on=document.querySelector('#'+id+' .gf-chip.on');return on?on.dataset.v:'all';};
-  flt.bhk=getVal('gf-bhk');
-  flt.fur=getVal('gf-fur');
-  flt.type=getVal('gf-type');
-  flt.posted=getVal('gf-posted');
-  flt.society=getVal('gf-society');
-  flt.minP=parseInt(document.getElementById('gf-rmin').value)||5000;
-  flt.maxP=parseInt(document.getElementById('gf-rmax').value)||200000;
-  // Zones
-  activeZones.clear();
-  const allZone=document.querySelector('#gf-zone .gf-chip[data-v="all"]');
-  if(!allZone||!allZone.classList.contains('on')){
-    document.querySelectorAll('#gf-zone .gf-chip.on').forEach(c=>{if(c.dataset.v!=='all')activeZones.add(c.dataset.v);});
-  }
+  flt.bhk=getVal('gf-bhk');flt.fur=getVal('gf-fur');flt.type=getVal('gf-type');flt.posted=getVal('gf-posted');flt.society=getVal('gf-society');
+  flt.minP=parseInt(document.getElementById('gf-rmin').value)||5000;flt.maxP=parseInt(document.getElementById('gf-rmax').value)||200000;
+  activeZones.clear();const allZone=document.querySelector('#gf-zone .gf-chip[data-v="all"]');
+  if(!allZone||!allZone.classList.contains('on')){document.querySelectorAll('#gf-zone .gf-chip.on').forEach(c=>{if(c.dataset.v!=='all')activeZones.add(c.dataset.v);});}
   draw();closeGmFilter();
-  // Update badge
-  let n=0;
-  if(flt.bhk!=='all')n++;if(flt.fur!=='all')n++;if(flt.type!=='all')n++;
-  if(flt.posted!=='all')n++;if(flt.society!=='all')n++;if(activeZones.size>0)n++;
-  document.getElementById('gm-filter-count').textContent=n;
-  showToast('✅ Filters applied');
+  let n=0;if(flt.bhk!=='all')n++;if(flt.fur!=='all')n++;if(flt.type!=='all')n++;if(flt.posted!=='all')n++;if(flt.society!=='all')n++;if(activeZones.size>0)n++;
+  document.getElementById('gm-filter-count').textContent=n;showToast('✅ Filters applied');
 }
 
 // ══ MODALS ══
@@ -1879,102 +1268,76 @@ function closeMatchMe(){document.getElementById('matchme-modal').classList.remov
 function openOwnerModal(){closeAll('owner');document.getElementById('owner-modal').classList.add('open');}
 function closeOwnerModal(){document.getElementById('owner-modal').classList.remove('open');}
 function openHowModal(){closeAll('how');document.getElementById('how-modal').classList.add('open');}
-function closeHowModal(){
-  document.getElementById('how-modal').classList.remove('open');
-  localStorage.setItem('gm_guide_seen','1');
-}
+function closeHowModal(){document.getElementById('how-modal').classList.remove('open');localStorage.setItem('gm_guide_seen','1');}
 function openPrivacyModal(){document.getElementById('privacy-modal').classList.add('open');}
 function closePrivacyModal(){document.getElementById('privacy-modal').classList.remove('open');}
 function openTncModal(){document.getElementById('tnc-modal').classList.add('open');}
 function closeTncModal(){document.getElementById('tnc-modal').classList.remove('open');}
 
-// Chip handlers
-function setupChips(id){
-  const el=document.getElementById(id);if(!el)return;
-  const multi=['mc-bhk','mc-areas'].includes(id);
-  el.querySelectorAll('.m-chip').forEach(c=>{
-    c.addEventListener('click',()=>{
-      if(multi)c.classList.toggle('on');
-      else{el.querySelectorAll('.m-chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');}
-    });
-  });
-}
+function setupChips(id){const el=document.getElementById(id);if(!el)return;const multi=['mc-bhk','mc-areas'].includes(id);el.querySelectorAll('.m-chip').forEach(c=>{c.addEventListener('click',()=>{if(multi)c.classList.toggle('on');else{el.querySelectorAll('.m-chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');}});});}
 
 async function submitMatchMe(){
-  const name=document.getElementById('mc-name').value.trim();
-  const phone=document.getElementById('mc-phone').value.trim().replace(/[^0-9]/g,'');
-  if(!name){showToast('⚠️ Enter your name');return;}
-  if(phone.length!==10){showToast('⚠️ Enter 10-digit number');return;}
+  const name=document.getElementById('mc-name').value.trim(),phone=document.getElementById('mc-phone').value.trim().replace(/[^0-9]/g,'');
+  if(!name){showToast('⚠️ Enter your name');return;}if(phone.length!==10){showToast('⚠️ Enter 10-digit number');return;}
   const getSel=id=>Array.from(document.querySelectorAll('#'+id+' .m-chip.on')).map(c=>c.dataset.v).join(', ')||'Not specified';
   const payload={name,phone:'91'+phone,purpose:getSel('mc-purpose'),bhk:getSel('mc-bhk'),budget:getSel('mc-budget'),areas:getSel('mc-areas'),note:document.getElementById('mc-note').value.trim()||null,status:'pending',created_at:new Date().toISOString()};
   try{await fetch(SUPABASE_URL+'/rest/v1/seeker_leads',{method:'POST',headers:sbH({'Content-Type':'application/json','Prefer':'return=minimal'}),body:JSON.stringify(payload)});}catch(e){}
-  const waMsg=encodeURIComponent('🔍 MATCH ME LEAD\nName: '+name+'\nPhone: +91 '+phone+'\nLooking: '+payload.purpose+'\nBHK: '+payload.bhk+'\nBudget: '+payload.budget+'\nAreas: '+payload.areas);
-  showToast('✅ Request sent! We\'ll call within 24 hours.',5000);
-  setTimeout(()=>window.open('https://wa.me/'+AGENT_WA+'?text='+waMsg,'_blank'),600);
-  closeMatchMe();
+  const waMsg=encodeURIComponent('🔍 MATCH ME\nName: '+name+'\nPhone: +91 '+phone+'\nLooking: '+payload.purpose+'\nBHK: '+payload.bhk+'\nBudget: '+payload.budget+'\nAreas: '+payload.areas);
+  showToast('✅ Request sent! We\'ll call within 24 hours.',5000);setTimeout(()=>window.open('https://wa.me/'+AGENT_WA+'?text='+waMsg,'_blank'),600);closeMatchMe();
 }
-
 async function submitOwnerRequest(){
-  const name=document.getElementById('ow-name').value.trim();
-  const phone=document.getElementById('ow-phone').value.trim();
-  const price=document.getElementById('ow-price').value.trim();
-  const area=document.getElementById('ow-area').value.trim();
+  const name=document.getElementById('ow-name').value.trim(),phone=document.getElementById('ow-phone').value.trim(),price=document.getElementById('ow-price').value.trim(),area=document.getElementById('ow-area').value.trim();
   if(!name||!phone||!price||!area){showToast('⚠️ Fill all required fields');return;}
   const getAct=id=>{const el=document.querySelector('#'+id+' .m-chip.on');return el?el.dataset.v:'';};
   const payload={owner_name:name,owner_phone:phone,type:getAct('ow-type'),purpose:getAct('ow-purpose'),bhk:document.getElementById('ow-bhk').value,price:parseInt(price),area,status:'pending',created_at:new Date().toISOString()};
   try{await fetch(SUPABASE_URL+'/rest/v1/owner_requests',{method:'POST',headers:sbH({'Content-Type':'application/json','Prefer':'return=minimal'}),body:JSON.stringify(payload)});}catch(e){}
-  const waMsg=encodeURIComponent('🏠 LISTING REQUEST\nOwner: '+name+'\nPhone: '+phone+'\nType: '+payload.type+'\nBHK: '+payload.bhk+' | Area: '+area+'\nPrice: ₹'+parseInt(price).toLocaleString('en-IN'));
-  closeOwnerModal();showToast('✅ Received! We\'ll contact you within 24 hours.',5000);
-  setTimeout(()=>window.open('https://wa.me/'+AGENT_WA+'?text='+waMsg,'_blank'),600);
+  const waMsg=encodeURIComponent('🏠 LISTING REQUEST\nOwner: '+name+'\nPhone: '+phone+'\nBHK: '+payload.bhk+' | Area: '+area+'\nPrice: ₹'+parseInt(price).toLocaleString('en-IN'));
+  closeOwnerModal();showToast('✅ Received! We\'ll contact you within 24 hours.',5000);setTimeout(()=>window.open('https://wa.me/'+AGENT_WA+'?text='+waMsg,'_blank'),600);
 }
-
-function shareToWhatsApp(){
-  const msg='Find verified properties in Lucknow — real rents, zero fake listings 🏠\nhttps://gharmap.in';
-  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
-}
+function shareToWhatsApp(){window.open('https://wa.me/?text='+encodeURIComponent('Find verified properties in Lucknow — real rents, zero fake listings 🏠\nhttps://gharmap.in'),'_blank');}
 
 // ══ ACTIVITY TOAST ══
-const GM_ACTS=[
-  {msg:'🏠 New listing verified in Gomti Nagar Ext',time:'2 min ago'},
-  {msg:'📅 Visit booked at Vibhuti Khand',time:'8 min ago'},
-  {msg:'🤝 Deal closed in Gomti Nagar',time:'1 hr ago'},
-];
+const GM_ACTS=[{msg:'🏠 New listing verified in Gomti Nagar',time:'2 min ago'},{msg:'📅 Visit booked at Vibhuti Khand',time:'8 min ago'},{msg:'🤝 Deal closed in Gomti Nagar',time:'1 hr ago'}];
 let _actIdx=0;
-function gmShowToast(){
-  const a=GM_ACTS[_actIdx%GM_ACTS.length];_actIdx++;
-  document.getElementById('gm-toast-msg').textContent=a.msg;
-  document.getElementById('gm-toast-time').textContent=a.time;
-  const t=document.getElementById('gm-activity-toast');
-  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4000);
-}
+function gmShowToast(){const a=GM_ACTS[_actIdx%GM_ACTS.length];_actIdx++;document.getElementById('gm-toast-msg').textContent=a.msg;document.getElementById('gm-toast-time').textContent=a.time;const t=document.getElementById('gm-activity-toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4000);}
 
 // ══ SHEET LOADER ══
-function shape(p){
-  return{id:p.id,lat:Number(p.lat),lng:Number(p.lng),mode:p.mode||'rent',type:p.type||'flat',bhk:p.bhk||'',rent:Number(p.rent)||0,fur:p.fur||'unfurnished',area:p.area||'Lucknow',zone:p.zone||'gomti',sqft:p.sqft||null,parking:p.parking||'',lift:p.lift||'',power:p.power||'',note:p.note||'',whatToKnow:p.whatToKnow||'',scores:p.scores||{safety:80,connectivity:80,water:80,noise:70},neg:Array.isArray(p.neg)?p.neg:[],status:p.status||'available',verified:p.verified!==false,photos:Array.isArray(p.photos)?p.photos:[],society:p.society||null};
-}
+function shape(p){return{id:p.id,lat:Number(p.lat),lng:Number(p.lng),mode:p.mode||'rent',type:p.type||'flat',bhk:p.bhk||'',rent:Number(p.rent)||0,fur:p.fur||'unfurnished',area:p.area||'Lucknow',zone:p.zone||'gomti',sqft:p.sqft||null,parking:p.parking||'',lift:p.lift||'',power:p.power||'',note:p.note||'',whatToKnow:p.whatToKnow||'',scores:p.scores||{safety:80,connectivity:80,water:80,noise:70},neg:Array.isArray(p.neg)?p.neg:[],status:p.status||'available',verified:p.verified!==false,photos:Array.isArray(p.photos)?p.photos:[],society:p.society||null};}
 async function loadSheet(){
   if(!SHEET_API)return;
+  // Show cached data instantly
   try{
-    const res=await fetch(SHEET_API,{cache:'no-store'});
+    const cached=localStorage.getItem('gm_listings_v1');
+    if(cached){
+      const parsed=JSON.parse(cached);
+      if(parsed&&parsed.length){
+        LISTINGS.length=0;parsed.forEach(p=>LISTINGS.push(p));
+        const sc=document.getElementById('sp-count');if(sc)sc.textContent=LISTINGS.length||'—';
+        draw();
+      }
+    }
+  }catch(e){}
+  // Fetch fresh in background
+  try{
+    const res=await fetch(SHEET_API);
     const data=await res.json();
     if(!data||!Array.isArray(data.listings))return;
     const clean=data.listings.filter(p=>p.lat&&p.lng&&p.rent).map(shape);
     LISTINGS.length=0;clean.forEach(p=>LISTINGS.push(p));
+    localStorage.setItem('gm_listings_v1',JSON.stringify(clean));
     const sc=document.getElementById('sp-count');if(sc)sc.textContent=LISTINGS.length||'—';
     draw();
   }catch(e){console.warn('Sheet load failed:',e);}
 }
 
-// ══ DEEP LINK ══
 function checkDeepLink(){const id=new URLSearchParams(location.search).get('p');if(id)setTimeout(()=>openDetail(id),800);}
 
 // ══ BOOT ══
 document.addEventListener('DOMContentLoaded',()=>{
   initMap();
-  loadSheet().then(()=>{draw();checkDeepLink();});
+  loadSheet().then(()=>{draw();checkDeepLink();updateSavedCount();});
   ['mc-purpose','mc-bhk','mc-budget','mc-areas','ow-type','ow-purpose'].forEach(setupChips);
   gfRange();
-  // Activity toast
   setTimeout(()=>{gmShowToast();setInterval(gmShowToast,15000);},5000);
 });
 window.addEventListener('resize',()=>map&&map.invalidateSize());
