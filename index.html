@@ -1295,11 +1295,11 @@ function openDetail(id){
   const vs=document.getElementById('dp-viewing');vs.style.display='inline-flex';vs.innerHTML='<span class="vs-dot"></span>'+(Math.floor(Math.random()*4)+2)+' viewing';
   const sb=document.getElementById('dp-save-btn');sb.textContent=savedIds.includes(p.id)?'★':'☆';sb.classList.toggle('saved',savedIds.includes(p.id));
   const dItems=[['Type',{flat:'Apartment',pg:'PG Room',house:'House',commercial:'Commercial'}[p.type]||p.type],p.bhk?['BHK',p.bhk+' BHK']:null,['Furnishing',fl],p.sqft?['Area',p.sqft+' sqft']:null,p.parking?['Parking',p.parking]:null,p.lift?['Lift',p.lift]:null,p.power?['Power',p.power]:null].filter(Boolean);
-  // For sale listings, add society and year built
-  if(p.mode==='sale'){
-    if(p.society)dItems.unshift(['Society',p.society]);
-    if(p.year_built)dItems.push(['Year Built',p.year_built]);
-  }
+  // Society name and year built — show when available
+  const sname = p.society_name||p.societyname||p.society_title||'';
+  const yblt  = p.year_built||p.yearbuilt||p.year||'';
+  if(sname) dItems.unshift(['Society', sname]);
+  if(yblt)  dItems.push(['Year Built', yblt]);
   document.getElementById('dp-grid').innerHTML=dItems.map(([l,v])=>'<div class="det-item"><div class="det-lbl">'+l+'</div><div class="det-val">'+(v||'—')+'</div></div>').join('');
   const ns=document.getElementById('dp-note-sec');if(p.note){ns.style.display='block';document.getElementById('dp-note-txt').textContent=p.note;}else ns.style.display='none';
   const nl=document.getElementById('dp-neg-list');
@@ -1621,7 +1621,7 @@ let _actIdx=0;
 function gmShowToast(){const a=GM_ACTS[_actIdx%GM_ACTS.length];_actIdx++;document.getElementById('gm-toast-msg').textContent=a.msg;document.getElementById('gm-toast-time').textContent=a.time;const t=document.getElementById('gm-activity-toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4000);}
 
 // ══ SHEET LOADER ══
-function shape(p){return{id:p.id,lat:Number(p.lat),lng:Number(p.lng),mode:p.mode||'rent',type:p.type||'flat',bhk:p.bhk||'',rent:Number(p.rent)||0,fur:p.fur||'unfurnished',area:p.area||'Lucknow',zone:p.zone||'gomti',sqft:p.sqft||null,parking:p.parking||'',lift:p.lift||'',power:p.power||'',note:p.note||'',whatToKnow:p.whatToKnow||'',scores:p.scores||{safety:80,connectivity:80,water:80,noise:70},neg:Array.isArray(p.neg)?p.neg:[],status:p.status||'available',verified:p.verified!==false,photos:Array.isArray(p.photos)?p.photos:[],society:p.society||'',year_built:p.year_built||''};}
+function shape(p){return{id:p.id,lat:Number(p.lat),lng:Number(p.lng),mode:p.mode||'rent',type:p.type||'flat',bhk:p.bhk||'',rent:Number(p.rent)||0,fur:p.fur||'unfurnished',area:p.area||'Lucknow',zone:p.zone||'gomti',sqft:p.sqft||null,parking:p.parking||'',lift:p.lift||'',power:p.power||'',note:p.note||'',whatToKnow:p.whatToKnow||'',scores:p.scores||{safety:80,connectivity:80,water:80,noise:70},neg:Array.isArray(p.neg)?p.neg:[],status:p.status||'available',verified:p.verified!==false,photos:Array.isArray(p.photos)?p.photos:[],society:p.society||'',society_name:p.society_name||p.societyname||p['society name']||'',year_built:p.year_built||p.yearbuilt||p['year built']||p.year||''};}
 async function loadSheet(){
   if(!SHEET_API)return;
   // Show cached data instantly
