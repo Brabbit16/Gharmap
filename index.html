@@ -1353,18 +1353,7 @@ function renderSavedDrawer(){
 function removeSaved(id){savedIds=savedIds.filter(x=>x!==id);localStorage.setItem('gm_saved',JSON.stringify(savedIds));renderSavedDrawer();showToast('Removed');}
 
 // ══ SHARE ══
-function shareProperty(){
-  const p=activeDetail;if(!p)return;
-  const url='https://gharmap.in?p='+p.id;
-  const fl={furnished:'Furnished',semi:'Semi-Furnished',unfurnished:'Unfurnished'}[p.fur]||'';
-  const msg=
-    '\uD83C\uDFE0 *'+fmtP(p.rent,p.mode)+(p.mode==='rent'?'/mo':'')+' \u2014 '+p.area+'*\n'
-    +(p.bhk?p.bhk+' BHK \u00B7 ':'')+fl+'\n'
-    +'\u2705 Verified by GharMap\n\n'
-    +'\uD83D\uDCCD View on map: '+url;
-  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
-  showToast('Opening WhatsApp\u2026');
-}
+function shareProperty(){const p=activeDetail;if(!p)return;const url='https://gharmap.in?p='+p.id+'&m='+p.mode;const fl={furnished:'Furnished',semi:'Semi-Furnished',unfurnished:'Unfurnished'}[p.fur]||'';const msg='*GharMap Verified Property*%0A*'+fmtP(p.rent,p.mode)+(p.mode==='rent'?'/mo':'')+' - '+p.area+'*%0A'+(p.bhk?p.bhk+' BHK . ':'')+fl+'%0AVerified by GharMap%0A%0AView: '+url;window.open('https://wa.me/?text='+msg,'_blank');showToast('Opening WhatsApp...');}
 function copyShareUrl(){navigator.clipboard.writeText(_shareUrl).then(()=>{showToast('✅ Copied!');closeShareModal();});}
 function waShareUrl(){const p=activeDetail;if(!p)return;window.open('https://wa.me/?text='+encodeURIComponent('Verified on GharMap: '+p.area+' — '+fmtP(p.rent,p.mode)+'\n'+_shareUrl),'_blank');closeShareModal();}
 function closeShareModal(){document.getElementById('share-modal').classList.remove('open');}
@@ -1585,7 +1574,19 @@ async function loadSheet(){
   }catch(e){console.warn('Sheet load failed:',e);}
 }
 
-function checkDeepLink(){const id=new URLSearchParams(location.search).get('p');if(id)setTimeout(()=>openDetail(id),800);}
+function checkDeepLink(){
+  const params=new URLSearchParams(location.search);
+  const id=params.get('p');
+  if(!id)return;
+  // Read mode from URL directly — reliable even before listings load
+  const mode=params.get('m');
+  if(mode&&mode!==listingMode)setMode(mode);
+  setTimeout(()=>{
+    // If listings loaded, open detail; else wait and retry
+    if(LISTINGS.length){openDetail(id);}
+    else{const t=setInterval(()=>{if(LISTINGS.length){clearInterval(t);openDetail(id);}},300);}
+  },400);
+}
 
 // ══ BOOT ══
 document.addEventListener('DOMContentLoaded',()=>{
@@ -1594,6 +1595,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   ['mc-purpose','mc-bhk','mc-budget','mc-areas','ow-type','ow-purpose'].forEach(setupChips);
   gfRange(null);
   setTimeout(()=>{gmShowToast();setInterval(gmShowToast,15000);},5000);
+  // Auto-enter if deep link detected — skip splash
+  if(new URLSearchParams(location.search).get('p')){
+    setTimeout(()=>enterApp(),300);
+  }
 });
 window.addEventListener('resize',()=>map&&map.invalidateSize());
 </script>
