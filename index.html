@@ -587,13 +587,12 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
 
   /* Detail panel foot */
   #dp .dp-foot{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));}
-  /* Anchor panel so it never overlaps bottom CTA buttons */
   body.is-mobile #dp{
-    top:8px !important;
-    bottom:calc(74px + env(safe-area-inset-bottom,0px)) !important;
-    left:12px !important;right:12px !important;
+    top:auto !important;
+    bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;
+    left:10px !important;right:10px !important;
     width:auto !important;max-width:none !important;
-    max-height:none !important;
+    max-height:62dvh !important;
     transform:none !important;
     border-radius:16px !important;
   }
