@@ -587,6 +587,10 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
 
   /* Detail panel foot */
   #dp .dp-foot{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));}
+  /* Push detail panel up so it doesn't overlap bottom CTA buttons */
+  body.is-mobile #dp{
+    max-height:calc(86dvh - 70px) !important;
+  }
 
   /* Saved drawer — bottom sheet */
   #saved-drawer{bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;width:100% !important;max-width:100% !important;transform:none !important;max-height:84vh !important;border-radius:18px 18px 0 0 !important;z-index:1850 !important;}
