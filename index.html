@@ -587,9 +587,15 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
 
   /* Detail panel foot */
   #dp .dp-foot{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));}
-  /* Push detail panel up so it doesn't overlap bottom CTA buttons */
+  /* Anchor panel so it never overlaps bottom CTA buttons */
   body.is-mobile #dp{
-    max-height:calc(86dvh - 70px) !important;
+    top:8px !important;
+    bottom:calc(74px + env(safe-area-inset-bottom,0px)) !important;
+    left:12px !important;right:12px !important;
+    width:auto !important;max-width:none !important;
+    max-height:none !important;
+    transform:none !important;
+    border-radius:16px !important;
   }
 
   /* Saved drawer — bottom sheet */
