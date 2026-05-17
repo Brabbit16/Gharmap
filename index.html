@@ -437,7 +437,42 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
 .saved-empty-t{font-size:13px;font-weight:600;color:#666;margin-bottom:4px;}
 .saved-empty-s{font-size:11px;color:#444;line-height:1.5;}
 
-/* ══ TOAST ══ */
+/* ══ FROM THE TEAM — compact bottom card ══ */
+#maker-overlay{display:none;}
+#maker-card{
+  position:fixed;bottom:calc(76px + env(safe-area-inset-bottom,0px));left:14px;
+  z-index:900;width:340px;max-width:calc(100vw - 28px);
+  background:#141414;border:1px solid #222;border-radius:14px;
+  padding:14px 16px 12px;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  display:none;
+  animation:slideUpFade .4s cubic-bezier(.22,.61,.36,1) both;
+}
+#maker-card.show{display:block;}
+@keyframes slideUpFade{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+.maker-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.maker-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#4d9a82;}
+.maker-close{background:rgba(255,255,255,.07);border:1px solid #252525;border-radius:50%;width:22px;height:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#777;cursor:pointer;}
+.maker-close:hover{color:#eee;}
+.maker-body{font-size:12px;color:#888;line-height:1.6;margin-bottom:10px;}
+.maker-body b{color:#ddd;font-weight:600;}
+.maker-cta{display:block;background:#2d6a5a;color:#fff;border:none;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:700;font-family:var(--ff);cursor:pointer;text-align:center;width:100%;margin-bottom:8px;}
+.maker-cta:hover{opacity:.88;}
+.maker-credit{font-size:10px;color:#333;text-align:center;}
+.maker-credit b{color:#444;}
+@media(max-width:768px){
+  #maker-card{width:calc(100% - 28px);bottom:calc(82px + env(safe-area-inset-bottom,0px));}
+}
+.maker-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.maker-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#4d9a82;}
+.maker-close{background:rgba(255,255,255,.07);border:1px solid #252525;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#888;cursor:pointer;}
+.maker-close:hover{color:#eee;}
+.maker-body{font-size:13px;color:#999;line-height:1.7;margin-bottom:14px;}
+.maker-body b{color:#eee;font-weight:600;}
+.maker-cta{display:block;background:#2d6a5a;color:#fff;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;font-family:var(--ff);cursor:pointer;text-align:center;width:100%;margin-bottom:10px;}
+.maker-cta:hover{opacity:.88;}
+.maker-credit{font-size:10px;color:#333;text-align:center;}
+.maker-credit b{color:#444;}
 #toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%);background:#151515;border:1px solid #252525;color:#eee;padding:9px 18px;border-radius:20px;font-size:12px;z-index:3000;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
 #toast.show{opacity:1;}
 
@@ -462,7 +497,8 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
 /* ══ MODALS ══ */
 .overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);backdrop-filter:blur(5px);align-items:center;justify-content:flex-end;padding:12px;}
 .overlay.open{display:flex;}
-.modal{background:#181818;border:1px solid #252525;border-radius:14px;width:380px;max-width:calc(100vw - 24px);padding:20px 20px 24px;max-height:calc(100vh - 24px);overflow-y:auto;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;position:relative;color:#eee;}
+.modal{background:#181818;border:1px solid #252525;border-radius:14px;width:380px;max-width:calc(100vw - 24px);padding:20px 20px 24px;max-height:calc(100vh - 24px);overflow-y:auto;scrollbar-width:none;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;position:relative;color:#eee;}
+.modal::-webkit-scrollbar{display:none;}
 .m-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:17px;cursor:pointer;color:#666;padding:4px;}
 .m-ey{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--green-mid);margin-bottom:5px;}
 .m-title{font-size:20px;font-weight:700;color:#eee;margin-bottom:4px;}
@@ -642,13 +678,13 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
 <div id="splash">
   <div class="sp">
     <div class="sp-logo">Ghar<span>Map</span></div>
-    <div class="sp-tag">Making the biggest Properties Map in India</div>
-    <div class="sp-headline">Find your place in the Map.<br>Every listing verified.</div>
-    <div class="sp-sub">Real rents, real properties, zero broker spam. Book a site visit in 60 seconds.</div>
+    <div class="sp-tag">Building India's biggest verified property map</div>
+    <div class="sp-headline">Find your home on the map.<br>Every listing verified.</div>
+    <div class="sp-sub">Real rents, real properties, zero broker spam. Book a site visit in under a minute.</div>
     <div class="sp-pills">
       <span class="sp-pill">🏠 Flats</span>
       <span class="sp-pill">🛏 PG / Rooms</span>
-      <span class="sp-pill">🔑 Buy</span>
+      <span class="sp-pill">🔑 For Sale</span>
       <span class="sp-pill">📅 Book a Visit</span>
       <span class="sp-pill">✓ Verified Only</span>
     </div>
@@ -658,7 +694,7 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
       <div class="sp-act-text"><b>Last week:</b> <span id="sp-act-visits">0</span> visits booked · <span id="sp-act-deals">0</span> deals closed · <span id="sp-act-listings">3</span> new listings verified</div>
     </div>
     <button class="sp-btn-main" onclick="enterApp()">🗺 Explore the Map →</button>
-    <button class="sp-btn-how" onclick="openHowModal()">How does this work?</button>
+    <button class="sp-btn-how" onclick="openHowModal()">How does it work?</button>
     <button class="sp-btn-sec" onclick="shareToWhatsApp()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Share on WhatsApp
@@ -725,6 +761,18 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
     <button id="talk-btn" onclick="openMatchMe()">Talk to Team</button>
   </div>
 
+  <!-- FROM THE TEAM — compact card -->
+  <div id="maker-overlay"></div>
+  <div id="maker-card">
+    <div class="maker-top">
+      <span class="maker-label">📍 From the Team</span>
+      <button class="maker-close" onclick="closeMakerCard()">✕</button>
+    </div>
+    <div class="maker-body">We're <b>personally verifying every listing</b> in Lucknow right now — visiting each property, checking rent, water, lift, and parking before it goes live. No fake listings, no ghost properties.</div>
+    <button class="maker-cta" onclick="closeMakerCard();openMatchMe()">Drop your requirements →</button>
+    <div class="maker-credit">Built with ❤️ by <b>Piyush / Himanshu</b></div>
+  </div>
+
   <!-- ACTIVITY TOAST -->
   <div id="gm-activity-toast">
     <span class="gm-toast-dot"></span>
@@ -746,7 +794,7 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
     </div>
     <div class="menu-item" onclick="closeMenuSheet();openOwnerModal()">
       <div class="menu-item-ico">💼</div>
-      <div><div class="menu-item-text">List Property</div><div class="menu-item-sub">Get verified, attract serious tenants</div></div>
+      <div><div class="menu-item-text">List Property</div><div class="menu-item-sub">Get listed, attract serious tenants</div></div>
     </div>
     <div class="menu-sep"></div>
     <div class="menu-section-title">More</div>
@@ -924,7 +972,7 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
           <div style="font-size:11px;color:#888;margin-bottom:8px;">Booking for <b id="v-slot-lbl">—</b></div>
           <div class="v-row"><input class="v-input" id="vf-name" type="text" placeholder="Your name *"/><input class="v-input" id="vf-phone" type="tel" placeholder="+91 phone *"/></div>
           <input class="v-input" id="vf-budget" type="text" placeholder="Budget range e.g. ₹15K–18K"/>
-          <div class="v-note">📞 Our team confirms within 2 hours. Visit is free.</div>
+          <div class="v-note">📞 Our team confirms within 2 hours. Always free.</div>
           <button class="btn-book" onclick="submitVisit()">📅 Confirm Visit</button>
         </div>
         <div class="v-confirm" id="v-confirm"><div class="vc-ico">✅</div><div class="vc-title">Visit Booked!</div><div class="vc-sub" id="vc-msg">We'll confirm via WhatsApp shortly.</div></div>
@@ -933,7 +981,7 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
     </div>
     <div class="dp-foot">
       <button class="btn-interest" onclick="scrollToVisit()">📅 Book a visit · Chat with Team</button>
-      <div class="dp-foot-note">🔒 Your details only shared with our verified team</div>
+      <div class="dp-foot-note">🔒 Your details are only shared with our verified team</div>
     </div>
   </div>
 
@@ -966,8 +1014,8 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
     <button class="m-close" onclick="closeMatchMe()">✕</button>
     <div class="m-ey">Curated Property Matching</div>
     <div class="m-title">Find your perfect place</div>
-    <div class="m-sub">Tell us what you need. Our team calls within 24 hours.</div>
-    <div class="m-note">🔒 A real person calls — not a bot. Zero brokerage to tenants.</div>
+    <div class="m-sub">Tell us what you need. We call you personally within 24 hours.</div>
+    <div class="m-note">🔒 A real person calls — not a bot. Zero brokerage for tenants.</div>
     <label class="m-lbl">Looking to</label>
     <div class="m-chips" id="mc-purpose"><button class="m-chip on" data-v="rent">Rent</button><button class="m-chip" data-v="buy">Buy</button><button class="m-chip" data-v="commercial">Commercial</button><button class="m-chip" data-v="pg">PG / Room</button></div>
     <label class="m-lbl">BHK needed</label>
@@ -991,8 +1039,8 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
     <button class="m-close" onclick="closeOwnerModal()">✕</button>
     <div class="m-ey">List on GharMap</div>
     <div class="m-title">Submit your property</div>
-    <div class="m-sub">We verify before going live. You'll hear from us within 24 hours.</div>
-    <div class="m-note">✓ Physical verification · ✓ Verified badge · ✓ Serious tenants only</div>
+    <div class="m-sub">We visit and verify before listing. You'll hear from us within 24 hours.</div>
+    <div class="m-note">✓ Physical visit · ✓ Verified badge on listing · ✓ Serious tenants only</div>
     <label class="m-lbl">Property type</label>
     <div class="m-chips" id="ow-type"><button class="m-chip on" data-v="flat">Flat</button><button class="m-chip" data-v="pg">PG</button><button class="m-chip" data-v="house">House</button><button class="m-chip" data-v="commercial">Commercial</button></div>
     <label class="m-lbl">Listing for</label>
@@ -1026,17 +1074,17 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
     <div class="guide-header">
       <div class="guide-logo">Ghar<span>Map</span></div>
       <div class="guide-title">How it works</div>
-      <div class="guide-sub">From map to move-in — 4 simple steps</div>
+      <div class="guide-sub">From map to move-in, in 4 simple steps.</div>
     </div>
     <div class="guide-steps">
       <div class="guide-step"><div class="guide-step-left"><div class="guide-step-num">1</div><div class="guide-step-line"></div></div><div class="guide-step-card"><div class="guide-step-ico">🗺</div><div class="guide-step-title">Browse the Map</div><div class="guide-step-desc">Every pin is a verified property. Use the <b>neighbourhood chips</b> to zoom into your area. Filter by BHK, budget, furnishing.</div><div class="guide-step-tip">💡 Pick a zone to zoom in with a <b>boundary circle</b>.</div></div></div>
       <div class="guide-step"><div class="guide-step-left"><div class="guide-step-num">2</div><div class="guide-step-line"></div></div><div class="guide-step-card"><div class="guide-step-ico">🏠</div><div class="guide-step-title">Chat with This House</div><div class="guide-step-desc">Tap any pin. See real rent, total monthly cost, building scores, and <b>anonymous negotiation history</b>.</div><div class="guide-step-tip">💡 Past tenants' data helps you <b>negotiate better</b>.</div></div></div>
-      <div class="guide-step"><div class="guide-step-left"><div class="guide-step-num">3</div><div class="guide-step-line"></div></div><div class="guide-step-card"><div class="guide-step-ico">📅</div><div class="guide-step-title">Book a Site Visit</div><div class="guide-step-desc">Pick a slot. Our team <b>confirms within 2 hours</b> via WhatsApp. All visits are 100% free.</div><div class="guide-step-tip">💡 <b>No broker. No surprise charges.</b> Ever.</div></div></div>
-      <div class="guide-step last"><div class="guide-step-left"><div class="guide-step-num">4</div></div><div class="guide-step-card"><div class="guide-step-ico">🤝</div><div class="guide-step-title">Move In with Confidence</div><div class="guide-step-desc">Our team accompanies you, helps negotiate, supports till signing. <b>Zero brokerage to tenants.</b></div><div class="guide-step-tip">💡 Can't find it? Tap <b>Talk to Team</b> — we source within 24 hrs.</div></div></div>
+      <div class="guide-step"><div class="guide-step-left"><div class="guide-step-num">3</div><div class="guide-step-line"></div></div><div class="guide-step-card"><div class="guide-step-ico">📅</div><div class="guide-step-title">Book a Site Visit</div><div class="guide-step-desc">Pick a slot. Our team <b>confirms within 2 hours</b> via WhatsApp. All visits are free — no hidden charges.</div><div class="guide-step-tip">💡 <b>No broker. No surprise charges.</b> Ever.</div></div></div>
+      <div class="guide-step last"><div class="guide-step-left"><div class="guide-step-num">4</div></div><div class="guide-step-card"><div class="guide-step-ico">🤝</div><div class="guide-step-title">Move In with Confidence</div><div class="guide-step-desc">Our team accompanies you, helps negotiate, supports until signing. <b>Zero brokerage for tenants.</b></div><div class="guide-step-tip">💡 Can't find the right place? Tap <b>Talk to Team</b> — we source from our network within 24 hrs.</div></div></div>
     </div>
     <div class="guide-footer">
       <button class="guide-cta" onclick="closeHowModal()">Got it — Start Exploring 🗺</button>
-      <div class="guide-footer-note">📞 Questions? WhatsApp our team anytime</div>
+      <div class="guide-footer-note">📞 Have questions? WhatsApp our team anytime.</div>
     </div>
   </div>
 </div>
@@ -1105,6 +1153,7 @@ function enterApp(){
     sp.style.display='none';
     if(map)map.invalidateSize(true);
     if(!localStorage.getItem('gm_guide_seen'))setTimeout(()=>openHowModal(),500);
+    showMakerCard();
   },350);
 }
 
@@ -1282,6 +1331,12 @@ function updateSavedCount(){
   const m=document.getElementById('saved-menu-count');if(m)m.textContent=n+' saved';
   const lbl=document.getElementById('saved-count-lbl');if(lbl)lbl.textContent=n+' saved';
 }
+function closeMakerCard(){
+  document.getElementById('maker-card').classList.remove('show');
+}
+function showMakerCard(){
+  setTimeout(()=>document.getElementById('maker-card').classList.add('show'),2500);
+}
 function closeSavedDrawer(){document.getElementById('saved-drawer').classList.remove('open');}
 function toggleSavedDrawer(){
   const d=document.getElementById('saved-drawer');
@@ -1291,14 +1346,25 @@ function toggleSavedDrawer(){
 }
 function renderSavedDrawer(){
   const wrap=document.getElementById('saved-list-wrap');updateSavedCount();
-  if(!savedIds.length){wrap.innerHTML='<div class="saved-empty"><div class="saved-empty-ico">🔖</div><div class="saved-empty-t">Nothing saved yet</div><div class="saved-empty-s">Tap ☆ on any property.</div></div>';return;}
+  if(!savedIds.length){wrap.innerHTML='<div class="saved-empty"><div class="saved-empty-ico">🔖</div><div class="saved-empty-t">Nothing saved yet</div><div class="saved-empty-s">Tap ☆ on any property to save it here.</div></div>';return;}
   const ico={flat:'🏠',pg:'🛏',flatmate:'🤝',house:'🏡',commercial:'🏢'};
   wrap.innerHTML=savedIds.map(id=>{const p=LISTINGS.find(x=>x.id===id);if(!p)return'';const fl={furnished:'Furnished',semi:'Semi',unfurnished:'Bare'}[p.fur]||'';const badge=getAvgBadge(p);const bHtml=badge?`<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:${badge.cls.includes('below')?'rgba(45,106,90,.15)':badge.cls.includes('above')?'rgba(192,71,42,.12)':'rgba(196,148,58,.1)'};color:${badge.cls.includes('below')?'#4d9a82':badge.cls.includes('above')?'#c0472a':'#c4943a'};">${badge.label}</span>`:'';return`<div class="saved-card"><div class="saved-card-top"><div><div class="saved-card-price">${fmtP(p.rent,p.mode)}<small>${p.mode==='rent'?' /mo':''}</small></div></div><button class="saved-card-remove" onclick="event.stopPropagation();removeSaved('${id}')">✕</button></div><div class="saved-card-area">${ico[p.type]||'📍'} ${p.area}</div><div class="saved-card-tags">${p.bhk&&p.type!=='pg'?`<span class="saved-card-tag">${p.bhk} BHK</span>`:''}<span class="saved-card-tag">${fl}</span>${p.sqft?`<span class="saved-card-tag">${p.sqft} sqft</span>`:''}<span class="saved-card-tag" style="color:#4d9a82;">✓ Verified</span>${bHtml}</div><button class="saved-card-cta" onclick="openDetail('${id}');toggleSavedDrawer();">🏠 Chat with this house →</button></div>`;}).join('');
 }
 function removeSaved(id){savedIds=savedIds.filter(x=>x!==id);localStorage.setItem('gm_saved',JSON.stringify(savedIds));renderSavedDrawer();showToast('Removed');}
 
 // ══ SHARE ══
-function shareProperty(){closeAll('share');const p=activeDetail;if(!p)return;_shareUrl=location.origin+location.pathname+'?p='+p.id;document.getElementById('share-sub').textContent=fmtP(p.rent,p.mode)+' · '+p.area;document.getElementById('share-url').textContent=_shareUrl;document.getElementById('share-modal').classList.add('open');}
+function shareProperty(){
+  const p=activeDetail;if(!p)return;
+  const url='https://gharmap.in?p='+p.id;
+  const fl={furnished:'Furnished',semi:'Semi-Furnished',unfurnished:'Unfurnished'}[p.fur]||'';
+  const msg=
+    '\uD83C\uDFE0 *'+fmtP(p.rent,p.mode)+(p.mode==='rent'?'/mo':'')+' \u2014 '+p.area+'*\n'
+    +(p.bhk?p.bhk+' BHK \u00B7 ':'')+fl+'\n'
+    +'\u2705 Verified by GharMap\n\n'
+    +'\uD83D\uDCCD View on map: '+url;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  showToast('Opening WhatsApp\u2026');
+}
 function copyShareUrl(){navigator.clipboard.writeText(_shareUrl).then(()=>{showToast('✅ Copied!');closeShareModal();});}
 function waShareUrl(){const p=activeDetail;if(!p)return;window.open('https://wa.me/?text='+encodeURIComponent('Verified on GharMap: '+p.area+' — '+fmtP(p.rent,p.mode)+'\n'+_shareUrl),'_blank');closeShareModal();}
 function closeShareModal(){document.getElementById('share-modal').classList.remove('open');}
