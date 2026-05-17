@@ -572,30 +572,12 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
   #splash{padding:16px;align-items:center;justify-content:center;}
   .sp{max-width:100%;border-radius:18px;padding:22px 18px 20px;animation:scaleIn .3s cubic-bezier(.34,1.26,.64,1) both;}
 
-  /* Menu sheet — always centered on mobile, no right-side flash */
-  #menu-sheet{
-    position:fixed !important;
-    top:50% !important;left:50% !important;
-    right:auto !important;bottom:auto !important;
-    width:calc(100% - 40px) !important;max-width:320px !important;
-    max-height:85dvh !important;border-radius:18px !important;
-    transform:translate(-50%,-50%) !important;
-  }
-  #menu-sheet.open{animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;}
+
   #gm-top-controls{top:8px;width:calc(100% - 16px);max-width:100%;}
   .gm-search-row{height:46px;}
   .gm-search-box input{font-size:16px !important;}
 
-  /* Detail panel — center popup on mobile */
-  #dp{
-    position:fixed !important;top:50% !important;left:50% !important;
-    right:auto !important;bottom:auto !important;
-    width:calc(100% - 24px) !important;max-width:420px !important;
-    max-height:88dvh !important;
-    transform:translate(-50%,-50%) !important;
-    border-radius:18px !important;z-index:1900 !important;
-  }
-  #dp.open{animation:scaleIn .24s cubic-bezier(.34,1.26,.64,1) both !important;}
+  /* Detail panel foot */
   #dp .dp-foot{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));}
 
   /* Saved drawer — bottom sheet */
@@ -633,16 +615,7 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
     box-shadow:0 4px 20px rgba(45,106,90,.45);
   }
 
-  /* Menu sheet — center pop on mobile, not bottom sheet */
-  #menu-sheet{
-    position:fixed !important;
-    top:50% !important;left:50% !important;
-    right:auto !important;bottom:auto !important;
-    transform:translate(-50%,-50%) !important;
-    width:calc(100% - 40px) !important;max-width:340px !important;
-    max-height:85dvh !important;border-radius:18px !important;
-  }
-  #menu-sheet.open{animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;}
+
 
   /* Activity toast */
   #gm-activity-toast{font-size:11px;padding:8px 14px;bottom:calc(64px + env(safe-area-inset-bottom,0px));max-width:calc(100vw - 32px);}
@@ -651,31 +624,87 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
   .slots-grid{grid-template-columns:repeat(2,1fr);}
   .v-input{font-size:16px !important;}
 
-  /* ── MODALS: center scale-in on mobile (not bottom sheets) ── */
-  .overlay,.dark-overlay,#share-modal,#gm-filter-overlay{
-    align-items:center !important;
-    justify-content:center !important;
-    padding:16px !important;
-  }
-  .modal,.dark-modal,.guide-modal,.share-card{
-    border-radius:18px !important;
-    max-height:88dvh !important;
-    width:100% !important;
-    max-width:100% !important;
-    padding:20px 18px 24px !important;
-    animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;
-  }
-  .gm-filter-modal{
-    width:calc(100vw - 24px) !important;
-    max-width:100% !important;
-    max-height:calc(100dvh - 24px) !important;
-    overflow:hidden !important;
-    animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;
-  }
+
   /* Guide modal header radius fix */
   .guide-header{border-radius:14px 14px 0 0;}
 }
 @keyframes pop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+
+/* ══ MOBILE — set via JS body.is-mobile, fires before any panel opens ══ */
+body.is-mobile .overlay,
+body.is-mobile .dark-overlay,
+body.is-mobile #share-modal,
+body.is-mobile #gm-filter-overlay{
+  align-items:center !important;
+  justify-content:center !important;
+  padding:14px !important;
+}
+body.is-mobile .modal{
+  width:calc(100% - 28px) !important;max-width:100% !important;
+  max-height:86dvh !important;border-radius:16px !important;
+  padding:14px 15px 18px !important;
+  animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;
+}
+body.is-mobile .dark-modal,
+body.is-mobile .guide-modal{
+  width:calc(100% - 28px) !important;max-width:100% !important;
+  max-height:86dvh !important;border-radius:16px !important;
+  padding:14px 15px 18px !important;
+  animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;
+}
+body.is-mobile .share-card{
+  width:calc(100% - 28px) !important;max-width:100% !important;
+  border-radius:16px !important;padding:14px 15px 18px !important;
+  animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;
+}
+body.is-mobile .gm-filter-modal{
+  width:calc(100% - 28px) !important;max-width:100% !important;
+  max-height:86dvh !important;border-radius:16px !important;overflow:hidden !important;
+  animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;
+}
+body.is-mobile #menu-sheet{
+  position:fixed !important;
+  top:50% !important;left:50% !important;
+  right:auto !important;bottom:auto !important;
+  transform:translate(-50%,-50%) !important;
+  width:calc(100% - 40px) !important;max-width:320px !important;
+  max-height:85dvh !important;border-radius:16px !important;
+}
+body.is-mobile #menu-sheet.open{
+  animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;
+}
+body.is-mobile #dp{
+  position:fixed !important;
+  top:50% !important;left:50% !important;
+  right:auto !important;bottom:auto !important;
+  transform:translate(-50%,-50%) !important;
+  width:calc(100% - 24px) !important;max-width:400px !important;
+  max-height:86dvh !important;border-radius:16px !important;
+  z-index:1900 !important;
+}
+body.is-mobile #dp.open{
+  animation:scaleIn .24s cubic-bezier(.34,1.26,.64,1) both !important;
+}
+body.is-mobile #saved-drawer{
+  position:fixed !important;
+  top:50% !important;left:50% !important;
+  right:auto !important;bottom:auto !important;
+  transform:translate(-50%,-50%) !important;
+  width:calc(100% - 24px) !important;max-width:400px !important;
+  max-height:86dvh !important;border-radius:16px !important;
+  z-index:1850 !important;
+}
+body.is-mobile #saved-drawer.open{
+  animation:scaleIn .24s cubic-bezier(.34,1.26,.64,1) both !important;
+}
+/* Compact form on mobile */
+body.is-mobile .m-title{font-size:17px !important;}
+body.is-mobile .m-sub{font-size:11px !important;margin-bottom:8px !important;}
+body.is-mobile .m-note{padding:6px 10px !important;font-size:11px !important;margin-bottom:8px !important;}
+body.is-mobile .m-input,.m-select{padding:7px 10px !important;margin-bottom:7px !important;}
+body.is-mobile .m-chips{margin-bottom:7px !important;}
+body.is-mobile .guide-step-card{padding:10px 11px !important;}
+body.is-mobile .guide-step-desc{font-size:11.5px !important;}
 </style>
 </head>
 <body>
@@ -1232,13 +1261,6 @@ function draw(){
 function openDetail(id){
   closeAll('dp');
   const p=LISTINGS.find(x=>x.id===id);if(!p)return;
-  // Pre-position on mobile before display kicks in
-  const dp=document.getElementById('dp');
-  if(window.innerWidth<=768){
-    dp.style.position='fixed';dp.style.top='50%';dp.style.left='50%';
-    dp.style.right='auto';dp.style.bottom='auto';
-    dp.style.transform='translate(-50%,-50%)';
-  }else{dp.style.cssText='';}
   activeDetail=p;
   document.getElementById('dp-type-lbl').textContent={flat:'VERIFIED FLAT',pg:'VERIFIED PG',house:'VERIFIED HOUSE',commercial:'VERIFIED COMMERCIAL'}[p.type]||'VERIFIED';
   document.getElementById('dp-price').textContent=fmtP(p.rent,p.mode);
@@ -1371,8 +1393,12 @@ function shareProperty(){
   const url='https://gharmap.in?p='+p.id+'&m='+p.mode;
   const fl={furnished:'Furnished',semi:'Semi-Furnished',unfurnished:'Unfurnished'}[p.fur]||'';
   const price=fmtP(p.rent,p.mode)+(p.mode==='rent'?'/mo':'');
-  const neg=p.neg&&p.neg.length?'%0A%E2%86%92 Past tenants negotiated it down':'';
-  const msg='Found this on GharMap%20%F0%9F%91%80%0A%0A*'+encodeURIComponent(price+' · '+p.area)+'*%0A'+(p.bhk?encodeURIComponent('→ '+p.bhk+' BHK')+(fl?encodeURIComponent(' · '+fl):'')+'%0A':'')+'%E2%86%92 Verified on-ground%3A rent%2C water%2C parking'+neg+'%0A%0A'+encodeURIComponent(url);
+  const neg=p.neg&&p.neg.length?'%0APast tenants negotiated it down':'';
+  const msg='Found this on GharMap%0A%0A'
+    +encodeURIComponent('*'+price+' - '+p.area+'*')+'%0A'
+    +(p.bhk?encodeURIComponent(p.bhk+' BHK'+(fl?' - '+fl:''))+'%0A':'')
+    +encodeURIComponent('Verified: rent, water, parking checked on-ground')
+    +neg+'%0A%0AView Map: '+encodeURIComponent(url);
   window.open('https://wa.me/?text='+msg,'_blank');
   showToast('Opening WhatsApp...');
 }
@@ -1422,14 +1448,8 @@ function closeAll(except){
 // ══ MENU SHEET ══
 function openMenuSheet(){
   closeAll('menu');
-  const s=document.getElementById('menu-sheet');
-  if(window.innerWidth<=768){
-    s.style.position='fixed';s.style.top='50%';s.style.left='50%';
-    s.style.right='auto';s.style.bottom='auto';
-    s.style.transform='translate(-50%,-50%)';
-  }else{s.style.cssText='';}
   document.getElementById('menu-overlay').classList.add('open');
-  s.classList.add('open');
+  document.getElementById('menu-sheet').classList.add('open');
 }
 function closeMenuSheet(){
   document.getElementById('menu-overlay').classList.remove('open');
@@ -1618,43 +1638,27 @@ async function loadSheet(){
 
 function checkDeepLink(){
   const params=new URLSearchParams(location.search);
-  const id=params.get('p');
-  if(!id)return;
+  const id=params.get('p');if(!id)return;
   const mode=params.get('m');
   if(mode&&mode!==listingMode)setMode(mode);
-  const doOpen=()=>{
+  const go=()=>{
     const p=LISTINGS.find(x=>x.id===id);
-    if(p){
-      // Fly to pin first, then pulse, then open detail
-      map&&map.flyTo([p.lat,p.lng],17,{duration:1.2});
-      setTimeout(()=>{
-        pulsePin(p.lat,p.lng);
-        setTimeout(()=>openDetail(id),800);
-      },1300);
-    }else openDetail(id);
+    if(!p)return;
+    map&&map.flyTo([p.lat,p.lng],16,{duration:1});
+    setTimeout(()=>pulsePin(p.lat,p.lng),1000);
   };
-  setTimeout(()=>{
-    if(LISTINGS.length)doOpen();
-    else{const t=setInterval(()=>{if(LISTINGS.length){clearInterval(t);doOpen();}},300);}
-  },400);
+  if(LISTINGS.length)go();
+  else{const t=setInterval(()=>{if(LISTINGS.length){clearInterval(t);go();}},300);}
 }
 function pulsePin(lat,lng){
   if(!map)return;
-  const circle=L.circleMarker([lat,lng],{
-    radius:20,color:'#4d9a82',fillColor:'#4d9a82',
-    fillOpacity:0.25,weight:2.5,opacity:0.8
-  }).addTo(map);
-  let r=20,growing=true;
-  const iv=setInterval(()=>{
-    r=growing?r+2:r-2;
-    if(r>=36)growing=false;
-    if(r<=8){clearInterval(iv);map.removeLayer(circle);return;}
-    circle.setRadius(r);
-  },40);
+  const c=L.circle([lat,lng],{radius:30,color:'#4d9a82',fillColor:'#4d9a82',fillOpacity:.2,weight:2,opacity:.9,dashArray:'6 4'}).addTo(map);
+  setTimeout(()=>{try{map.removeLayer(c);}catch(e){}},4000);
 }
 
 // ══ BOOT ══
 document.addEventListener('DOMContentLoaded',()=>{
+  if(window.innerWidth<=768)document.body.classList.add('is-mobile');window.addEventListener('resize',()=>document.body.classList.toggle('is-mobile',window.innerWidth<=768));
   initMap();
   loadSheet().then(()=>{draw();checkDeepLink();updateSavedCount();});
   ['mc-purpose','mc-bhk','mc-budget','mc-areas','ow-type','ow-purpose'].forEach(setupChips);
