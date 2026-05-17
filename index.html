@@ -497,19 +497,19 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
 /* ══ MODALS ══ */
 .overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);backdrop-filter:blur(5px);align-items:center;justify-content:flex-end;padding:12px;}
 .overlay.open{display:flex;}
-.modal{background:#181818;border:1px solid #252525;border-radius:14px;width:380px;max-width:calc(100vw - 24px);padding:20px 20px 24px;max-height:calc(100vh - 24px);overflow-y:auto;scrollbar-width:none;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;position:relative;color:#eee;}
+.modal{background:#181818;border:1px solid #252525;border-radius:14px;width:380px;max-width:calc(100vw - 24px);padding:16px 18px 20px;max-height:88vh;overflow-y:auto;scrollbar-width:none;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;position:relative;color:#eee;}
 .modal::-webkit-scrollbar{display:none;}
 .m-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:17px;cursor:pointer;color:#666;padding:4px;}
 .m-ey{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--green-mid);margin-bottom:5px;}
 .m-title{font-size:20px;font-weight:700;color:#eee;margin-bottom:4px;}
-.m-sub{font-size:13px;color:#888;margin-bottom:16px;line-height:1.5;}
-.m-note{background:rgba(45,106,90,.15);border-radius:8px;padding:10px 12px;font-size:12px;color:#6dbfa7;margin-bottom:14px;line-height:1.6;}
+.m-sub{font-size:12px;color:#888;margin-bottom:10px;line-height:1.5;}
+.m-note{background:rgba(45,106,90,.15);border-radius:8px;padding:7px 10px;font-size:11px;color:#6dbfa7;margin-bottom:9px;line-height:1.5;}
 .m-lbl{font-size:11px;font-weight:600;color:#888;margin-bottom:5px;display:block;}
-.m-input,.m-select{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px;font-size:16px;color:#eee;font-family:var(--ff);outline:none;margin-bottom:12px;}
+.m-input,.m-select{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:8px;padding:8px 12px;font-size:16px;color:#eee;font-family:var(--ff);outline:none;margin-bottom:9px;}
 .m-input:focus,.m-select:focus{border-color:var(--green-mid);}
 .m-row{display:flex;gap:8px;}
 .m-row .m-group{flex:1;}
-.m-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.m-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px;}
 .m-chip{padding:6px 11px;border-radius:20px;border:1px solid #2a2a2a;background:transparent;font-size:12px;font-weight:500;color:#999;cursor:pointer;transition:all .15s;font-family:var(--ff);}
 .m-chip.on{background:#2d6a5a;border-color:#2d6a5a;color:#fff;}
 .btn-pri{width:100%;padding:12px;border-radius:10px;border:none;background:var(--green-mid);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ff);}
@@ -518,7 +518,7 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
 /* dark overlay modals */
 .dark-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);align-items:center;justify-content:flex-end;padding:12px;}
 .dark-overlay.open{display:flex;}
-.dark-modal,.guide-modal{background:#111;border:1px solid #1e1e1e;border-radius:14px;width:420px;max-width:calc(100vw - 24px);padding:20px 20px 24px;max-height:calc(100vh - 24px);overflow-y:auto;position:relative;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;}
+.dark-modal,.guide-modal{background:#111;border:1px solid #1e1e1e;border-radius:14px;width:420px;max-width:calc(100vw - 24px);padding:16px 18px 20px;max-height:88vh;overflow-y:auto;position:relative;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;}
 .dark-modal::-webkit-scrollbar,.guide-modal::-webkit-scrollbar{width:3px;}
 .dark-modal::-webkit-scrollbar-thumb,.guide-modal::-webkit-scrollbar-thumb{background:#333;border-radius:4px;}
 .dm-handle{display:none;}
@@ -586,11 +586,17 @@ body{font-family:var(--ff);background:#f0ede5;color:var(--ink);-webkit-font-smoo
   .gm-search-row{height:46px;}
   .gm-search-box input{font-size:16px !important;}
 
-  /* Detail panel — bottom sheet */
-  #dp{bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;width:100% !important;max-width:100% !important;transform:none !important;max-height:84vh !important;border-radius:18px 18px 0 0 !important;z-index:1900 !important;}
-  #dp.open{animation:slideUp .28s ease both !important;transform:none !important;}
-  #dp .dp-hd::before{content:'';display:block;width:36px;height:4px;background:#2a2a2a;border-radius:4px;margin:0 auto 10px;}
-  #dp .dp-foot{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));}
+  /* Detail panel — center popup on mobile */
+  #dp{
+    position:fixed !important;top:50% !important;left:50% !important;
+    right:auto !important;bottom:auto !important;
+    width:calc(100% - 24px) !important;max-width:420px !important;
+    max-height:88dvh !important;
+    transform:translate(-50%,-50%) !important;
+    border-radius:18px !important;z-index:1900 !important;
+  }
+  #dp.open{animation:scaleIn .24s cubic-bezier(.34,1.26,.64,1) both !important;}
+  #dp .dp-foot{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));}
 
   /* Saved drawer — bottom sheet */
   #saved-drawer{bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;width:100% !important;max-width:100% !important;transform:none !important;max-height:84vh !important;border-radius:18px 18px 0 0 !important;z-index:1850 !important;}
@@ -1226,6 +1232,13 @@ function draw(){
 function openDetail(id){
   closeAll('dp');
   const p=LISTINGS.find(x=>x.id===id);if(!p)return;
+  // Pre-position on mobile before display kicks in
+  const dp=document.getElementById('dp');
+  if(window.innerWidth<=768){
+    dp.style.position='fixed';dp.style.top='50%';dp.style.left='50%';
+    dp.style.right='auto';dp.style.bottom='auto';
+    dp.style.transform='translate(-50%,-50%)';
+  }else{dp.style.cssText='';}
   activeDetail=p;
   document.getElementById('dp-type-lbl').textContent={flat:'VERIFIED FLAT',pg:'VERIFIED PG',house:'VERIFIED HOUSE',commercial:'VERIFIED COMMERCIAL'}[p.type]||'VERIFIED';
   document.getElementById('dp-price').textContent=fmtP(p.rent,p.mode);
@@ -1353,10 +1366,75 @@ function renderSavedDrawer(){
 function removeSaved(id){savedIds=savedIds.filter(x=>x!==id);localStorage.setItem('gm_saved',JSON.stringify(savedIds));renderSavedDrawer();showToast('Removed');}
 
 // ══ SHARE ══
-function shareProperty(){const p=activeDetail;if(!p)return;const url='https://gharmap.in?p='+p.id+'&m='+p.mode;const fl={furnished:'Furnished',semi:'Semi-Furnished',unfurnished:'Unfurnished'}[p.fur]||'';const msg='*GharMap Verified Property*%0A*'+fmtP(p.rent,p.mode)+(p.mode==='rent'?'/mo':'')+' - '+p.area+'*%0A'+(p.bhk?p.bhk+' BHK . ':'')+fl+'%0AVerified by GharMap%0A%0AView: '+url;window.open('https://wa.me/?text='+msg,'_blank');showToast('Opening WhatsApp...');}
-function copyShareUrl(){navigator.clipboard.writeText(_shareUrl).then(()=>{showToast('✅ Copied!');closeShareModal();});}
-function waShareUrl(){const p=activeDetail;if(!p)return;window.open('https://wa.me/?text='+encodeURIComponent('Verified on GharMap: '+p.area+' — '+fmtP(p.rent,p.mode)+'\n'+_shareUrl),'_blank');closeShareModal();}
-function closeShareModal(){document.getElementById('share-modal').classList.remove('open');}
+function shareProperty(){
+  const p=activeDetail;if(!p)return;
+  const url='https://gharmap.in?p='+p.id+'&m='+p.mode;
+  const fl={furnished:'Furnished',semi:'Semi-Furnished',unfurnished:'Unfurnished'}[p.fur]||'';
+  const price=fmtP(p.rent,p.mode)+(p.mode==='rent'?'/mo':'');
+  const neg=p.neg&&p.neg.length?'%0A%E2%86%92 Past tenants negotiated it down':'';
+  const msg='Found this on GharMap%20%F0%9F%91%80%0A%0A*'+encodeURIComponent(price+' · '+p.area)+'*%0A'+(p.bhk?encodeURIComponent('→ '+p.bhk+' BHK')+(fl?encodeURIComponent(' · '+fl):'')+'%0A':'')+'%E2%86%92 Verified on-ground%3A rent%2C water%2C parking'+neg+'%0A%0A'+encodeURIComponent(url);
+  window.open('https://wa.me/?text='+msg,'_blank');
+  showToast('Opening WhatsApp...');
+}
+
+// ══ SATELLITE ══
+function toggleSatellite(){
+  if(!map)return;
+  if(satOn){map.removeLayer(tileSat);map.addLayer(tileNormal);satOn=false;}
+  else{map.removeLayer(tileNormal);map.addLayer(tileSat);satOn=true;}
+}
+
+// ══ NEAR ME ══
+function nearMe(){
+  if(!navigator.geolocation){showToast('Location not supported');return;}
+  navigator.geolocation.getCurrentPosition(
+    pos=>{map&&map.flyTo([pos.coords.latitude,pos.coords.longitude],15,{duration:1.2});showToast('Showing properties near you!');},
+    ()=>showToast('Location unavailable'),{timeout:10000}
+  );
+}
+
+// ══ NEIGHBOURHOOD SELECT ══
+const HOOD_DATA={gomti:{radius:4000,color:'#4d9a82'},hazrat:{radius:2400,color:'#c4943a'},alambagh:{radius:3500,color:'#5b8ed4'},university:{radius:3000,color:'#8b6cc4'},aashiana:{radius:3800,color:'#4d9a82'},indira:{radius:3200,color:'#c0472a'}};
+function selectHood(el){
+  document.querySelectorAll('.gm-hood-chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');
+  const zone=el.dataset.zone,lat=parseFloat(el.dataset.lat),lng=parseFloat(el.dataset.lng);
+  if(_hoodCircle){map.removeLayer(_hoodCircle);_hoodCircle=null;}
+  if(zone==='all'){map.flyTo([26.8467,80.9462],13,{duration:1});activeZones.clear();draw();return;}
+  const h=HOOD_DATA[zone]||{radius:3500,color:'#4d9a82'};
+  _hoodCircle=L.circle([lat,lng],{radius:h.radius,color:h.color,fillColor:h.color,fillOpacity:.08,weight:2.5,opacity:.85,dashArray:'10 6'}).addTo(map);
+  map.flyToBounds(_hoodCircle.getBounds(),{padding:[50,50],duration:1.2});
+  activeZones.clear();activeZones.add(zone);draw();showToast('📍 '+el.textContent.trim());
+}
+
+// ══ MUTUAL CLOSE ══
+function closeAll(except){
+  if(except!=='dp'){const d=document.getElementById('dp');if(d)d.classList.remove('open');activeDetail=null;}
+  if(except!=='saved')document.getElementById('saved-drawer').classList.remove('open');
+  if(except!=='filter'){const f=document.getElementById('gm-filter-overlay');if(f)f.classList.remove('open');}
+  if(except!=='matchme')document.getElementById('matchme-modal').classList.remove('open');
+  if(except!=='owner')document.getElementById('owner-modal').classList.remove('open');
+  if(except!=='how')document.getElementById('how-modal').classList.remove('open');
+  if(except!=='share')document.getElementById('share-modal').classList.remove('open');
+  if(except!=='menu')closeMenuSheet();
+  closeDd();
+}
+
+// ══ MENU SHEET ══
+function openMenuSheet(){
+  closeAll('menu');
+  const s=document.getElementById('menu-sheet');
+  if(window.innerWidth<=768){
+    s.style.position='fixed';s.style.top='50%';s.style.left='50%';
+    s.style.right='auto';s.style.bottom='auto';
+    s.style.transform='translate(-50%,-50%)';
+  }else{s.style.cssText='';}
+  document.getElementById('menu-overlay').classList.add('open');
+  s.classList.add('open');
+}
+function closeMenuSheet(){
+  document.getElementById('menu-overlay').classList.remove('open');
+  document.getElementById('menu-sheet').classList.remove('open');
+}
 
 // ══ SEARCH ══
 let sTimer=null;
@@ -1384,46 +1462,10 @@ function onSearchKey(e){if(e.key==='Escape'){closeDd();document.getElementById('
 function closeDd(){const dd=document.getElementById('s-dd');dd.classList.remove('open');dd.innerHTML='';}
 document.addEventListener('click',e=>{if(!e.target.closest('#gm-top-controls')&&!e.target.closest('#s-dd'))closeDd();});
 
-// ══ NEIGHBOURHOOD ══
-const HOOD_DATA={gomti:{radius:4000,color:'#4d9a82'},hazrat:{radius:2400,color:'#c4943a'},alambagh:{radius:3500,color:'#5b8ed4'},university:{radius:3000,color:'#8b6cc4'},aashiana:{radius:3800,color:'#4d9a82'},indira:{radius:3200,color:'#c0472a'}};
-function selectHood(el){
-  document.querySelectorAll('.gm-hood-chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');
-  const zone=el.dataset.zone,lat=parseFloat(el.dataset.lat),lng=parseFloat(el.dataset.lng);
-  if(_hoodCircle){map.removeLayer(_hoodCircle);_hoodCircle=null;}
-  if(zone==='all'){map.flyTo([26.8467,80.9462],13,{duration:1});activeZones.clear();draw();return;}
-  const h=HOOD_DATA[zone]||{radius:3500,color:'#4d9a82'};
-  _hoodCircle=L.circle([lat,lng],{radius:h.radius,color:h.color,fillColor:h.color,fillOpacity:.08,weight:2.5,opacity:.85,dashArray:'10 6'}).addTo(map);
-  map.flyToBounds(_hoodCircle.getBounds(),{padding:[50,50],duration:1.2});
-  activeZones.clear();activeZones.add(zone);draw();showToast('📍 '+el.textContent.trim());
-}
-
-// ══ MENU SHEET ══
-function openMenuSheet(){
-  closeAll('menu');
-  document.getElementById('menu-overlay').classList.add('open');
-  document.getElementById('menu-sheet').classList.add('open');
-}
-function closeMenuSheet(){
-  document.getElementById('menu-overlay').classList.remove('open');
-  document.getElementById('menu-sheet').classList.remove('open');
-}
-
-// ══ MUTUAL CLOSE ══
-function closeAll(except){
-  if(except!=='dp'){const d=document.getElementById('dp');if(d)d.classList.remove('open');activeDetail=null;}
-  if(except!=='saved'){document.getElementById('saved-drawer').classList.remove('open');}
-  if(except!=='filter'){const f=document.getElementById('gm-filter-overlay');if(f)f.classList.remove('open');}
-  if(except!=='matchme')document.getElementById('matchme-modal').classList.remove('open');
-  if(except!=='owner')document.getElementById('owner-modal').classList.remove('open');
-  if(except!=='how')document.getElementById('how-modal').classList.remove('open');
-  if(except!=='share')document.getElementById('share-modal').classList.remove('open');
-  if(except!=='menu')closeMenuSheet();
-  closeDd();
-}
-
-// ══ MAP CONTROLS ══
-function toggleSatellite(){if(!map)return;if(satOn){map.removeLayer(tileSat);map.addLayer(tileNormal);satOn=false;}else{map.removeLayer(tileNormal);map.addLayer(tileSat);satOn=true;}}
-function nearMe(){if(!navigator.geolocation){showToast('Location not supported');return;}navigator.geolocation.getCurrentPosition(pos=>{map&&map.flyTo([pos.coords.latitude,pos.coords.longitude],15,{duration:1.2});showToast('Showing properties near you!');},()=>showToast('Location unavailable'),{timeout:10000});}
+// ══ SHARE MODAL ══
+function closeShareModal(){document.getElementById('share-modal').classList.remove('open');}
+function copyShareUrl(){const url='https://gharmap.in?p='+(activeDetail?activeDetail.id:'')+'&m='+(activeDetail?activeDetail.mode:'rent');navigator.clipboard.writeText(url).then(()=>{showToast('✅ Copied!');closeShareModal();});}
+function waShareUrl(){closeShareModal();}
 
 // ══ MODE ══
 function setMode(mode){
@@ -1578,14 +1620,37 @@ function checkDeepLink(){
   const params=new URLSearchParams(location.search);
   const id=params.get('p');
   if(!id)return;
-  // Read mode from URL directly — reliable even before listings load
   const mode=params.get('m');
   if(mode&&mode!==listingMode)setMode(mode);
+  const doOpen=()=>{
+    const p=LISTINGS.find(x=>x.id===id);
+    if(p){
+      // Fly to pin first, then pulse, then open detail
+      map&&map.flyTo([p.lat,p.lng],17,{duration:1.2});
+      setTimeout(()=>{
+        pulsePin(p.lat,p.lng);
+        setTimeout(()=>openDetail(id),800);
+      },1300);
+    }else openDetail(id);
+  };
   setTimeout(()=>{
-    // If listings loaded, open detail; else wait and retry
-    if(LISTINGS.length){openDetail(id);}
-    else{const t=setInterval(()=>{if(LISTINGS.length){clearInterval(t);openDetail(id);}},300);}
+    if(LISTINGS.length)doOpen();
+    else{const t=setInterval(()=>{if(LISTINGS.length){clearInterval(t);doOpen();}},300);}
   },400);
+}
+function pulsePin(lat,lng){
+  if(!map)return;
+  const circle=L.circleMarker([lat,lng],{
+    radius:20,color:'#4d9a82',fillColor:'#4d9a82',
+    fillOpacity:0.25,weight:2.5,opacity:0.8
+  }).addTo(map);
+  let r=20,growing=true;
+  const iv=setInterval(()=>{
+    r=growing?r+2:r-2;
+    if(r>=36)growing=false;
+    if(r<=8){clearInterval(iv);map.removeLayer(circle);return;}
+    circle.setRadius(r);
+  },40);
 }
 
 // ══ BOOT ══
