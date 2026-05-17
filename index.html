@@ -3,8 +3,16 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0"/>
+<meta http-equiv="Cache-Control" content="public, max-age=86400"/>
 <title>GharMap · Verified Properties · Lucknow</title>
+<!-- Preload critical resources -->
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
+<link rel="preconnect" href="https://basemaps.cartocdn.com" crossorigin/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="dns-prefetch" href="https://script.google.com"/>
+<link rel="dns-prefetch" href="https://nefyaqjolvglodomshcx.supabase.co"/>
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" as="script"/>
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" as="style"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%232d6a5a'/><path d='M10 32 L32 14 L54 32 Z' fill='white'/><rect x='16' y='30' width='32' height='22' fill='white'/><rect x='28' y='38' width='8' height='14' fill='%232d6a5a'/></svg>">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1390,7 +1398,7 @@ function removeSaved(id){savedIds=savedIds.filter(x=>x!==id);localStorage.setIte
 // ══ SHARE ══
 function shareProperty(){
   const p=activeDetail;if(!p)return;
-  const url='https://gharmap.in?p='+p.id+'&m='+p.mode;
+  const url='https://gharmap.in?p='+p.id;
   const fl={furnished:'Furnished',semi:'Semi-Furnished',unfurnished:'Unfurnished'}[p.fur]||'';
   const price=fmtP(p.rent,p.mode)+(p.mode==='rent'?'/mo':'');
   const neg=p.neg&&p.neg.length?'%0APast tenants negotiated it down':'';
@@ -1637,18 +1645,21 @@ async function loadSheet(){
 }
 
 function checkDeepLink(){
-  const params=new URLSearchParams(location.search);
-  const id=params.get('p');if(!id)return;
-  const mode=params.get('m');
-  if(mode&&mode!==listingMode)setMode(mode);
-  const go=()=>{
+  const id=new URLSearchParams(location.search).get('p');if(!id)return;
+  // Try cache first for instant action
+  const tryGo=()=>{
     const p=LISTINGS.find(x=>x.id===id);
-    if(!p)return;
-    map&&map.flyTo([p.lat,p.lng],16,{duration:1});
-    setTimeout(()=>pulsePin(p.lat,p.lng),1000);
+    if(!p)return false;
+    if(p.mode&&p.mode!==listingMode)setMode(p.mode);
+    map&&map.flyTo([p.lat,p.lng],16,{duration:.8});
+    setTimeout(()=>pulsePin(p.lat,p.lng),900);
+    return true;
   };
-  if(LISTINGS.length)go();
-  else{const t=setInterval(()=>{if(LISTINGS.length){clearInterval(t);go();}},300);}
+  if(!tryGo()){
+    showToast('Loading property…');
+    const t=setInterval(()=>{if(tryGo())clearInterval(t);},200);
+    setTimeout(()=>clearInterval(t),15000);
+  }
 }
 function pulsePin(lat,lng){
   if(!map)return;
@@ -1659,8 +1670,14 @@ function pulsePin(lat,lng){
 // ══ BOOT ══
 document.addEventListener('DOMContentLoaded',()=>{
   if(window.innerWidth<=768)document.body.classList.add('is-mobile');window.addEventListener('resize',()=>document.body.classList.toggle('is-mobile',window.innerWidth<=768));
+  // Register service worker for offline/instant cache
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  }
   initMap();
   loadSheet().then(()=>{draw();checkDeepLink();updateSavedCount();});
+  // Skip splash instantly if deep link
+  if(new URLSearchParams(location.search).get('p'))enterApp();
   ['mc-purpose','mc-bhk','mc-budget','mc-areas','ow-type','ow-purpose'].forEach(setupChips);
   gfRange(null);
   setTimeout(()=>{gmShowToast();setInterval(gmShowToast,15000);},5000);
