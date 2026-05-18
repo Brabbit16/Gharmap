@@ -599,34 +599,55 @@ body.is-mobile #menu-sheet{position:fixed !important;top:50% !important;left:50%
 body.is-mobile #menu-sheet.open{animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;}
 body.is-mobile #dp{
   position:fixed !important;
-  bottom:calc(70px + env(safe-area-inset-bottom,0px)) !important;
+  bottom:0 !important;
   top:auto !important;
-  left:8px !important;right:8px !important;
-  width:auto !important;max-width:none !important;
+  left:0 !important;right:0 !important;
+  width:100% !important;max-width:100% !important;
   transform:none !important;
-  max-height:72dvh !important;
-  min-height:320px !important;
-  border-radius:18px !important;
+  max-height:92dvh !important;
+  min-height:50dvh !important;
+  border-radius:20px 20px 0 0 !important;
   z-index:1900 !important;
   display:none;flex-direction:column;
 }
 body.is-mobile #dp.open{
   display:flex !important;
-  animation:slideUpFade .26s cubic-bezier(.22,.61,.36,1) both !important;
+  animation:slideUp .3s cubic-bezier(.22,.61,.36,1) both !important;
 }
-/* Keep header always fully visible — never let it shrink */
-body.is-mobile .dp-hd{flex-shrink:0 !important;padding:12px 14px 10px !important;}
-/* Make action buttons bigger and easier to tap on mobile */
-body.is-mobile .dp-actions{gap:8px !important;}
-body.is-mobile .dp-btn{
-  width:34px !important;height:34px !important;
-  font-size:14px !important;
+/* Drag handle at top */
+body.is-mobile #dp::before{
+  content:'' !important;
+  display:block !important;
+  width:40px !important;height:4px !important;
+  background:#333 !important;border-radius:4px !important;
+  margin:10px auto 0 !important;flex-shrink:0 !important;
 }
-body.is-mobile .dp-close{width:34px !important;height:34px !important;font-size:13px !important;}
-/* Body scrolls freely */
-body.is-mobile .dp-body{flex:1 !important;overflow-y:auto !important;-webkit-overflow-scrolling:touch !important;}
-/* Footer always pinned at bottom */
-body.is-mobile .dp-foot{flex-shrink:0 !important;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important;}
+/* Header */
+body.is-mobile .dp-hd{flex-shrink:0 !important;padding:8px 16px 12px !important;}
+/* Bigger tap targets for action buttons */
+body.is-mobile .dp-actions{gap:10px !important;}
+body.is-mobile .dp-btn{width:38px !important;height:38px !important;font-size:15px !important;}
+body.is-mobile .dp-close{width:38px !important;height:38px !important;font-size:14px !important;}
+body.is-mobile .dp-price{font-size:26px !important;}
+/* Body scrolls freely with momentum */
+body.is-mobile .dp-body{
+  flex:1 !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior:contain !important;
+}
+/* Footer always at bottom */
+body.is-mobile .dp-foot{
+  flex-shrink:0 !important;
+  padding:12px 16px calc(16px + env(safe-area-inset-bottom,0px)) !important;
+}
+body.is-mobile .btn-interest{padding:14px !important;font-size:14px !important;}
+/* Dim overlay behind the sheet */
+body.is-mobile #dp-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.45);z-index:1899;
+}
+body.is-mobile #dp-overlay.open{display:block;}
 body.is-mobile #saved-drawer{position:fixed !important;top:50% !important;left:50% !important;right:auto !important;bottom:auto !important;transform:translate(-50%,-50%) !important;width:calc(100% - 24px) !important;max-width:400px !important;max-height:86dvh !important;border-radius:16px !important;z-index:1850 !important;}
 body.is-mobile #saved-drawer.open{animation:scaleIn .24s cubic-bezier(.34,1.26,.64,1) both !important;}
 body.is-mobile .m-title{font-size:17px !important;}
@@ -913,6 +934,9 @@ body.is-mobile .guide-step-desc{font-size:11.5px !important;}
       </div>
     </div>
   </div>
+
+  <!-- MOBILE DETAIL PANEL OVERLAY -->
+  <div id="dp-overlay" onclick="closeDetail()"></div>
 
   <!-- DETAIL PANEL -->
   <div id="dp">
@@ -1205,7 +1229,7 @@ function initMap(){
   map.addLayer(cluster);
   map.on('click',()=>{closeAll(null);closePinCard();});
   // Stop Leaflet capturing taps that land on overlaid UI panels
-  ['dp','pin-card','gm-top-controls','bottom-cta-row','gm-right-toolbar','gm-stats-row'].forEach(id=>{
+  ['dp','dp-overlay','pin-card','gm-top-controls','bottom-cta-row','gm-right-toolbar','gm-stats-row'].forEach(id=>{
     const el=document.getElementById(id);
     if(!el)return;
     L.DomEvent.disableClickPropagation(el);
@@ -1317,10 +1341,17 @@ function openDetail(id){
   map&&map.flyTo([p.lat,p.lng],16,{duration:.8});
   const dpEl=document.getElementById('dp');
   dpEl.classList.add('open');
+  if(document.body.classList.contains('is-mobile')){
+    document.getElementById('dp-overlay').classList.add('open');
+  }
   // Re-block Leaflet touch events on the panel every time it opens
   if(map){L.DomEvent.disableClickPropagation(dpEl);L.DomEvent.disableScrollPropagation(dpEl);}
 }
-function closeDetail(){document.getElementById('dp').classList.remove('open');activeDetail=null;}
+function closeDetail(){
+  document.getElementById('dp').classList.remove('open');
+  document.getElementById('dp-overlay').classList.remove('open');
+  activeDetail=null;
+}
 
 function markError(id,msg){
   const el=document.getElementById(id);if(!el)return;
