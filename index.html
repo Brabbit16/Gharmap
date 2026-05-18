@@ -597,8 +597,36 @@ body.is-mobile .share-card{width:calc(100% - 28px) !important;max-width:100% !im
 body.is-mobile .gm-filter-modal{width:calc(100% - 28px) !important;max-width:100% !important;max-height:86dvh !important;border-radius:16px !important;overflow:hidden !important;animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;}
 body.is-mobile #menu-sheet{position:fixed !important;top:50% !important;left:50% !important;right:auto !important;bottom:auto !important;transform:translate(-50%,-50%) !important;width:calc(100% - 40px) !important;max-width:320px !important;max-height:85dvh !important;border-radius:16px !important;}
 body.is-mobile #menu-sheet.open{animation:scaleIn .22s cubic-bezier(.34,1.56,.64,1) both !important;}
-body.is-mobile #dp{position:fixed !important;bottom:calc(76px + env(safe-area-inset-bottom,0px)) !important;top:auto !important;left:10px !important;right:10px !important;width:auto !important;max-width:none !important;transform:none !important;max-height:60dvh !important;border-radius:16px !important;z-index:1900 !important;}
-body.is-mobile #dp.open{animation:slideUpFade .26s cubic-bezier(.22,.61,.36,1) both !important;}
+body.is-mobile #dp{
+  position:fixed !important;
+  bottom:calc(70px + env(safe-area-inset-bottom,0px)) !important;
+  top:auto !important;
+  left:8px !important;right:8px !important;
+  width:auto !important;max-width:none !important;
+  transform:none !important;
+  max-height:72dvh !important;
+  min-height:320px !important;
+  border-radius:18px !important;
+  z-index:1900 !important;
+  display:none;flex-direction:column;
+}
+body.is-mobile #dp.open{
+  display:flex !important;
+  animation:slideUpFade .26s cubic-bezier(.22,.61,.36,1) both !important;
+}
+/* Keep header always fully visible — never let it shrink */
+body.is-mobile .dp-hd{flex-shrink:0 !important;padding:12px 14px 10px !important;}
+/* Make action buttons bigger and easier to tap on mobile */
+body.is-mobile .dp-actions{gap:8px !important;}
+body.is-mobile .dp-btn{
+  width:34px !important;height:34px !important;
+  font-size:14px !important;
+}
+body.is-mobile .dp-close{width:34px !important;height:34px !important;font-size:13px !important;}
+/* Body scrolls freely */
+body.is-mobile .dp-body{flex:1 !important;overflow-y:auto !important;-webkit-overflow-scrolling:touch !important;}
+/* Footer always pinned at bottom */
+body.is-mobile .dp-foot{flex-shrink:0 !important;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)) !important;}
 body.is-mobile #saved-drawer{position:fixed !important;top:50% !important;left:50% !important;right:auto !important;bottom:auto !important;transform:translate(-50%,-50%) !important;width:calc(100% - 24px) !important;max-width:400px !important;max-height:86dvh !important;border-radius:16px !important;z-index:1850 !important;}
 body.is-mobile #saved-drawer.open{animation:scaleIn .24s cubic-bezier(.34,1.26,.64,1) both !important;}
 body.is-mobile .m-title{font-size:17px !important;}
@@ -1176,6 +1204,13 @@ function initMap(){
   });
   map.addLayer(cluster);
   map.on('click',()=>{closeAll(null);closePinCard();});
+  // Stop Leaflet capturing taps that land on overlaid UI panels
+  ['dp','pin-card','gm-top-controls','bottom-cta-row','gm-right-toolbar','gm-stats-row'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    L.DomEvent.disableClickPropagation(el);
+    L.DomEvent.disableScrollPropagation(el);
+  });
 }
 
 function mkIcon(type,mode,status,price,area){
@@ -1230,6 +1265,7 @@ function draw(){
 // ══ DETAIL ══
 function openDetail(id){
   closeAll('dp');
+  closePinCard(); // always close mobile pin card first
   const p=LISTINGS.find(x=>x.id===id);if(!p)return;
   activeDetail=p;
   document.getElementById('dp-type-lbl').textContent={flat:'VERIFIED FLAT',pg:'VERIFIED PG',house:'VERIFIED HOUSE',commercial:'VERIFIED COMMERCIAL'}[p.type]||'VERIFIED';
@@ -1279,7 +1315,10 @@ function openDetail(id){
   }
   buildSlots(p);buildCost(p);buildSimilar(p);
   map&&map.flyTo([p.lat,p.lng],16,{duration:.8});
-  document.getElementById('dp').classList.add('open');
+  const dpEl=document.getElementById('dp');
+  dpEl.classList.add('open');
+  // Re-block Leaflet touch events on the panel every time it opens
+  if(map){L.DomEvent.disableClickPropagation(dpEl);L.DomEvent.disableScrollPropagation(dpEl);}
 }
 function closeDetail(){document.getElementById('dp').classList.remove('open');activeDetail=null;}
 
