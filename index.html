@@ -27,6 +27,7 @@
 <link rel="preconnect" href="https://basemaps.cartocdn.com" crossorigin/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <script defer data-domain="gharmap.in" src="https://plausible.io/js/script.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgnmt05eNkoJ2LA7fZphd7yuusIB-ZfZs&libraries=places&loading=async" defer></script>
 <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" as="script"/>
 <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" as="style"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%232d6a5a'/><path d='M10 32 L32 14 L54 32 Z' fill='white'/><rect x='16' y='30' width='32' height='22' fill='white'/><rect x='28' y='38' width='8' height='14' fill='%232d6a5a'/></svg>">
@@ -3662,43 +3663,77 @@ function onSearch(q){
   // Render immediately with Layer 1 + Layer 2 results
   renderDd(landmarks,local,[]);
 
-  // Skip Layer 3 in two cases:
-  //   (a) Pincode — landmarks alone are authoritative
-  //   (b) Very short query — too generic for useful Photon results
+  // Skip Layer 3 for short queries or pincodes
   if(isPincode||v.length<2)return;
 
-  // ─── LAYER 3: Photon API (network, 200–800ms) ───
+  // ─── LAYER 3: Google Places Autocomplete (fast, accurate, handles all Indian addresses) ───
   const ckey=v.toLowerCase()+'|'+activeCity;
   if(_geoCache[ckey]){renderDd(landmarks,local,_geoCache[ckey]);return;}
 
+  clearTimeout(_sTimer);
   _sTimer=setTimeout(()=>{
     const c=CITY_DATA[activeCity]||CITY_DATA.delhi;
-    const url=`https://photon.komoot.io/api/?q=${encodeURIComponent(v+', '+c.name)}&lat=${c.lat}&lon=${c.lng}&zoom=13&limit=5&lang=en`;
-    _searchAbort=new AbortController();
-    fetch(url,{signal:_searchAbort.signal})
-      .then(r=>r.json())
-      .then(d=>{
+    // Use Google Places if available, fallback to Photon
+    if(window.google&&window.google.maps&&window.google.maps.places){
+      if(!window._gmAutoSvc){
+        window._gmAutoSvc=new google.maps.places.AutocompleteService();
+      }
+      const req={
+        input:v+', '+c.name+', India',
+        componentRestrictions:{country:'in'},
+        location:new google.maps.LatLng(c.lat,c.lng),
+        radius:50000,
+        types:['geocode','establishment'],
+      };
+      window._gmAutoSvc.getPlacePredictions(req,(predictions,status)=>{
         if(_lastSearchQ.toLowerCase()!==v.toLowerCase())return;
+        if(status!=='OK'||!predictions){renderDd(landmarks,local,[]);return;}
+        const seenNames=new Set([...landmarks.map(x=>x.name.toLowerCase()),...local.map(x=>x.n.toLowerCase())]);
         const places=[];
-        // Dedupe against landmarks + local listings
-        const seen=new Set([...landmarks.map(x=>x.name.toLowerCase()),...local.map(x=>x.n.toLowerCase())]);
-        for(const f of(d.features||[])){
-          const coords=f.geometry&&f.geometry.coordinates;if(!coords)continue;
-          const lng=coords[0],lat=coords[1];
-          const name=f.properties&&f.properties.name;
-          if(!name||seen.has(name.toLowerCase()))continue;
-          const dy=lat-c.lat,dx=lng-c.lng;
-          if(Math.sqrt(dy*dy+dx*dx)>0.9)continue;
-          places.push({n:name,lat,lng,sub:(f.properties.city||f.properties.district||c.name)});
-        }
-        _geoCache[ckey]=places;
-        renderDd(landmarks,local,places);
-      })
-      .catch(e=>{
-        if(e&&e.name==='AbortError')return;
-        // Photon errored — landmarks + local still rendered, just no remote results
+        let pending=predictions.slice(0,5).length;
+        if(!pending){renderDd(landmarks,local,[]);return;}
+        const geocoder=new google.maps.Geocoder();
+        predictions.slice(0,5).forEach(p=>{
+          const name=p.structured_formatting.main_text;
+          if(seenNames.has(name.toLowerCase())){pending--;if(!pending)renderDd(landmarks,local,places);return;}
+          geocoder.geocode({placeId:p.place_id},(results,gs)=>{
+            if(gs==='OK'&&results[0]){
+              const loc=results[0].geometry.location;
+              places.push({n:name,lat:loc.lat(),lng:loc.lng(),sub:p.structured_formatting.secondary_text||c.name});
+            }
+            pending--;
+            if(!pending){
+              _geoCache[ckey]=places;
+              if(_lastSearchQ.toLowerCase()===v.toLowerCase())renderDd(landmarks,local,places);
+            }
+          });
+        });
       });
-  },220);
+    } else {
+      // Fallback to Photon if Google not loaded yet
+      const url=`https://photon.komoot.io/api/?q=${encodeURIComponent(v+', '+c.name)}&lat=${c.lat}&lon=${c.lng}&zoom=13&limit=5&lang=en`;
+      _searchAbort=new AbortController();
+      fetch(url,{signal:_searchAbort.signal})
+        .then(r=>r.json())
+        .then(d=>{
+          if(_lastSearchQ.toLowerCase()!==v.toLowerCase())return;
+          const places=[];
+          const seen=new Set([...landmarks.map(x=>x.name.toLowerCase()),...local.map(x=>x.n.toLowerCase())]);
+          for(const f of(d.features||[])){
+            const coords=f.geometry&&f.geometry.coordinates;if(!coords)continue;
+            const lng=coords[0],lat=coords[1];
+            const name=f.properties&&f.properties.name;
+            if(!name||seen.has(name.toLowerCase()))continue;
+            const dy=lat-c.lat,dx=lng-c.lng;
+            if(Math.sqrt(dy*dy+dx*dx)>0.9)continue;
+            places.push({n:name,lat,lng,sub:(f.properties.city||f.properties.district||c.name)});
+          }
+          _geoCache[ckey]=places;
+          renderDd(landmarks,local,places);
+        })
+        .catch(e=>{if(e&&e.name==='AbortError')return;});
+    }
+  },150);
 }
 
 // Type → icon mapping for landmarks
