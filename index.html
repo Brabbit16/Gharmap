@@ -874,6 +874,28 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
   animation:ringPulse 2s ease infinite;
 }
 @keyframes ringPulse{0%,100%{box-shadow:0 0 0 4px #2d7a4f,0 0 0 9999px rgba(0,0,0,.6);}50%{box-shadow:0 0 0 7px #2d7a4f,0 0 0 9999px rgba(0,0,0,.6);}}
+/* ══ SEARCH PIN MARKER ══ */
+.search-pin-marker{position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center;}
+.search-pin-dot{width:14px;height:14px;background:#2d7a4f;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.3);z-index:2;position:relative;}
+.search-pin-ring{position:absolute;width:40px;height:40px;border:2px solid rgba(45,122,79,.4);border-radius:50%;animation:searchPinPulse 1.5s ease infinite;}
+@keyframes searchPinPulse{0%{transform:scale(.5);opacity:1;}100%{transform:scale(1.4);opacity:0;}}
+/* Search pin popup */
+.search-pin-popup .leaflet-popup-content-wrapper{
+  border-radius:12px !important;
+  padding:0 !important;
+  box-shadow:0 8px 24px rgba(0,0,0,.15) !important;
+  border:1px solid #ebebea !important;
+  overflow:hidden !important;
+}
+.search-pin-popup .leaflet-popup-content{margin:0 !important;}
+.search-pin-popup .leaflet-popup-tip-container{display:none;}
+.spp-inner{padding:10px 14px;min-width:180px;font-family:'DM Sans',sans-serif;}
+.spp-name{font-size:13px;font-weight:700;color:#0a0a0a;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+.spp-btn{width:100%;padding:8px 12px;background:#0a0a0a;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:4px;}
+.spp-btn:hover{background:#2d7a4f;}
+.spp-close{width:100%;padding:5px;background:transparent;border:none;color:#a3a3a3;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.spp-close:hover{color:#0a0a0a;}
+
 /* ══ GOOGLE PLACES AUTOCOMPLETE ══ */
 .pac-container{border-radius:12px !important;border:1px solid #ebebea !important;box-shadow:0 8px 24px rgba(10,10,10,.12) !important;font-family:'DM Sans',sans-serif !important;margin-top:4px !important;overflow:hidden !important;z-index:2000 !important;}
 .pac-item{padding:10px 14px !important;font-size:13px !important;color:#0a0a0a !important;cursor:pointer !important;border-top:1px solid #f5f5f4 !important;line-height:1.4 !important;}
@@ -4124,7 +4146,70 @@ function highlightElement(sel){
   showToast('This is the '+el.id.replace(/-/g,' '));
 }
 
-// ══ QUICK TOUR — full product walkthrough ══
+// ══ SEARCH PIN — temporary marker with Drop a Pin prompt ══
+let _searchPinMarker=null;
+let _searchPinPopup=null;
+
+function showSearchPin(lat,lng,name){
+  // Remove previous search pin
+  clearSearchPin();
+
+  // Create a pulsing marker at the searched location
+  const icon=L.divIcon({
+    className:'',
+    html:`<div class="search-pin-marker">
+      <div class="search-pin-dot"></div>
+      <div class="search-pin-ring"></div>
+    </div>`,
+    iconSize:[40,40],iconAnchor:[20,20]
+  });
+
+  _searchPinMarker=L.marker([lat,lng],{icon,zIndexOffset:1000}).addTo(map);
+
+  // Show prompt popup
+  const area=name.split(',')[0].trim();
+  const popup=L.popup({
+    closeButton:false,
+    className:'search-pin-popup',
+    offset:[0,-10],
+    autoPan:true,
+  })
+  .setLatLng([lat,lng])
+  .setContent(`
+    <div class="spp-inner">
+      <div class="spp-name">${area}</div>
+      <button class="spp-btn" onclick="searchPinDrop(${lat},${lng},'${area.replace(/'/g,"\\'")}')">+ Drop a Pin here</button>
+      <button class="spp-close" onclick="clearSearchPin()">✕</button>
+    </div>
+  `)
+  .openOn(map);
+
+  _searchPinPopup=popup;
+
+  // Auto-dismiss after 8 seconds
+  setTimeout(()=>clearSearchPin(),8000);
+}
+
+function clearSearchPin(){
+  if(_searchPinMarker){map.removeLayer(_searchPinMarker);_searchPinMarker=null;}
+  if(_searchPinPopup){map.closePopup(_searchPinPopup);_searchPinPopup=null;}
+}
+
+function searchPinDrop(lat,lng,area){
+  clearSearchPin();
+  // Pre-fill the drop pin form with this location
+  _dropPinLatLng={lat,lng};
+  _waitingForPin=false;
+  map.getContainer().style.cursor='';
+  // Pre-fill area field
+  document.getElementById('drop-pin-overlay').classList.add('open');
+  setTimeout(()=>{
+    const areaInput=document.getElementById('dps-area');
+    const rentArea=document.getElementById('dps-rent-area');
+    if(areaInput)areaInput.value=area;
+    if(rentArea)rentArea.value=area;
+  },100);
+}
 function startQuickTour(){
   localStorage.setItem('gm_guide_seen','1');
   _spotlightSteps=[
@@ -4410,7 +4495,10 @@ function initGoogleAutocomplete(){
     const lng=place.geometry.location.lng();
     input.value=place.name||input.value;
     closeDd();
-    map&&map.flyTo([lat,lng],15,{duration:.6,easeLinearity:.4});
+    // Fly to location
+    map&&map.flyTo([lat,lng],16,{duration:.6,easeLinearity:.4});
+    // Show temporary marker with Drop a Pin prompt
+    showSearchPin(lat,lng,place.name||input.value);
   });
   window._gmAC=ac;
 }
