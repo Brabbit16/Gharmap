@@ -27,7 +27,6 @@
 <link rel="preconnect" href="https://basemaps.cartocdn.com" crossorigin/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <script defer data-domain="gharmap.in" src="https://plausible.io/js/script.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgnmt05eNkoJ2LA7fZphd7yuusIB-ZfZs&libraries=places&callback=initGoogleAutocomplete&loading=async"></script>
 <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" as="script"/>
 <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" as="style"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%232d6a5a'/><path d='M10 32 L32 14 L54 32 Z' fill='white'/><rect x='16' y='30' width='32' height='22' fill='white'/><rect x='28' y='38' width='8' height='14' fill='%232d6a5a'/></svg>">
@@ -1515,6 +1514,7 @@ body{background:#fafafa;color:#0a0a0a;}
 .es-t,#empty-state{color:#525252!important;}
 
 /* Zoom control — bottom-right on mobile, doesn't clash with search bar */
+@media(max-width:768px){.leaflet-control-zoom{display:none !important;}}
 .leaflet-bottom.leaflet-right .leaflet-control-zoom{
   margin-bottom:calc(70px + env(safe-area-inset-bottom,0px));
   margin-right:10px;
@@ -1792,7 +1792,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
         <div class="sp-founders-avatar">H</div>
       </div>
       <div class="sp-founders-text">
-        Built by <b>Piyush &amp; Himanshu</b> in Lucknow.<br>
+        Built by <b>Piyush &amp; Himanshu</b>.<br>
         <a href="https://wa.me/919336297656" target="_blank">WhatsApp us anytime ↗</a>
       </div>
     </div>
@@ -3130,10 +3130,45 @@ function selectHood(el){
 // ══ DROP PIN FLOW ══
 let _waitingForPin=false;
 function openDropPin(){
-  // Step 1 — ask user to tap map to set location
   _waitingForPin=true;
   map.getContainer().style.cursor='crosshair';
   showToast('Tap on the map to set your location',4000);
+  // Wire Google Places to area fields once overlay is visible
+  setTimeout(initDropPinAreaSearch,300);
+}
+
+// ══ GOOGLE PLACES ON DROP PIN AREA FIELDS ══
+function initDropPinAreaSearch(){
+  if(!window.google||!window.google.maps||!window.google.maps.places)return;
+  const city=window.CITY_DATA&&window.activeCity?window.CITY_DATA[window.activeCity]:null;
+  const lat=city?city.lat:28.6139,lng=city?city.lng:77.2090;
+  const bounds=new google.maps.LatLngBounds(
+    new google.maps.LatLng(lat-0.8,lng-0.8),
+    new google.maps.LatLng(lat+0.8,lng+0.8)
+  );
+  const opts={
+    componentRestrictions:{country:'in'},
+    fields:['geometry','name'],
+    bounds,strictBounds:false,
+  };
+  ['dps-area','dps-rent-area','dps-seek-area'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el||el._gmAC)return;
+    const ac=new google.maps.places.Autocomplete(el,opts);
+    ac.addListener('place_changed',()=>{
+      const place=ac.getPlace();
+      if(!place||!place.geometry)return;
+      // Override pin location to the exact address
+      _dropPinLatLng={
+        lat:place.geometry.location.lat(),
+        lng:place.geometry.location.lng()
+      };
+      el.value=place.name||el.value;
+      // Fly map to show where pin will drop
+      map&&map.flyTo([_dropPinLatLng.lat,_dropPinLatLng.lng],16,{duration:.5});
+    });
+    el._gmAC=true;
+  });
 }
 function closeDropPin(){
   document.getElementById('drop-pin-overlay').classList.remove('open');
@@ -4473,32 +4508,35 @@ function updateSplashCount(){
 // ══ GOOGLE PLACES AUTOCOMPLETE — global so Google callback can find it ══
 function initGoogleAutocomplete(){
   const input=document.getElementById('gm-search-input');
-  if(!input)return;
+  if(!input){setTimeout(initGoogleAutocomplete,300);return;}
   if(!window.google||!window.google.maps||!window.google.maps.places){
-    // Google not ready yet — retry in 500ms
     setTimeout(initGoogleAutocomplete,500);return;
   }
-  const c=CITY_DATA[activeCity]||CITY_DATA.delhi;
+  // CITY_DATA may not be defined yet if called before main script runs
+  const city=window.CITY_DATA&&window.activeCity?window.CITY_DATA[window.activeCity]:null;
+  const lat=city?city.lat:28.6139, lng=city?city.lng:77.2090;
+
   const ac=new google.maps.places.Autocomplete(input,{
     componentRestrictions:{country:'in'},
     fields:['geometry','name','formatted_address'],
     bounds:new google.maps.LatLngBounds(
-      new google.maps.LatLng(c.lat-0.8,c.lng-0.8),
-      new google.maps.LatLng(c.lat+0.8,c.lng+0.8)
+      new google.maps.LatLng(lat-0.8,lng-0.8),
+      new google.maps.LatLng(lat+0.8,lng+0.8)
     ),
     strictBounds:false,
   });
   ac.addListener('place_changed',()=>{
     const place=ac.getPlace();
-    if(!place||!place.geometry){onSearch(input.value);return;}
-    const lat=place.geometry.location.lat();
-    const lng=place.geometry.location.lng();
+    if(!place||!place.geometry){
+      if(window.onSearch)onSearch(input.value);
+      return;
+    }
+    const plat=place.geometry.location.lat();
+    const plng=place.geometry.location.lng();
     input.value=place.name||input.value;
-    closeDd();
-    // Fly to location
-    map&&map.flyTo([lat,lng],16,{duration:.6,easeLinearity:.4});
-    // Show temporary marker with Drop a Pin prompt
-    showSearchPin(lat,lng,place.name||input.value);
+    if(window.closeDd)closeDd();
+    if(window.map)map.flyTo([plat,plng],16,{duration:.6,easeLinearity:.4});
+    if(window.showSearchPin)showSearchPin(plat,plng,place.name||input.value);
   });
   window._gmAC=ac;
 }
@@ -4514,5 +4552,6 @@ function initGoogleAutocomplete(){
   </div>
 </div>
 
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgnmt05eNkoJ2LA7fZphd7yuusIB-ZfZs&libraries=places&callback=initGoogleAutocomplete&loading=async"></script>
 </body>
 </html>
