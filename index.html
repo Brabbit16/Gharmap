@@ -2109,8 +2109,10 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
           <button class="dps-chip" data-v="semi">Semi</button>
           <button class="dps-chip" data-v="unfurnished">Bare</button>
         </div>
-        <label class="dps-lbl">Your WhatsApp</label>
-        <input class="dps-input" id="dps-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit number"/>
+        <label class="dps-lbl">Email *</label>
+        <input class="dps-input" id="dps-email" type="email" placeholder="you@email.com"/>
+        <label class="dps-lbl">WhatsApp <span style="font-weight:400;opacity:.5;text-transform:none;letter-spacing:0;">(optional)</span></label>
+        <input class="dps-input" id="dps-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit number (optional)"/>
         <div class="dps-note">🔒 Your number is never shown publicly. Only shared when someone is interested in your listing.</div>
         <button class="dps-submit" id="dps-listing-btn" onclick="submitCommunityListing()">Post Listing →</button>
         <button class="dps-cancel" onclick="closeDropPin()">Cancel</button>
@@ -2158,7 +2160,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
           <div class="v-row">
             <input class="v-input" id="vf-name" type="text" placeholder="Your name *"/>
             <div class="input-error-msg" id="vf-name-err"></div>
-            <input class="v-input" id="vf-phone" type="tel" placeholder="+91 phone *"/>
+            <input class="v-input" id="vf-email" type="email" placeholder="Email *"/>
+            <div class="input-error-msg" id="vf-email-err"></div>
+            <input class="v-input" id="vf-phone" type="tel" placeholder="WhatsApp (optional)"/>
             <div class="input-error-msg" id="vf-phone-err"></div>
           </div>
           <input class="v-input" id="vf-budget" type="text" placeholder="Budget range e.g. ₹15K–18K"/>
@@ -2247,7 +2251,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
     <div class="m-chips" id="mc-areas"><button class="m-chip" data-v="dwarka">Dwarka</button><button class="m-chip" data-v="saket">Saket</button><button class="m-chip" data-v="cyber">Cyber City</button><button class="m-chip" data-v="noida">Noida</button><button class="m-chip" data-v="open">Open to suggestions</button></div>
     <div class="m-row" style="margin-top:4px;">
       <div class="m-group"><label class="m-lbl">Your name *</label><input class="m-input" id="mc-name" type="text" placeholder="Full name"/><div class="input-error-msg" id="mc-name-err"></div></div>
-      <div class="m-group"><label class="m-lbl">WhatsApp *</label><input class="m-input" id="mc-phone" type="tel" maxlength="10" placeholder="98765 43210" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"/><div class="input-error-msg" id="mc-phone-err"></div></div>
+      <div class="m-group"><label class="m-lbl">Email *</label><input class="m-input" id="mc-email" type="email" placeholder="you@email.com"/><div class="input-error-msg" id="mc-email-err"></div></div></div><div class="m-row"><div class="m-group"><label class="m-lbl">WhatsApp <span style="font-weight:400;color:#a3a3a3;">(optional)</span></label><input class="m-input" id="mc-phone" type="tel" maxlength="10" placeholder="98765 43210" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"/><div class="input-error-msg" id="mc-phone-err"></div></div>
     </div>
     <label class="m-lbl">Anything specific?</label>
     <input class="m-input" id="mc-note" type="text" placeholder="Parking, pet friendly, near school…"/>
@@ -2301,7 +2305,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
     </div>
     <label class="m-lbl">Area / Colony *</label><input class="m-input" id="ow-area" type="text" placeholder="e.g. Gomti Nagar Sector D"/><div class="input-error-msg" id="ow-area-err"></div>
     <label class="m-lbl">Your name *</label><input class="m-input" id="ow-name" type="text" placeholder="Owner name"/><div class="input-error-msg" id="ow-name-err"></div>
-    <label class="m-lbl">WhatsApp *</label><input class="m-input" id="ow-phone" type="tel" placeholder="+91 98765 43210"/><div class="input-error-msg" id="ow-phone-err"></div>
+    <label class="m-lbl">Email *</label><input class="m-input" id="ow-email" type="email" placeholder="you@email.com"/><div class="input-error-msg" id="ow-email-err"></div><label class="m-lbl" style="margin-top:4px;">WhatsApp <span style="font-weight:400;color:#a3a3a3;">(optional)</span></label><input class="m-input" id="ow-phone" type="tel" placeholder="+91 98765 43210 (optional)"/><div class="input-error-msg" id="ow-phone-err"></div>
     <button class="btn-pri" id="ow-submit-btn" onclick="submitOwnerRequest()">Submit for Verification →</button>
     <button class="btn-sec" onclick="closeOwnerModal()">Cancel</button>
   </div>
@@ -2834,12 +2838,13 @@ function selSlot(id,lbl,el){
   document.getElementById('v-slot-lbl').textContent=lbl;document.getElementById('v-form').classList.add('show');
 }
 async function submitVisit(){
-  const name=document.getElementById('vf-name').value.trim(),phone=document.getElementById('vf-phone').value.trim();
+  const name=document.getElementById('vf-name').value.trim(),phone=document.getElementById('vf-phone').value.trim(),email=(document.getElementById('vf-email')||{value:''}).value.trim();
   if(!name){markError('vf-name','Enter your name');return;}
-  if(!phone||phone.replace(/[^0-9]/g,'').length<10){markError('vf-phone','Enter a valid number');return;}
+  if(!email||!email.includes('@')){markError('vf-email','Please enter a valid email');return;}
+  if(phone&&phone.replace(/[^0-9]/g,'').length<10){markError('vf-phone','Enter a valid number or leave blank');return;}
   if(!selectedSlot){showToast('Please pick a time slot first');return;}
   if(!activeDetail)return;
-  const p=activeDetail,payload={property_id:p.id,property_area:p.area,property_price:p.rent,visitor_name:name,visitor_phone:phone,slot:selectedSlot.lbl,status:'pending',created_at:new Date().toISOString()};
+  const p=activeDetail,payload={property_id:p.id,property_area:p.area,property_price:p.rent,visitor_name:name,visitor_email:email,visitor_phone:phone,slot:selectedSlot.lbl,status:'pending',created_at:new Date().toISOString()};
   try{await fetch(SUPABASE_URL+'/rest/v1/visit_bookings',{method:'POST',headers:sbH({'Content-Type':'application/json','Prefer':'return=minimal'}),body:JSON.stringify(payload)});}catch(e){}
   document.getElementById('v-form').classList.remove('show');document.getElementById('v-confirm').classList.add('show');
   document.getElementById('vc-msg').textContent='Confirmed for '+selectedSlot.lbl+'. We\'ll call within 2 hours.';
@@ -3129,11 +3134,13 @@ async function submitCommunityListing(){
   const rent=document.getElementById('dps-rent').value.trim();
   const area=document.getElementById('dps-area').value.trim();
   const phone=document.getElementById('dps-phone').value.trim().replace(/[^0-9]/g,'');
+  const email=document.getElementById('dps-email')?document.getElementById('dps-email').value.trim():'';
   const bhk=getDpsChip('dps-bhk');
   const fur=getDpsChip('dps-fur');
   if(!rent){showToast('Please enter the rent');return;}
   if(!area){showToast('Please enter the area');return;}
-  if(phone.length<10||!/^[6-9]/.test(phone)){showToast('Please enter a valid Indian mobile number');return;}
+  if(!email||!email.includes('@')){showToast('Please enter a valid email');return;}
+  if(phone&&(phone.length<10||!/^[6-9]/.test(phone))){showToast('Enter a valid WhatsApp number or leave blank');return;}
   // Cooldown
   const last=_communitySubmitCooldown.listing||0;
   if(Date.now()-last<60000){showToast('Please wait before submitting again');return;}
@@ -4096,9 +4103,10 @@ function _setBtnLoading(btnId,loading,defaultText){
 
 async function submitMatchMe(){
   if(!_checkCooldown('matchme'))return;
-  const name=document.getElementById('mc-name').value.trim(),phone=document.getElementById('mc-phone').value.trim().replace(/[^0-9]/g,'');
+  const name=document.getElementById('mc-name').value.trim(),phone=document.getElementById('mc-phone').value.trim().replace(/[^0-9]/g,''),email=(document.getElementById('mc-email')||{value:''}).value.trim();
   if(!name){markError('mc-name','Enter your name');return;}
-  if(phone.length!==10){markError('mc-phone','Enter a valid 10-digit number');return;}
+  if(!email||!email.includes('@')){markError('mc-email','Please enter a valid email');return;}
+  if(phone&&phone.length!==10){markError('mc-phone','Enter valid 10-digit number or leave blank');return;}
   _setBtnLoading('mc-submit-btn',true,'🔍 Find My Match');
   const getSel=id=>Array.from(document.querySelectorAll('#'+id+' .m-chip.on')).map(c=>c.dataset.v).join(', ')||'Not specified';
   const payload={name,phone:'91'+phone,purpose:getSel('mc-purpose'),bhk:getSel('mc-bhk'),budget:getSel('mc-budget'),areas:getSel('mc-areas'),note:document.getElementById('mc-note').value.trim()||null,status:'pending',created_at:new Date().toISOString()};
@@ -4112,15 +4120,17 @@ async function submitOwnerRequest(){
   if(!_checkCooldown('owner'))return;
   const name=document.getElementById('ow-name').value.trim(),
         phone=document.getElementById('ow-phone').value.trim().replace(/[^0-9]/g,''),
+        email=(document.getElementById('ow-email')||{value:''}).value.trim(),
         price=document.getElementById('ow-price').value.trim(),
         area=document.getElementById('ow-area').value.trim();
   if(!name){markError('ow-name','Enter your name');return;}
-  if(!phone||phone.length<10){markError('ow-phone','Enter a valid 10-digit number');return;}
+  if(!email||!email.includes('@')){markError('ow-email','Please enter a valid email');return;}
+  if(phone&&phone.length<10){markError('ow-phone','Enter valid number or leave blank');return;}
   if(!price){markError('ow-price','Enter the rent or price');return;}
   if(!area){markError('ow-area','Enter the area or colony');return;}
   _setBtnLoading('ow-submit-btn',true,'Submit for Verification →');
   const getAct=id=>{const el=document.querySelector('#'+id+' .m-chip.on');return el?el.dataset.v:'';};
-  const payload={owner_name:name,owner_phone:phone,type:getAct('ow-type'),purpose:getAct('ow-purpose'),bhk:document.getElementById('ow-bhk').value,price:parseInt(price),area,status:'pending',created_at:new Date().toISOString()};
+  const payload={owner_name:name,owner_email:email,owner_phone:phone,type:getAct('ow-type'),purpose:getAct('ow-purpose'),bhk:document.getElementById('ow-bhk').value,price:parseInt(price),area,status:'pending',created_at:new Date().toISOString()};
   fetch(SUPABASE_URL+'/rest/v1/owner_requests',{method:'POST',headers:sbH({'Content-Type':'application/json','Prefer':'return=minimal'}),body:JSON.stringify(payload)}).catch(()=>{});
   _setBtnLoading('ow-submit-btn',false,'Submit for Verification →');
   closeOwnerModal();
