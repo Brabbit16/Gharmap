@@ -844,7 +844,7 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 }
 #tour-pill-nav button:hover{background:rgba(255,255,255,.28);}
 #tour-pill-nav button:disabled{opacity:.25;pointer-events:none;}
-#sp-count{font-size:11px;color:rgba(255,255,255,.45);min-width:28px;text-align:center;}
+#tour-step-count{font-size:11px;color:rgba(255,255,255,.45);min-width:28px;text-align:center;}
 /* Progress dots row */
 #tour-progress{
   display:flex;gap:5px;align-items:center;
@@ -2363,7 +2363,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
       <span id="tour-pill-text"></span>
       <div id="tour-pill-nav">
         <button onclick="spotlightStep(-1)" id="sp-prev">←</button>
-        <span id="sp-count"></span>
+        <span id="tour-step-count"></span>
         <button onclick="spotlightStep(1)" id="sp-next">Next →</button>
       </div>
     </div>
@@ -2477,7 +2477,7 @@ let map=null,cluster=null,communityCluster=null,seekerLayer=null,rentLayer=null;
 let markers=[];
 let activeDetail=null,selectedSlot=null;
 let activeZones=new Set();
-let activeCity=(()=>{try{const s=localStorage.getItem('gm_city');return(s&&['delhi','gurgaon','noida','lucknow'].includes(s))?s:'delhi';}catch(e){return'delhi';}})();
+let activeCity='delhi'; // always open on Delhi
 let savedIds=JSON.parse(localStorage.getItem('gm_saved')||'[]');
 let listingMode='rent';
 let flt={mode:'all',type:'all',bhk:'all',fur:'all',minP:5000,maxP:200000,posted:'all',society:'all'};
@@ -3004,7 +3004,7 @@ function selectCity(cityKey,el){
 function pickCity(cityKey){
   if(!CITY_DATA[cityKey])return;
   activeCity=cityKey;
-  try{localStorage.setItem('gm_city',cityKey);}catch(e){}
+
   // Clear zone state
   activeZones.clear();
   if(_hoodCircle&&map){map.removeLayer(_hoodCircle);_hoodCircle=null;}
@@ -3999,7 +3999,7 @@ function showSpotlightStep(){
   // Update pill
   document.getElementById('tour-pill-num').textContent=_spotlightStep+1;
   document.getElementById('tour-pill-text').textContent=s.ico+' '+s.title;
-  document.getElementById('sp-count').textContent=(_spotlightStep+1)+'/'+steps.length;
+  document.getElementById('tour-step-count').textContent=(_spotlightStep+1)+'/'+steps.length;
   document.getElementById('sp-prev').disabled=_spotlightStep===0;
   document.getElementById('sp-next').textContent=_spotlightStep===steps.length-1?'Done ✓':'Next →';
   // Progress dots
@@ -4251,6 +4251,7 @@ async function loadSheet(){
     LISTINGS.length=0;clean.forEach(p=>LISTINGS.push(p));
     localStorage.setItem('gm_listings_v2',JSON.stringify(clean));
     const sc=document.getElementById('sp-count');if(sc)sc.textContent=LISTINGS.length||'—';
+    updateSplashCount();
     // Update splash activity stats if available
     if(data.stats){
       const v=document.getElementById('sp-act-visits');const d=document.getElementById('sp-act-deals');
@@ -4302,7 +4303,20 @@ async function loadCommunityData(){
     if(Array.isArray(d3))d3.forEach(p=>RENT_PINS.push(p));
     draw();
     buildSearchIndex(); // rebuild with community areas too
+    updateSplashCount(); // update splash with full count
   }catch(e){console.warn('Community data load failed:',e);}
+}
+
+// ══ SPLASH COUNT — combines verified + community + rent pins ══
+function updateSplashCount(){
+  const total=LISTINGS.length+COMMUNITY_LISTINGS.length+RENT_PINS.length;
+  const el=document.getElementById('sp-count');
+  if(el&&el.id==='sp-count'&&!el.closest('#tour-spotlight')){
+    el.textContent=total>0?total.toLocaleString('en-IN'):'—';
+  }
+  // Also update the splash metric specifically
+  const metric=document.querySelector('.sp-metric .sp-metric-val#sp-count');
+  if(metric)metric.textContent=total>0?total.toLocaleString('en-IN'):'—';
 }
 </script>
 <!-- THANK YOU POPUP -->
