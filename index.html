@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://basemaps.cartocdn.com" crossorigin/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <script defer data-domain="gharmap.in" src="https://plausible.io/js/script.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgnmt05eNkoJ2LA7fZphd7yuusIB-ZfZs&libraries=places&callback=initGoogleAutocomplete&loading=async" defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgnmt05eNkoJ2LA7fZphd7yuusIB-ZfZs&libraries=places&callback=initGoogleAutocomplete&loading=async"></script>
 <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" as="script"/>
 <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" as="style"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%232d6a5a'/><path d='M10 32 L32 14 L54 32 Z' fill='white'/><rect x='16' y='30' width='32' height='22' fill='white'/><rect x='28' y='38' width='8' height='14' fill='%232d6a5a'/></svg>">
@@ -4335,44 +4335,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(window.innerWidth<=768)document.body.classList.add('is-mobile');
   window.addEventListener('resize',()=>document.body.classList.toggle('is-mobile',window.innerWidth<=768));
   initMap();
-  // Move zoom control so it doesn't overlap search bar on mobile
-  // ── Google Places Autocomplete widget ──
-  // Runs after Google Maps JS has loaded
-  function initGoogleAutocomplete(){
-    const input=document.getElementById('gm-search-input');
-    if(!input||!window.google)return;
-    const c=CITY_DATA[activeCity]||CITY_DATA.delhi;
-    const ac=new google.maps.places.Autocomplete(input,{
-      componentRestrictions:{country:'in'},
-      fields:['geometry','name','formatted_address'],
-      bounds:new google.maps.LatLngBounds(
-        new google.maps.LatLng(c.lat-0.8,c.lng-0.8),
-        new google.maps.LatLng(c.lat+0.8,c.lng+0.8)
-      ),
-      strictBounds:false,
-    });
-    ac.addListener('place_changed',()=>{
-      const place=ac.getPlace();
-      if(!place.geometry){
-        // User pressed Enter without selecting — run old search
-        onSearch(input.value);
-        return;
-      }
-      const lat=place.geometry.location.lat();
-      const lng=place.geometry.location.lng();
-      const name=place.name||input.value;
-      input.value=name;
-      closeDd();
-      map&&map.flyTo([lat,lng],15,{duration:.6,easeLinearity:.4});
-    });
-    window._gmAC=ac;
-  }
-  // Call once Google is ready
-  if(window.google&&window.google.maps){
-    initGoogleAutocomplete();
-  } else {
-    window.initGoogleAutocomplete=initGoogleAutocomplete;
-  }
   // Mark default city (Delhi) as active and show drop-pin button
   document.querySelectorAll('.gm-city-opt').forEach(b=>b.classList.toggle('active',b.dataset.city==='delhi'));
   renderHoodChips('delhi');
@@ -4421,6 +4383,36 @@ function updateSplashCount(){
   // Also update the splash metric specifically
   const metric=document.querySelector('.sp-metric .sp-metric-val#sp-count');
   if(metric)metric.textContent=total>0?total.toLocaleString('en-IN'):'—';
+}
+
+// ══ GOOGLE PLACES AUTOCOMPLETE — global so Google callback can find it ══
+function initGoogleAutocomplete(){
+  const input=document.getElementById('gm-search-input');
+  if(!input)return;
+  if(!window.google||!window.google.maps||!window.google.maps.places){
+    // Google not ready yet — retry in 500ms
+    setTimeout(initGoogleAutocomplete,500);return;
+  }
+  const c=CITY_DATA[activeCity]||CITY_DATA.delhi;
+  const ac=new google.maps.places.Autocomplete(input,{
+    componentRestrictions:{country:'in'},
+    fields:['geometry','name','formatted_address'],
+    bounds:new google.maps.LatLngBounds(
+      new google.maps.LatLng(c.lat-0.8,c.lng-0.8),
+      new google.maps.LatLng(c.lat+0.8,c.lng+0.8)
+    ),
+    strictBounds:false,
+  });
+  ac.addListener('place_changed',()=>{
+    const place=ac.getPlace();
+    if(!place||!place.geometry){onSearch(input.value);return;}
+    const lat=place.geometry.location.lat();
+    const lng=place.geometry.location.lng();
+    input.value=place.name||input.value;
+    closeDd();
+    map&&map.flyTo([lat,lng],15,{duration:.6,easeLinearity:.4});
+  });
+  window._gmAC=ac;
 }
 </script>
 <!-- THANK YOU POPUP -->
