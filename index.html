@@ -761,7 +761,118 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 .maker-credit{font-size:10px;color:#333;text-align:center;}
 .maker-credit b{color:#444;}
 
-/* ══ TOAST ══ */
+/* ══ TOUR ══ */
+.tour-tabs{display:flex;gap:6px;padding:12px 0 4px;border-bottom:1px solid #f0f0ef;margin-bottom:14px;justify-content:center;}
+.tour-tab{
+  flex:1;padding:8px 6px;border-radius:8px;border:1.5px solid #ebebea;
+  background:transparent;color:#525252;font-size:12px;font-weight:600;
+  font-family:var(--ff);cursor:pointer;transition:all .15s;text-align:center;
+}
+.tour-tab:hover{border-color:#2d7a4f;color:#2d7a4f;}
+.tour-tab.on{background:#2d7a4f;border-color:#2d7a4f;color:#fff;}
+.tour-steps{min-height:180px;}
+.tour-step{display:none;animation:fadeUp .25s ease both;text-align:center;}
+.tour-step.on{display:block;}
+.tour-step-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:50%;
+  background:#2d7a4f;color:#fff;font-size:12px;font-weight:700;
+  margin-bottom:10px;
+}
+.tour-step-ico{font-size:28px;margin-bottom:8px;}
+.tour-step-title{font-size:16px;font-weight:700;color:#0a0a0a;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.tour-step-desc{font-size:13px;color:#525252;line-height:1.65;margin-bottom:10px;}
+.tour-step-highlight{display:inline-block;margin:0 auto;
+  display:inline-block;background:#f0fdf4;border:1.5px solid #2d7a4f;
+  border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700;
+  color:#2d7a4f;cursor:pointer;transition:all .15s;
+}
+.tour-step-highlight:hover{background:#2d7a4f;color:#fff;}
+.tour-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0 10px;}
+.tour-prev,.tour-next{
+  padding:7px 14px;border-radius:8px;border:1.5px solid #ebebea;
+  background:transparent;color:#525252;font-size:12px;font-weight:600;
+  font-family:var(--ff);cursor:pointer;transition:all .15s;
+}
+.tour-prev:hover,.tour-next:hover{border-color:#2d7a4f;color:#2d7a4f;}
+.tour-prev:disabled,.tour-next:disabled{opacity:.3;pointer-events:none;}
+.tour-dots{display:flex;gap:5px;align-items:center;}
+.tour-dot{width:6px;height:6px;border-radius:50%;background:#e5e5e5;transition:all .2s;}
+.tour-dot.on{background:#2d7a4f;width:16px;border-radius:4px;}
+
+/* ── SPOTLIGHT OVERLAY ── */
+#tour-spotlight{position:fixed;inset:0;z-index:9998;pointer-events:none;}
+#tour-spotlight.active{pointer-events:all;}
+#tour-spotlight-bg{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,.6);
+  transition:all .3s;
+}
+/* ── TOUR PILL ── */
+#tour-pill{
+  position:fixed;
+  top:76px;
+  left:0;right:0;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  z-index:9999;
+  animation:fadeUp .2s ease both;
+  pointer-events:all;
+}
+#tour-pill-main{
+  background:#0a0a0a;
+  color:#fff;
+  border-radius:100px;
+  padding:10px 18px;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 4px 24px rgba(0,0,0,.5);
+  max-width:calc(100vw - 32px);
+}
+#tour-pill-num{
+  background:#2d7a4f;color:#fff;
+  border-radius:50%;width:22px;height:22px;
+  font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+#tour-pill-text{font-size:13px;font-weight:600;color:#fff;}
+#tour-pill-nav{display:flex;align-items:center;gap:8px;}
+#tour-pill-nav button{
+  background:rgba(255,255,255,.15);border:none;color:#fff;
+  border-radius:100px;padding:5px 12px;font-size:12px;
+  font-weight:600;cursor:pointer;font-family:var(--ff);
+  transition:background .15s;white-space:nowrap;
+}
+#tour-pill-nav button:hover{background:rgba(255,255,255,.28);}
+#tour-pill-nav button:disabled{opacity:.25;pointer-events:none;}
+#sp-count{font-size:11px;color:rgba(255,255,255,.45);min-width:28px;text-align:center;}
+/* Progress dots row */
+#tour-progress{
+  display:flex;gap:5px;align-items:center;
+}
+.tp-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:rgba(255,255,255,.3);
+  transition:all .2s;
+}
+.tp-dot.on{background:#2d7a4f;width:14px;border-radius:4px;}
+/* Skip link below dots */
+#tour-skip{
+  background:none;border:none;color:rgba(255,255,255,.45);
+  font-size:11px;cursor:pointer;font-family:var(--ff);padding:0;
+  margin-top:-4px;
+}
+#tour-skip:hover{color:#fff;}
+/* Spotlight cutout on highlighted element */
+.tour-highlight-ring{
+  position:fixed;
+  border-radius:12px;
+  box-shadow:0 0 0 4px #2d7a4f,0 0 0 9999px rgba(0,0,0,.6);
+  pointer-events:none;
+  z-index:9997;
+  transition:all .35s cubic-bezier(.22,.61,.36,1);
+  animation:ringPulse 2s ease infinite;
+}
+@keyframes ringPulse{0%,100%{box-shadow:0 0 0 4px #2d7a4f,0 0 0 9999px rgba(0,0,0,.6);}50%{box-shadow:0 0 0 7px #2d7a4f,0 0 0 9999px rgba(0,0,0,.6);}}
 #toast{position:fixed;bottom:calc(110px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#151515;border:1px solid #252525;color:#eee;padding:9px 18px;border-radius:20px;font-size:12px;z-index:3000;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
 #toast.show{opacity:1;}
 
@@ -798,7 +909,7 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 .btn-sec{width:100%;padding:10px;border-radius:10px;border:1px solid #252525;background:transparent;color:#888;font-size:13px;cursor:pointer;font-family:var(--ff);margin-top:8px;}
 .dark-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);align-items:center;justify-content:flex-end;padding:12px;}
 .dark-overlay.open{display:flex;}
-.dark-modal,.guide-modal{background:#111;border:1px solid #1e1e1e;border-radius:14px;width:420px;max-width:calc(100vw - 24px);padding:16px 18px 20px;max-height:88vh;overflow-y:auto;position:relative;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;}
+.dark-modal,.guide-modal{background:#111;border:1px solid #1e1e1e;border-radius:14px;width:420px;max-width:calc(100vw - 24px);padding:16px 18px 20px;max-height:88vh;overflow-y:auto;position:relative;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;text-align:center;}
 .dark-modal::-webkit-scrollbar,.guide-modal::-webkit-scrollbar{width:3px;}
 .dark-modal::-webkit-scrollbar-thumb,.guide-modal::-webkit-scrollbar-thumb{background:#333;border-radius:4px;}
 .dm-close{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.08);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#888;cursor:pointer;}
@@ -1344,7 +1455,7 @@ body{background:#fafafa;color:#0a0a0a;}
 
 /* ── DARK MODAL (Privacy/T&C/How) ── */
 .dark-overlay{background:rgba(10,10,10,.45)!important;backdrop-filter:blur(6px)!important;}
-.dark-modal,.guide-modal{background:#ffffff!important;color:#0a0a0a!important;border:1px solid #ebebea!important;box-shadow:0 20px 50px rgba(10,10,10,.20)!important;}
+.dark-modal,.guide-modal{background:#ffffff!important;color:#0a0a0a!important;border:1px solid #ebebea!important;box-shadow:0 20px 50px rgba(10,10,10,.20)!important;text-align:center!important;}
 .dm-title,.guide-title{color:#0a0a0a!important;font-family:var(--ff-display)!important;font-weight:600!important;letter-spacing:-.5px!important;}
 .dm-date,.guide-sub{color:#8a8a8a!important;}
 .dm-body,.guide-step-desc{color:#0a0a0a!important;}
@@ -1470,94 +1581,116 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 .gf-apply:hover{background:#262626 !important;}
 
 /* ════════════════════════════════════════════
-   MAP PIN SYSTEM (v6 — May 2026)
-   Lightweight pins. Price-first. Unified visual language.
+   MAP PIN SYSTEM — Distinct color coding
+   Green   = Verified listing (Lucknow)
+   Amber   = Community listing (someone listed)
+   Blue    = Seeker (someone looking)
+   Purple  = Rent share (anonymous data)
    ════════════════════════════════════════════ */
 .gm-pin{
-  display:inline-block;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
   padding:4px 9px;
-  border-radius:6px;
+  border-radius:100px;
   font-family:var(--ff),sans-serif;
-  font-size:12px;
+  font-size:11px;
   font-weight:700;
   white-space:nowrap;
   cursor:pointer;
   line-height:1.2;
-  box-shadow:0 1px 3px rgba(10,10,10,.20);
+  box-shadow:0 2px 6px rgba(10,10,10,.25);
   font-variant-numeric:tabular-nums;
-  transition:transform .12s ease;
+  transition:transform .12s ease,box-shadow .12s ease;
   border:1.5px solid;
 }
-.gm-pin:hover{transform:scale(1.06);z-index:1000;}
+.gm-pin:hover{transform:scale(1.08);box-shadow:0 4px 12px rgba(10,10,10,.3);z-index:1000;}
 
-/* Verified — color by mode (jade=rent, cyan=buy) */
+/* ── VERIFIED — solid green pill with checkmark ── */
 .gm-pin-verified{
   background:#2d7a4f;
   border-color:#245f42;
   color:#fff;
 }
+.gm-pin-verified::before{content:'✓';font-size:9px;opacity:.9;}
 .gm-pin-verified.gm-pin-rent-listing{
   background:#2d7a4f;border-color:#245f42;color:#fff;
 }
 .gm-pin-verified.gm-pin-buy{
-  background:#06b6d4;border-color:#0e7490;color:#fff;
+  background:#0891b2;border-color:#0e7490;color:#fff;
 }
+.gm-pin-verified.gm-pin-buy::before{content:'₹';font-size:9px;opacity:.9;}
 .gm-pin-verified.is-rented{
-  background:#fafafa;
+  background:#e5e5e5;
   border-color:#a3a3a3;
   color:#737373;
   text-decoration:line-through;
   text-decoration-thickness:1.5px;
 }
+.gm-pin-verified.is-rented::before{content:'';display:none;}
 
-/* Community — warm amber */
+/* ── COMMUNITY — amber with house icon ── */
 .gm-pin-community{
-  background:#fff;
+  background:#fff7ed;
   border-color:#d97706;
   color:#92400e;
   font-size:10px;
-  padding:3px 7px;
-  font-weight:600;
+  padding:4px 8px;
+  font-weight:700;
+  box-shadow:0 2px 6px rgba(217,119,6,.25);
 }
+.gm-pin-community::before{content:'🏠';font-size:9px;}
 
-/* Seeker — small blue dot, no text */
+/* ── SEEKER — blue pill with search icon ── */
 .gm-pin-seeker{
-  width:14px;height:14px;
-  background:#2563eb;
-  border:2px solid #fff;
-  border-radius:50%;
-  padding:0;
-  box-shadow:0 1px 3px rgba(10,10,10,.30);
+  background:#eff6ff;
+  border-color:#2563eb;
+  color:#1d4ed8;
+  font-size:10px;
+  padding:4px 8px;
+  font-weight:700;
+  box-shadow:0 2px 6px rgba(37,99,235,.25);
+  border-radius:100px;
   cursor:pointer;
   transition:transform .12s ease;
+  white-space:nowrap;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  line-height:1.2;
 }
-.gm-pin-seeker:hover{transform:scale(1.3);}
+.gm-pin-seeker::before{content:'🔍';font-size:9px;}
+.gm-pin-seeker:hover{transform:scale(1.08);}
 
-/* Rent share — muted grey pill, smaller */
+/* ── RENT SHARE — grey pill with data icon ── */
 .gm-pin-rent{
-  background:#fff;
-  border:1px solid #d4d4d4;
+  background:#fafafa;
+  border:1.5px solid #a3a3a3;
   color:#525252;
-  font-size:11px;
+  font-size:10px;
   font-weight:600;
   padding:3px 8px;
   border-radius:100px;
-  box-shadow:0 1px 2px rgba(10,10,10,.10);
+  box-shadow:0 1px 3px rgba(10,10,10,.12);
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
 }
+.gm-pin-rent::before{content:'·';font-size:14px;color:#a3a3a3;line-height:0;}
 
 /* CLUSTER icons */
 .gm-cluster{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:#fff;
-  border-radius:8px;
-  padding:4px 8px;
+  border-radius:10px;
+  padding:4px 10px;
   text-align:center;line-height:1.1;
   box-shadow:0 2px 8px rgba(10,10,10,.18);
-  border:1.5px solid;
+  border:2px solid;
   font-family:var(--ff),sans-serif;
 }
 .gm-cluster-n{
-  font-size:13px;font-weight:700;line-height:1.05;
+  font-size:13px;font-weight:800;line-height:1.05;
   font-variant-numeric:tabular-nums;
 }
 .gm-cluster-avg{
@@ -1565,14 +1698,14 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
   font-variant-numeric:tabular-nums;
   opacity:.85;
 }
-.gm-cluster-verified{border-color:#2d7a4f;color:#245f42;}
-.gm-cluster-community{border-color:#d97706;color:#92400e;}
-.gm-cluster-seeker{border-color:#2563eb;color:#1e40af;}
-.gm-cluster-rent{border-color:#a3a3a3;color:#525252;}
+.gm-cluster-verified{border-color:#2d7a4f;color:#245f42;background:#f0fdf4;}
+.gm-cluster-community{border-color:#d97706;color:#92400e;background:#fff7ed;}
+.gm-cluster-seeker{border-color:#2563eb;color:#1e40af;background:#eff6ff;}
+.gm-cluster-rent{border-color:#a3a3a3;color:#525252;background:#fafafa;}
 
-/* Dark mode pins for satellite — keep readable on dark imagery */
+/* Satellite mode — keep readable on dark tiles */
 .leaflet-container.gm-sat-mode .gm-pin-verified{
-  box-shadow:0 1px 3px rgba(0,0,0,.6);
+  box-shadow:0 2px 6px rgba(0,0,0,.5);
 }
 </style>
 </head>
@@ -1617,7 +1750,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
         <span>Explore the map</span>
         <span class="sp-btn-shortcut">↵</span>
       </button>
-      <button class="sp-btn-how" onclick="openHowModal()">→ How it works</button>
+      <button class="sp-btn-how" onclick="enterApp();setTimeout(startQuickTour,800)">→ How it works</button>
+      
 
     </div>
     <div class="sp-founders">
@@ -1691,7 +1825,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 
   <div id="gm-right-toolbar">
     <button class="gm-rt-btn" onclick="toggleSatellite()"><span class="gm-rt-label">Satellite</span>🛰</button>
-    <button class="gm-rt-btn" onclick="nearMe()"><span class="gm-rt-label">Near Me</span>📍</button>
+    <button class="gm-rt-btn" id="near-me-btn" onclick="nearMe()"><span class="gm-rt-label">Near Me</span>📍</button>
   </div>
 
   <div id="gm-stats-row">
@@ -1752,7 +1886,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
       <div class="menu-item-ico">🔖</div>
       <div><div class="menu-item-text">Saved Properties</div><div class="menu-item-sub" id="saved-menu-count">0 saved</div></div>
     </div>
-    <div class="menu-item" onclick="closeMenuSheet();openHowModal()">
+    <div class="menu-item" onclick="closeMenuSheet();startQuickTour()">
       <div class="menu-item-ico">❓</div>
       <div><div class="menu-item-text">How it works</div><div class="menu-item-sub">4 step guide</div></div>
     </div>
@@ -1874,7 +2008,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
   <!-- PIN LEGEND -->
   <div id="pin-legend">
     <div class="pl-item"><span class="pl-dot" style="background:#2d7a4f;"></span>Verified listing</div>
-    <div class="pl-item"><span class="pl-dot" style="background:#5b8ed4;"></span>Looking for flat</div>
+    <div class="pl-item"><span class="pl-dot" style="background:#2563eb;"></span>Looking for flat</div>
+  </div>
   </div>
 
   <!-- DROP PIN BUTTON — shows on Delhi/Gurgaon -->
@@ -1898,11 +2033,6 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
           <div class="dps-type-ico">💰</div>
           <div class="dps-type-lbl">What I pay</div>
           <div class="dps-type-desc">Share rent anonymously</div>
-        </button>
-        <button class="dps-type-btn" data-ptype="seeker" onclick="selectPinType('seeker',this)">
-          <div class="dps-type-ico">🔍</div>
-          <div class="dps-type-lbl">Find a Flat</div>
-          <div class="dps-type-desc">I am looking for a flat</div>
         </button>
         <button class="dps-type-btn" data-ptype="listing" onclick="selectPinType('listing',this)">
           <div class="dps-type-ico">🏠</div>
@@ -1953,8 +2083,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
         <input class="dps-input" id="dps-seek-area" type="text" placeholder="e.g. Dwarka, Sector 6"/>
         <label class="dps-lbl">Your Name</label>
         <input class="dps-input" id="dps-seek-name" type="text" placeholder="Your name"/>
-        <label class="dps-lbl">Email — for match notifications</label>
-        <input class="dps-input" id="dps-seek-email" type="email" placeholder="you@email.com"/>
+        <label class="dps-lbl">Email <span style="font-weight:400;opacity:.6;text-transform:none;letter-spacing:0;">(optional — get notified on match)</span></label>
+        <input class="dps-input" id="dps-seek-email" type="email" placeholder="you@email.com (optional)"/>
         <div class="dps-note">We scan daily within 3km of your pin. Email-only — no calls unless you ask. Free, no spam.</div>
         <button class="dps-submit" id="dps-seeker-btn" onclick="submitSeekerPin()">Find Me a Flat →</button>
         <button class="dps-cancel" onclick="closeDropPin()">Cancel</button>
@@ -2199,18 +2329,42 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
     <div class="guide-header">
       <div class="guide-logo">Ghar<span>Map</span></div>
       <div class="guide-title">How it works</div>
-      <div class="guide-sub">From map to move-in, in 4 simple steps.</div>
+      <div class="guide-sub">Pick what you want to do</div>
     </div>
-    <div class="guide-steps">
-      <div class="guide-step"><div class="guide-step-left"><div class="guide-step-num">1</div><div class="guide-step-line"></div></div><div class="guide-step-card"><div class="guide-step-ico">🗺</div><div class="guide-step-title">Browse the map</div><div class="guide-step-desc">Every pin is a real rent shared by an actual renter, or a verified listing. Use the <b>area chips</b> to zoom in. Filter by BHK and budget.</div><div class="guide-step-tip">💡 Tap a chip to zoom into that area.</div></div></div>
-      <div class="guide-step"><div class="guide-step-left"><div class="guide-step-num">2</div><div class="guide-step-line"></div></div><div class="guide-step-card"><div class="guide-step-ico">🏠</div><div class="guide-step-title">Tap any pin for details</div><div class="guide-step-desc">See real rent, total monthly cost, building details, and what others in the area pay. Use this to <b>negotiate confidently</b>.</div><div class="guide-step-tip">💡 Median rent data helps you spot inflated quotes.</div></div></div>
-      <div class="guide-step"><div class="guide-step-left"><div class="guide-step-num">3</div><div class="guide-step-line"></div></div><div class="guide-step-card"><div class="guide-step-ico">📅</div><div class="guide-step-title">Book a visit (Lucknow) or contact owner</div><div class="guide-step-desc">For verified listings, pick a slot — our team confirms within 2 hours via WhatsApp. For community listings, we connect you to the owner. Always free.</div><div class="guide-step-tip">💡 <b>No surprise charges.</b> Ever.</div></div></div>
-      <div class="guide-step last"><div class="guide-step-left"><div class="guide-step-num">4</div></div><div class="guide-step-card"><div class="guide-step-ico">🤝</div><div class="guide-step-title">Drop your own pin</div><div class="guide-step-desc">Help the next renter. Share your rent anonymously — it takes 20 seconds, no signup. The more pins, the clearer the picture for everyone.</div><div class="guide-step-tip">💡 Can't find the right place? Tap <b>Find me a flat</b> — we source from our network.</div></div></div>
+    <!-- User type tabs -->
+    <div class="tour-tabs">
+      <button class="tour-tab on" onclick="setTourType('list',this)">🏠 List my flat</button>
+      <button class="tour-tab" onclick="setTourType('share',this)">💰 Share rent</button>
+      <button class="tour-tab" onclick="setTourType('find',this)">🔍 Find a flat</button>
     </div>
-    <div class="guide-footer">
-      <button class="guide-cta" onclick="closeHowModal()">Got it — Start Exploring 🗺</button>
-      <div class="guide-footer-note">📞 Have questions? WhatsApp our team anytime.</div>
+    <!-- Steps container -->
+    <div class="tour-steps" id="tour-steps"></div>
+    <!-- Navigation -->
+    <div class="tour-nav">
+      <button class="tour-prev" id="tour-prev" onclick="tourStep(-1)">← Back</button>
+      <div class="tour-dots" id="tour-dots"></div>
+      <button class="tour-next" id="tour-next" onclick="tourStep(1)">Next →</button>
     </div>
+    <button class="guide-cta" id="tour-cta" onclick="startTourOnMap()">Show me on the map →</button>
+    <div class="guide-footer-note" style="text-align:center;margin-top:8px;font-size:12px;color:#737373;">Questions? <a href="https://wa.me/919336297656" target="_blank" style="color:#2d7a4f;font-weight:600;">WhatsApp us anytime</a></div>
+  </div>
+</div>
+
+<!-- TOUR SPOTLIGHT OVERLAY -->
+<div id="tour-spotlight" style="display:none;">
+  <div id="tour-spotlight-bg"></div>
+  <div id="tour-pill">
+    <div id="tour-pill-main">
+      <span id="tour-pill-num"></span>
+      <span id="tour-pill-text"></span>
+      <div id="tour-pill-nav">
+        <button onclick="spotlightStep(-1)" id="sp-prev">←</button>
+        <span id="sp-count"></span>
+        <button onclick="spotlightStep(1)" id="sp-next">Next →</button>
+      </div>
+    </div>
+    <div id="tour-progress"></div>
+    <button onclick="endTour()" id="tour-skip">Skip tour</button>
   </div>
 </div>
 
@@ -2263,9 +2417,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 // ══ CITY DATA ══
 const CITY_DATA={
   lucknow:{
-    name:'Lucknow',lat:26.8467,lng:80.9462,zoom:13,verified:true,
+    name:'Lucknow',lat:26.8467,lng:80.9462,zoom:15,verified:true,
     zones:{
-      all:{name:'All areas',lat:26.8467,lng:80.9462,zoom:13},
+      all:{name:'All areas',lat:26.8467,lng:80.9462,zoom:15},
       gomti:{name:'Gomti Nagar',lat:26.8650,lng:80.9962,zoom:14,radius:4000,color:'#2d7a4f'},
       hazrat:{name:'Hazratganj',lat:26.8530,lng:80.9400,zoom:15,radius:2400,color:'#c4943a'},
       alambagh:{name:'Alambagh',lat:26.8280,lng:80.9100,zoom:14,radius:3500,color:'#5b8ed4'},
@@ -2275,9 +2429,9 @@ const CITY_DATA={
     }
   },
   delhi:{
-    name:'Delhi',lat:28.6139,lng:77.2090,zoom:12,verified:false,
+    name:'Delhi',lat:28.6139,lng:77.2090,zoom:14,verified:false,
     zones:{
-      all:{name:'All Delhi',lat:28.6139,lng:77.2090,zoom:12},
+      all:{name:'All Delhi',lat:28.6139,lng:77.2090,zoom:14},
       dwarka:{name:'Dwarka',lat:28.5921,lng:77.0460,zoom:14,radius:4500,color:'#2d7a4f'},
       laxmi:{name:'Laxmi Nagar',lat:28.6317,lng:77.2769,zoom:14,radius:3000,color:'#c4943a'},
       rohini:{name:'Rohini',lat:28.7041,lng:77.1025,zoom:14,radius:5000,color:'#5b8ed4'},
@@ -2287,9 +2441,9 @@ const CITY_DATA={
     }
   },
   gurgaon:{
-    name:'Gurgaon',lat:28.4595,lng:77.0266,zoom:13,verified:false,
+    name:'Gurgaon',lat:28.4595,lng:77.0266,zoom:14,verified:false,
     zones:{
-      all:{name:'All Gurgaon',lat:28.4595,lng:77.0266,zoom:13},
+      all:{name:'All Gurgaon',lat:28.4595,lng:77.0266,zoom:14},
       cyber:{name:'Cyber City',lat:28.4965,lng:77.0890,zoom:14,radius:3000,color:'#2d7a4f'},
       sohna:{name:'Sohna Road',lat:28.4182,lng:77.0340,zoom:14,radius:4000,color:'#c4943a'},
       golf:{name:'Golf Course',lat:28.4482,lng:77.1025,zoom:14,radius:3500,color:'#5b8ed4'},
@@ -2298,14 +2452,14 @@ const CITY_DATA={
     }
   },
   noida:{
-    name:'Noida',lat:28.5355,lng:77.3910,zoom:12,verified:false,
+    name:'Noida',lat:28.5355,lng:77.3910,zoom:14,verified:false,
     zones:{
-      all:{name:'All Noida',lat:28.5355,lng:77.3910,zoom:12},
+      all:{name:'All Noida',lat:28.5355,lng:77.3910,zoom:14},
       sec18:{name:'Sector 18',lat:28.5707,lng:77.3260,zoom:15,radius:2000,color:'#2d7a4f'},
       sec62:{name:'Sector 62',lat:28.6273,lng:77.3713,zoom:14,radius:2500,color:'#d97706'},
       sec137:{name:'Sector 137',lat:28.5232,lng:77.4078,zoom:14,radius:2500,color:'#2563eb'},
       indirapuram:{name:'Indirapuram',lat:28.6448,lng:77.3729,zoom:14,radius:3500,color:'#8b5cf6'},
-      greater_noida:{name:'Gr. Noida',lat:28.4744,lng:77.5040,zoom:12,radius:6000,color:'#dc2626'},
+      greater_noida:{name:'Gr. Noida',lat:28.4744,lng:77.5040,zoom:14,radius:6000,color:'#dc2626'},
       noida_expy:{name:'Noida Expressway',lat:28.5045,lng:77.4226,zoom:13,radius:4500,color:'#2d7a4f'}
     }
   },
@@ -2344,7 +2498,7 @@ function enterApp(){
   setTimeout(()=>{
     sp.style.display='none';
     if(map)map.invalidateSize(true);
-    if(!localStorage.getItem('gm_guide_seen'))setTimeout(()=>openHowModal(),500);
+    if(!localStorage.getItem('gm_guide_seen'))setTimeout(()=>startQuickTour(),1200);
     showMakerCard();
     // FIX: start activity toasts only after splash is gone
   
@@ -2366,7 +2520,20 @@ function initMap(){
   if(map)return;
   const isMob=window.innerWidth<768;
   // No maxBounds — map works across all cities now
-  map=L.map('map',{zoomControl:true,preferCanvas:true,zoomSnap:.5,wheelDebounceTime:60}).setView([28.6139,77.2090],isMob?12:11);
+  map=L.map('map',{zoomControl:true,preferCanvas:true,zoomSnap:.5,wheelDebounceTime:60}).setView([28.6139,77.2090],14);
+  // Try GPS first — zoom to user's neighbourhood. Fallback stays on Delhi zoom 14.
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      pos=>{
+        const{latitude:lat,longitude:lng}=pos.coords;
+        // Only use location if within NCR / Lucknow bounds
+        const inRange=(lat>26.5&&lat<29.5&&lng>76.5&&lng<78.5);
+        if(inRange&&map)map.setView([lat,lng],15,{animate:false});
+      },
+      ()=>{}, // denied — stay on Delhi default
+      {timeout:4000,maximumAge:60000}
+    );
+  }
   // CARTO Positron — lighter, calmer basemap. Pins are the hero.
   tileNormal=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19,detectRetina:false,updateWhenIdle:true,updateWhenZooming:false,keepBuffer:2}).addTo(map);
   tileSat=L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{subdomains:['0','1','2','3'],maxZoom:21,detectRetina:false,updateWhenIdle:true});
@@ -2476,10 +2643,10 @@ function mkCommunityIcon(price,area,bhk){
 }
 
 function mkSeekerIcon(bhk,budgetMax){
-  // Seeker pin — small dot, no text. Tap to see details.
+  const label=(bhk&&bhk!=='all'?bhk+' BHK':'Flat')+' · ≤'+fmtRent(budgetMax);
   return L.divIcon({className:'',
-    html:`<div class="gm-pin gm-pin-seeker" title="${bhk||''} · ≤${fmtRent(budgetMax)||''}"></div>`,
-    iconSize:[16,16],iconAnchor:[8,8]
+    html:`<div class="gm-pin gm-pin-seeker">${label}</div>`,
+    iconSize:[null,24],iconAnchor:[40,24],popupAnchor:[0,-26]
   });
 }
 
@@ -3012,7 +3179,7 @@ async function submitSeekerPin(){
   const budgetMax=parseInt(document.getElementById('dps-budget-max').value)||200000;
   const bhk=getDpsChip('dps-seek-bhk');
   if(!name){showToast('Please enter your name');return;}
-  if(!email||!email.includes('@')){showToast('Please enter a valid email');return;}
+  if(email&&!email.includes('@')){showToast('Please enter a valid email address');return;}
   const btn=document.getElementById('dps-seeker-btn');
   btn.disabled=true;btn.textContent='Saving…';
   const payload={
@@ -3736,8 +3903,171 @@ function _onListPinPicked(latlng){
   showToast('📍 Location set. Fill in your flat details.',3500);
   setTimeout(()=>openOwnerModal(),250);
 }
-function openHowModal(){closeAll('how');document.getElementById('how-modal').classList.add('open');}
-function closeHowModal(){document.getElementById('how-modal').classList.remove('open');localStorage.setItem('gm_guide_seen','1');}
+// ══ INTERACTIVE TOUR ══
+const TOUR_CONTENT={
+  find:[
+    {ico:'🗺',title:'Browse real rents on the map',desc:'Every pin shows what someone actually pays — not what an owner quotes. Green = verified by our team. Amber = community listed.',highlight:null,tip:'No signup needed to browse'},
+    {ico:'🔍',title:'Search your area',desc:'Type any area, colony, sector or landmark. Tap a result to jump there on the map instantly.',highlight:'#gm-search-input',tip:'Try "Dwarka" or "Cyber City" or "Sector 44"'},
+    {ico:'📞',title:'Tell us what you need',desc:'Tap "Find me a flat" below — fill in your BHK and budget. Our team calls you personally within 24 hours and matches you from our network.',highlight:'#talk-btn',tip:'Free. No fees. Ever.'},
+    {ico:'🤝',title:'We handle the rest',desc:'We shortlist properties, arrange visits and stay with you until you move in. Verified Lucknow listings include a free site visit.',highlight:null,tip:'Always free for tenants'},
+  ],
+  list:[
+    {ico:'📍',title:'Tap + Drop a Pin',desc:'The "+ Drop a Pin" button is on the map for Delhi, Gurgaon and Noida. Tap it, then tap your property location on the map.',highlight:'#drop-pin-btn',tip:'Only takes 30 seconds'},
+    {ico:'🏠',title:'Fill in your flat details',desc:'Choose "List a Flat" — enter BHK, rent, furnishing and your WhatsApp number. Your number is never shown publicly.',highlight:null,tip:'Your contact stays private until someone is interested'},
+    {ico:'⚡',title:'Goes live instantly',desc:'Your listing appears on the map immediately. People looking in your area can see it right away.',highlight:null,tip:'No approval needed for community listings'},
+    {ico:'💬',title:'Interested people contact you',desc:'When someone is interested, they contact you directly on WhatsApp. No middlemen, no commission, no fees.',highlight:null,tip:'Direct contact · Zero fees'},
+  ],
+  share:[
+    {ico:'📍',title:'Tap + Drop a Pin',desc:'Tap the "+ Drop a Pin" button on the map, then tap where you live on the map to set your location.',highlight:'#drop-pin-btn',tip:'Works in Delhi, Gurgaon, Noida and Lucknow'},
+    {ico:'🔒',title:'Choose "What I pay"',desc:'Select the "What I pay" tab. Enter what you actually pay — just the number. No name, no phone, no email needed. 100% anonymous.',highlight:null,tip:'We never ask who you are'},
+    {ico:'🤝',title:'Help your neighbours negotiate',desc:'Your data point joins others in your area. The next person can see the real rent range and negotiate confidently.',highlight:null,tip:'Takes 20 seconds · No signup'},
+    {ico:'📊',title:'The map gets smarter',desc:'Every pin makes the map more accurate. When enough people share, we show the real rent range per area — making inflated quotes obvious.',highlight:null,tip:'More pins = better map for everyone'},
+  ]
+};
+
+let _tourType='list';
+let _tourStep=0;
+let _spotlightStep=0;
+let _spotlightSteps=[];
+let _highlightEl=null;
+
+function setTourType(type,el){
+  _tourType=type;_tourStep=0;
+  document.querySelectorAll('.tour-tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  renderTourSteps();
+}
+
+function renderTourSteps(){
+  const steps=TOUR_CONTENT[_tourType];
+  const container=document.getElementById('tour-steps');
+  container.innerHTML=steps.map((s,i)=>`
+    <div class="tour-step${i===_tourStep?' on':''}" id="ts-${i}">
+      <div class="tour-step-ico">${s.ico}</div>
+      <div class="tour-step-title">
+        <span class="tour-step-num">${i+1}</span> ${s.title}
+      </div>
+      <div class="tour-step-desc">${s.desc}</div>
+      ${s.highlight?`<span class="tour-step-highlight" onclick="highlightElement('${s.highlight}')">Show me on map →</span>`:''}
+    </div>
+  `).join('');
+  // Dots
+  document.getElementById('tour-dots').innerHTML=steps.map((_,i)=>`<div class="tour-dot${i===_tourStep?' on':''}"></div>`).join('');
+  // Nav buttons
+  document.getElementById('tour-prev').disabled=_tourStep===0;
+  document.getElementById('tour-next').disabled=_tourStep===steps.length-1;
+  document.getElementById('tour-next').textContent=_tourStep===steps.length-1?'Done ✓':'Next →';
+  document.getElementById('tour-cta').textContent=_tourType==='find'?'Find me a flat →':_tourType==='list'?'Drop a Pin now →':'Share my rent →';
+}
+
+function tourStep(dir){
+  const steps=TOUR_CONTENT[_tourType];
+  _tourStep=Math.max(0,Math.min(steps.length-1,_tourStep+dir));
+  if(_tourStep===steps.length-1&&dir===1){
+    // Last step — change next to done
+  }
+  renderTourSteps();
+}
+
+function startTourOnMap(){
+  closeHowModal();
+  const steps=TOUR_CONTENT[_tourType].filter(s=>s.highlight);
+  if(!steps.length){
+    // No highlights — just close and let them explore
+    if(_tourType==='list')openDropPin();
+    else if(_tourType==='find')document.getElementById('talk-btn')?.scrollIntoView();
+    return;
+  }
+  // Start spotlight tour
+  _spotlightSteps=TOUR_CONTENT[_tourType];
+  _spotlightStep=0;
+  document.getElementById('tour-spotlight').classList.add('active');
+  document.getElementById('tour-spotlight').style.display='block';
+  showSpotlightStep();}
+
+function showSpotlightStep(){
+  const steps=_spotlightSteps;
+  if(_spotlightStep>=steps.length){endTour();return;}
+  const s=steps[_spotlightStep];
+  // Update pill
+  document.getElementById('tour-pill-num').textContent=_spotlightStep+1;
+  document.getElementById('tour-pill-text').textContent=s.ico+' '+s.title;
+  document.getElementById('sp-count').textContent=(_spotlightStep+1)+'/'+steps.length;
+  document.getElementById('sp-prev').disabled=_spotlightStep===0;
+  document.getElementById('sp-next').textContent=_spotlightStep===steps.length-1?'Done ✓':'Next →';
+  // Progress dots
+  document.getElementById('tour-progress').innerHTML=
+    steps.map((_,i)=>`<div class="tp-dot${i===_spotlightStep?' on':''}"></div>`).join('');
+  // Remove old ring
+  document.querySelectorAll('.tour-highlight-ring').forEach(e=>e.remove());
+  // Show ring on element
+  if(s.highlight){
+    const el=document.querySelector(s.highlight);
+    if(el){
+      const r=el.getBoundingClientRect();
+      const ring=document.createElement('div');
+      ring.className='tour-highlight-ring';
+      ring.style.cssText=`left:${r.left-6}px;top:${r.top-6}px;width:${r.width+12}px;height:${r.height+12}px;`;
+      document.body.appendChild(ring);
+    }
+  }
+}
+
+function spotlightStep(dir){
+  _spotlightStep=Math.max(0,Math.min(_spotlightSteps.length-1,_spotlightStep+dir));
+  if(dir===1&&_spotlightStep===_spotlightSteps.length-1&&document.getElementById('sp-next').textContent==='Done ✓'){
+    endTour();return;
+  }
+  showSpotlightStep();
+}
+
+function endTour(){
+  document.getElementById('tour-spotlight').style.display='none';
+  document.getElementById('tour-spotlight').classList.remove('active');
+  document.querySelectorAll('.tour-highlight-ring').forEach(e=>e.remove());
+  if(_tourType==='find'){setTimeout(()=>{closeAll(null);openMatchMe();},300);}
+  else if(_tourType==='list')setTimeout(()=>openDropPin(),300);
+  else if(_tourType==='share'){
+    setTimeout(()=>{
+      openDropPin();
+      // Pre-select the Share Rent tab after drop pin opens
+      setTimeout(()=>selectPinType('rent',document.querySelector('.dps-type-btn[data-ptype="rent"]')),400);
+    },300);
+  }
+}
+
+function highlightElement(sel){
+  closeHowModal();
+  const el=document.querySelector(sel);
+  if(!el)return;
+  const ring=document.createElement('div');
+  ring.className='tour-highlight-ring';
+  const r=el.getBoundingClientRect();
+  ring.style.cssText=`left:${r.left-6}px;top:${r.top-6}px;width:${r.width+12}px;height:${r.height+12}px;`;
+  document.body.appendChild(ring);
+  setTimeout(()=>ring.remove(),2500);
+  showToast('This is the '+el.id.replace(/-/g,' '));
+}
+
+// ══ QUICK TOUR — full product walkthrough ══
+function startQuickTour(){
+  localStorage.setItem('gm_guide_seen','1');
+  _spotlightSteps=[
+    {ico:'🔍', title:'Search any area, colony, sector or landmark',          highlight:'#gm-search-input'},
+    {ico:'📍', title:'Drop a Pin — list your flat or share what you pay',    highlight:'#drop-pin-btn'},
+    {ico:'⚙️', title:'Filter by BHK, budget, furnishing and area',           highlight:'.gm-filter-btn'},
+    {ico:'🏠', title:'Find me a flat — tell us what you need, we call you',  highlight:'#talk-btn'},
+    {ico:'📋', title:'List my flat — your flat goes live in 30 seconds',     highlight:'#list-btn'},
+    {ico:'📡', title:'Near Me — see listings closest to your location',      highlight:'#near-me-btn'},
+    {ico:'🏙️', title:'Switch cities — Delhi, Gurgaon, Noida, Lucknow',      highlight:'#gm-city-chip'},
+  ];
+  _spotlightStep=0;
+  document.getElementById('tour-spotlight').classList.add('active');
+  document.getElementById('tour-spotlight').style.display='block';
+  showSpotlightStep();
+}
+function openHowModal(){startQuickTour();}
+function closeHowModal(){}
 function openPrivacyModal(){document.getElementById('privacy-modal').classList.add('open');}
 function closePrivacyModal(){document.getElementById('privacy-modal').classList.remove('open');}
 function openTncModal(){document.getElementById('tnc-modal').classList.add('open');}
