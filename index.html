@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://basemaps.cartocdn.com" crossorigin/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <script defer data-domain="gharmap.in" src="https://plausible.io/js/script.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgnmt05eNkoJ2LA7fZphd7yuusIB-ZfZs&libraries=places&loading=async" defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgnmt05eNkoJ2LA7fZphd7yuusIB-ZfZs&libraries=places&callback=initGoogleAutocomplete&loading=async" defer></script>
 <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" as="script"/>
 <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" as="style"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%232d6a5a'/><path d='M10 32 L32 14 L54 32 Z' fill='white'/><rect x='16' y='30' width='32' height='22' fill='white'/><rect x='28' y='38' width='8' height='14' fill='%232d6a5a'/></svg>">
@@ -874,6 +874,15 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
   animation:ringPulse 2s ease infinite;
 }
 @keyframes ringPulse{0%,100%{box-shadow:0 0 0 4px #2d7a4f,0 0 0 9999px rgba(0,0,0,.6);}50%{box-shadow:0 0 0 7px #2d7a4f,0 0 0 9999px rgba(0,0,0,.6);}}
+/* ══ GOOGLE PLACES AUTOCOMPLETE ══ */
+.pac-container{border-radius:12px !important;border:1px solid #ebebea !important;box-shadow:0 8px 24px rgba(10,10,10,.12) !important;font-family:'DM Sans',sans-serif !important;margin-top:4px !important;overflow:hidden !important;z-index:2000 !important;}
+.pac-item{padding:10px 14px !important;font-size:13px !important;color:#0a0a0a !important;cursor:pointer !important;border-top:1px solid #f5f5f4 !important;line-height:1.4 !important;}
+.pac-item:hover,.pac-item-selected{background:#f5f5f4 !important;}
+.pac-item-query{font-size:14px !important;font-weight:600 !important;color:#0a0a0a !important;}
+.pac-matched{color:#2d7a4f !important;font-weight:700 !important;}
+.pac-icon{display:none !important;}
+.pac-logo::after{display:none !important;}
+
 #toast{position:fixed;bottom:calc(110px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#151515;border:1px solid #252525;color:#eee;padding:9px 18px;border-radius:20px;font-size:12px;z-index:3000;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
 #toast.show{opacity:1;}
 
@@ -1784,7 +1793,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
         </button>
         <div class="gm-search-box">
           <input type="text" id="gm-search-input" placeholder="Search area, colony or landmark…" autocomplete="off"
-            oninput="onSearch(this.value)" onfocus="onSearchFocus()" onkeydown="onSearchKey(event)"/>
+            onkeydown="onSearchKey(event)"/>
         </div>
         <div class="gm-mode-toggle" style="display:none;">
           <button class="gm-mode-btn on" id="gm-rent-btn" onclick="setMode('rent')">Rent</button>
@@ -3666,52 +3675,76 @@ function onSearch(q){
   // Skip Layer 3 for short queries or pincodes
   if(isPincode||v.length<2)return;
 
-  // ─── LAYER 3: Google Places Autocomplete (fast, accurate, handles all Indian addresses) ───
+  // ─── LAYER 3: Google Places Autocomplete — single call, no geocode ───
   const ckey=v.toLowerCase()+'|'+activeCity;
   if(_geoCache[ckey]){renderDd(landmarks,local,_geoCache[ckey]);return;}
 
   clearTimeout(_sTimer);
   _sTimer=setTimeout(()=>{
     const c=CITY_DATA[activeCity]||CITY_DATA.delhi;
-    // Use Google Places if available, fallback to Photon
+
     if(window.google&&window.google.maps&&window.google.maps.places){
+      // Use PlacesService with a single findPlaceFromQuery call
+      // This returns geometry (lat/lng) directly — no second geocode needed
+      if(!window._gmPlacesDiv){
+        window._gmPlacesDiv=document.createElement('div');
+        window._gmPlacesDiv.style.display='none';
+        document.body.appendChild(window._gmPlacesDiv);
+      }
+      if(!window._gmPlacesSvc){
+        window._gmPlacesSvc=new google.maps.places.PlacesService(window._gmPlacesDiv);
+      }
       if(!window._gmAutoSvc){
         window._gmAutoSvc=new google.maps.places.AutocompleteService();
       }
-      const req={
-        input:v+', '+c.name+', India',
+
+      window._gmAutoSvc.getPlacePredictions({
+        input:v+', India',
         componentRestrictions:{country:'in'},
         location:new google.maps.LatLng(c.lat,c.lng),
-        radius:50000,
-        types:['geocode','establishment'],
-      };
-      window._gmAutoSvc.getPlacePredictions(req,(predictions,status)=>{
+        radius:80000,
+      },(predictions,status)=>{
         if(_lastSearchQ.toLowerCase()!==v.toLowerCase())return;
-        if(status!=='OK'||!predictions){renderDd(landmarks,local,[]);return;}
-        const seenNames=new Set([...landmarks.map(x=>x.name.toLowerCase()),...local.map(x=>x.n.toLowerCase())]);
+        if(status!=='OK'||!predictions||!predictions.length){
+          renderDd(landmarks,local,[]);return;
+        }
+        const seenNames=new Set([
+          ...landmarks.map(x=>x.name.toLowerCase()),
+          ...local.map(x=>x.n.toLowerCase())
+        ]);
         const places=[];
-        let pending=predictions.slice(0,5).length;
-        if(!pending){renderDd(landmarks,local,[]);return;}
-        const geocoder=new google.maps.Geocoder();
-        predictions.slice(0,5).forEach(p=>{
+        let pending=Math.min(predictions.length,4);
+        const done=()=>{
+          if(_lastSearchQ.toLowerCase()===v.toLowerCase()){
+            _geoCache[ckey]=places;
+            renderDd(landmarks,local,places);
+          }
+        };
+        predictions.slice(0,4).forEach(p=>{
           const name=p.structured_formatting.main_text;
-          if(seenNames.has(name.toLowerCase())){pending--;if(!pending)renderDd(landmarks,local,places);return;}
-          geocoder.geocode({placeId:p.place_id},(results,gs)=>{
-            if(gs==='OK'&&results[0]){
-              const loc=results[0].geometry.location;
-              places.push({n:name,lat:loc.lat(),lng:loc.lng(),sub:p.structured_formatting.secondary_text||c.name});
+          if(seenNames.has(name.toLowerCase())){pending--;if(!pending)done();return;}
+          // Get place details — includes geometry in one call
+          window._gmPlacesSvc.getDetails({
+            placeId:p.place_id,
+            fields:['geometry','name','formatted_address'],
+          },(place,s)=>{
+            if(s==='OK'&&place&&place.geometry){
+              places.push({
+                n:name,
+                lat:place.geometry.location.lat(),
+                lng:place.geometry.location.lng(),
+                sub:p.structured_formatting.secondary_text||c.name,
+              });
             }
             pending--;
-            if(!pending){
-              _geoCache[ckey]=places;
-              if(_lastSearchQ.toLowerCase()===v.toLowerCase())renderDd(landmarks,local,places);
-            }
+            if(!pending)done();
           });
         });
       });
+
     } else {
-      // Fallback to Photon if Google not loaded yet
-      const url=`https://photon.komoot.io/api/?q=${encodeURIComponent(v+', '+c.name)}&lat=${c.lat}&lon=${c.lng}&zoom=13&limit=5&lang=en`;
+      // Fallback to Photon
+      const url=`https://photon.komoot.io/api/?q=${encodeURIComponent(v+', '+c.name)}&lat=${c.lat}&lon=${c.lng}&zoom=13&limit=4&lang=en`;
       _searchAbort=new AbortController();
       fetch(url,{signal:_searchAbort.signal})
         .then(r=>r.json())
@@ -4303,7 +4336,43 @@ document.addEventListener('DOMContentLoaded',()=>{
   window.addEventListener('resize',()=>document.body.classList.toggle('is-mobile',window.innerWidth<=768));
   initMap();
   // Move zoom control so it doesn't overlap search bar on mobile
-  if(map)map.zoomControl.setPosition('bottomright');
+  // ── Google Places Autocomplete widget ──
+  // Runs after Google Maps JS has loaded
+  function initGoogleAutocomplete(){
+    const input=document.getElementById('gm-search-input');
+    if(!input||!window.google)return;
+    const c=CITY_DATA[activeCity]||CITY_DATA.delhi;
+    const ac=new google.maps.places.Autocomplete(input,{
+      componentRestrictions:{country:'in'},
+      fields:['geometry','name','formatted_address'],
+      bounds:new google.maps.LatLngBounds(
+        new google.maps.LatLng(c.lat-0.8,c.lng-0.8),
+        new google.maps.LatLng(c.lat+0.8,c.lng+0.8)
+      ),
+      strictBounds:false,
+    });
+    ac.addListener('place_changed',()=>{
+      const place=ac.getPlace();
+      if(!place.geometry){
+        // User pressed Enter without selecting — run old search
+        onSearch(input.value);
+        return;
+      }
+      const lat=place.geometry.location.lat();
+      const lng=place.geometry.location.lng();
+      const name=place.name||input.value;
+      input.value=name;
+      closeDd();
+      map&&map.flyTo([lat,lng],15,{duration:.6,easeLinearity:.4});
+    });
+    window._gmAC=ac;
+  }
+  // Call once Google is ready
+  if(window.google&&window.google.maps){
+    initGoogleAutocomplete();
+  } else {
+    window.initGoogleAutocomplete=initGoogleAutocomplete;
+  }
   // Mark default city (Delhi) as active and show drop-pin button
   document.querySelectorAll('.gm-city-opt').forEach(b=>b.classList.toggle('active',b.dataset.city==='delhi'));
   renderHoodChips('delhi');
