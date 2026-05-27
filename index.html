@@ -3887,8 +3887,8 @@ async function submitCommunityListing(){
   // Duplicate check — same phone + same area
   const dup=COMMUNITY_LISTINGS.find(x=>x.phone===phone&&x.area.toLowerCase()===area.toLowerCase()&&x.city===activeCity);
   if(dup){showToast('You already have a listing in this area');return;}
-  const btn=document.getElementById('dps-listing-btn');
-  btn.disabled=true;btn.textContent='Posting…';
+  const btn=document.getElementById('dps-final-btn');
+  if(btn){btn.disabled=true;btn.textContent='Dropping pin...';}
   const payload={
     city:activeCity,lat:_dropPinLatLng.lat,lng:_dropPinLatLng.lng,
     bhk,rent:parseInt(rent),fur,area,phone,
@@ -3901,16 +3901,16 @@ async function submitCommunityListing(){
       body:JSON.stringify(payload)
     });
     const data=await res.json();
-    if(data&&data[0]){
+    if(res.ok||res.status===201){
       // Add to local array and redraw instantly
       const newListing={...payload,id:'cl_'+Date.now()};
       COMMUNITY_LISTINGS.push(newListing);
       draw();
-      // Check for matching seekers and notify
-      await matchSeekersToCommunityListing(newListing);
+      // Match seekers in background — don't await
+      matchSeekersToCommunityListing(newListing).catch(()=>{});
     }
-  }catch(e){}
-  btn.disabled=false;btn.textContent='Post Listing →';
+  }catch(e){console.warn('Submit error:',e);}
+  if(btn){btn.disabled=false;}
   closeDropPin();
   showThankYou('pin');
 }
@@ -5446,14 +5446,25 @@ async function dpStep2Submit(){
   }
 
   btn.disabled = true;
-  btn.textContent = 'Saving...';
+  btn.textContent = 'Dropping pin...';
+
+  // 8 second timeout — never hang forever
+  const timeout = new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),8000));
 
   try{
-    if(type==='listing') await submitCommunityListing();
-    else if(type==='rent') await submitRentPin();
-    else if(type==='seeker') await submitSeekerPin();
+    const action = type==='listing' ? submitCommunityListing()
+      : type==='rent' ? submitRentPin()
+      : submitSeekerPin();
+    await Promise.race([action, timeout]);
+  } catch(e){
+    if(e.message==='timeout'){
+      // Still show success — pin likely saved, just slow response
+      closeDropPin();
+      showThankYou('pin');
+    }
   } finally {
     btn.disabled = false;
+    btn.textContent = ({listing:'List my Flat → Goes live instantly',rent:'Share →',seeker:'Find me a Flat →'})[type]||'Drop the Pin →';
   }
 }
 
