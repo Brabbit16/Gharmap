@@ -81,13 +81,13 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
   font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 }
 .sp{
-  width:100%;max-width:460px;
+  width:100%;max-width:420px;
   background:#0f0f0f;color:#fafafa;
-  border:1px solid #262626;border-radius:16px;
+  border:1px solid #262626;border-radius:20px;
   position:relative;overflow:hidden;
   box-shadow:0 24px 60px rgba(0,0,0,.5),0 6px 16px rgba(0,0,0,.3);
   animation:fadeUp .4s ease both;
-  max-height:92dvh;overflow-y:auto;
+  max-height:96dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
 .sp::before{
   content:'';position:absolute;top:0;left:0;right:0;height:1px;
@@ -98,7 +98,7 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 
 /* Header — logo + status pill */
 .sp-header{
-  padding:20px 24px 0;
+  padding:18px 22px 0;
   display:flex;align-items:center;justify-content:space-between;
 }
 .sp-logo{
@@ -118,15 +118,15 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 }
 
 /* Main */
-.sp-main{padding:24px 24px 18px;position:relative;}
+.sp-main{padding:20px 22px 16px;position:relative;}
 .sp-kicker{
   font-family:'JetBrains Mono',monospace;
   font-size:11px;color:#737373;margin-bottom:18px;letter-spacing:.5px;
 }
 .sp-kicker span{color:#2d7a4f;}
 .sp-headline{
-  font-size:46px;font-weight:800;letter-spacing:-2.5px;line-height:.95;
-  margin-bottom:14px;color:#fafafa;
+  font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.2;
+  margin-bottom:8px;color:#fafafa;
 }
 .sp-huge-number{
   font-size:88px;font-weight:900;letter-spacing:-4px;line-height:.85;
@@ -176,29 +176,104 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 }
 
 /* CTAs */
-.sp-btn-main{
-  display:flex;width:100%;padding:14px 18px;
-  background:#fafafa;color:#0a0a0a;border:none;border-radius:8px;
-  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;letter-spacing:-.2px;
-  cursor:pointer;margin-bottom:8px;
-  align-items:center;justify-content:space-between;
-  transition:all .15s;
-}
-.sp-btn-main:hover{background:#2d7a4f;color:#fff;transform:translateY(-1px);}
+.sp-btn-main-old-unused{display:none;}
+
 .sp-btn-shortcut{
   font-family:'JetBrains Mono',monospace;font-size:11px;
   background:#0a0a0a;color:#a3a3a3;padding:3px 8px;border-radius:4px;
 }
 .sp-btn-main:hover .sp-btn-shortcut{background:rgba(255,255,255,.2);color:#fff;}
 .sp-btn-how{
-  display:block;width:100%;padding:11px 18px;
+  display:block;padding:11px 18px;
   background:transparent;color:#a3a3a3;
-  border:1px solid #262626;border-radius:8px;
-  font-family:'Inter',sans-serif;font-size:13px;font-weight:500;
-  cursor:pointer;margin-bottom:8px;text-align:left;
+  border:1px solid #262626;border-radius:12px;
+  font-family:var(--ff);font-size:13px;font-weight:500;
+  cursor:pointer;text-align:center;flex:1;
   transition:all .15s;
 }
 .sp-btn-how:hover{border-color:#525252;color:#fafafa;}
+
+/* ── NEW SPLASH ELEMENTS ── */
+
+.sp-hook{
+  font-size:13px;font-weight:600;color:#a3a3a3;
+  margin-bottom:6px;line-height:1.4;
+}
+.sp-cities{
+  font-size:11px;color:#444;
+  margin-bottom:16px;letter-spacing:.3px;
+}
+
+.sp-headline{font-size:26px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:8px;letter-spacing:-.5px;}
+.sp-headline-em{color:#fff;}
+.sp-sub{font-size:12px;color:#aaa;line-height:1.6;margin-bottom:14px;}
+
+.sp-proof-box{
+  background:#111;
+  border:1px solid #1e1e1e;
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:14px;
+}
+.sp-proof-title{
+  font-size:9px;font-weight:700;color:#555;
+  letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.sp-proof-row{
+  display:flex;align-items:center;gap:12px;
+  padding:9px 0;border-bottom:1px solid #1a1a1a;
+}
+.sp-proof-row:last-child{border-bottom:none;padding-bottom:0;}
+.sp-proof-ico{
+  font-size:11px;font-weight:700;color:#666;
+  width:20px;text-align:center;flex-shrink:0;
+  line-height:1;
+}
+.sp-proof-content{flex:1;}
+.sp-proof-num{font-size:13px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:2px;}
+.sp-proof-num em{color:#2d7a4f;font-style:normal;}
+.sp-proof-desc{font-size:10px;color:#888;line-height:1.4;}
+
+.sp-trust{
+  font-size:10px;color:#555;text-align:center;
+  line-height:1.6;margin-top:12px;
+}
+.sp-trust a{color:#666;cursor:pointer;text-decoration:none;}
+.sp-trust a:hover{color:#aaa;}
+
+.sp-cta-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+  height:52px;
+}
+.sp-btn-main{
+  flex:2;
+  padding:0;
+  background:#fff;color:#0a0a0a;
+  border:none;border-radius:12px;
+  font-family:var(--ff);font-size:14px;font-weight:800;
+  cursor:pointer;text-align:center;
+  transition:all .15s;letter-spacing:-.2px;
+  display:flex;align-items:center;justify-content:center;
+  height:100%;
+}
+.sp-btn-main:hover{background:#f0f0f0;}
+.sp-btn-share{
+  flex:1;
+  padding:0;background:#25d366;color:#0a0a0a;
+  border:none;border-radius:12px;
+  font-size:13px;font-weight:700;
+  cursor:pointer;font-family:var(--ff);
+  text-align:center;
+  display:flex;align-items:center;justify-content:center;
+  height:100%;
+}
+.sp-btn-share:hover{background:#20bd5a;}
+
+
+
 
 
 
@@ -210,7 +285,7 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 .sp-founders-avatars{display:flex;}
 .sp-founders-avatar{
   width:28px;height:28px;border-radius:50%;
-  background:#2d7a4f;color:#0a0a0a;
+  background:#333;color:#fff;
   font-size:11px;font-weight:700;
   display:flex;align-items:center;justify-content:center;
   border:2px solid #0f0f0f;
@@ -220,7 +295,7 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
   font-size:12px;color:#a3a3a3;line-height:1.4;flex:1;
 }
 .sp-founders-text b{color:#fafafa;font-weight:600;}
-.sp-founders-text a{color:#2d7a4f;text-decoration:none;font-weight:500;}
+.sp-founders-text a{color:#aaa;text-decoration:none;font-weight:500;}
 .sp-founders-text a:hover{text-decoration:underline;}
 
 /* Footer (legal links) */
@@ -234,7 +309,7 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 /* Tiny screens — stack metrics, reduce huge number */
 @media (max-width:380px){
   .sp-huge-number{font-size:72px;}
-  .sp-headline{font-size:38px;}
+  .sp-headline{font-size:28px;}
   .sp-headline-strike{font-size:38px;}
 }
 
@@ -260,16 +335,19 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 }
 #gm-top-controls>*{pointer-events:all;}
 .gm-search-block{
-  background:rgba(18,18,18,.96);border:1px solid #2a2a2a;border-radius:14px;
-  box-shadow:0 6px 28px rgba(0,0,0,.4);overflow:hidden;
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  background:#fff;
+  border:1px solid #ebebea;
+  border-radius:14px;
+  box-shadow:0 2px 8px rgba(10,10,10,.08);
+  overflow:hidden;
+  width:100%;
 }
 
 /* Row 1 — search + filter + menu */
 .gm-search-row{
   display:flex;align-items:center;gap:6px;
-  padding:6px 8px 6px 14px;
-  height:46px;
+  padding:0 8px;
+  height:40px;
 }
 .gm-search-box{flex:1;display:flex;align-items:center;gap:7px;min-width:0;}
 .gm-search-ico{font-size:14px;color:#555;flex-shrink:0;}
@@ -421,6 +499,7 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 .gm-stat-chip b{color:#2d7a4f;font-weight:700;}
 
 /* ══ BOTTOM CTA ROW ══ */
+#bottom-cta-row-old-unused{display:none;}
 #bottom-cta-row{position:fixed;bottom:12px;right:12px;z-index:800;display:flex;gap:8px;align-items:center;}
 #list-btn{background:rgba(20,20,20,.92);color:#ccc;border:1px solid #2a2a2a;border-radius:24px;padding:10px 14px;font-size:12px;font-weight:600;font-family:var(--ff);cursor:pointer;display:flex;align-items:center;gap:6px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 4px 16px rgba(0,0,0,.3);transition:all .2s;}
 #list-btn:hover{border-color:#2d7a4f;color:#2d7a4f;}
@@ -895,6 +974,78 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 .spp-close{width:100%;padding:5px;background:transparent;border:none;color:#a3a3a3;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;}
 .spp-close:hover{color:#0a0a0a;}
 
+
+/* ══ CHIP FILTER BANNER ══ */
+#chip-banner{
+  position:fixed;
+  top:calc(var(--top-h, 110px));
+  left:50%;transform:translateX(-50%);
+  width:calc(100% - 24px);max-width:640px;
+  z-index:890;
+  background:#2d7a4f;
+  border-radius:10px;
+  padding:9px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:0 2px 12px rgba(0,0,0,.2);
+  margin-top:6px;
+}
+#chip-banner.amber{background:#d97706;}
+.cb-text{font-size:13px;font-weight:600;color:#fff;}
+.cb-cancel{
+  background:rgba(255,255,255,.2);border:none;color:#fff;
+  border-radius:8px;padding:6px 14px;
+  font-size:12px;font-weight:700;cursor:pointer;
+  font-family:var(--ff);white-space:nowrap;
+}
+.cb-cancel:hover{background:rgba(255,255,255,.35);}
+
+/* ══ CHIP BAR ══ */
+#gm-chip-bar{
+  display:flex;gap:6px;
+  padding:6px 0;
+  overflow-x:auto;
+  background:transparent;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+  width:100%;
+  box-sizing:border-box;
+  margin-top:6px;
+}
+#gm-chip-bar::-webkit-scrollbar{display:none;}
+.gm-chip{
+  flex-shrink:0;
+  padding:6px 14px;
+  border-radius:100px;
+  font-size:12px;font-weight:600;
+  border:1px solid #e5e5e5;
+  background:#fff;
+  color:#525252;
+  cursor:pointer;
+  font-family:var(--ff);
+  transition:all .15s;
+  white-space:nowrap;
+  line-height:1.4;
+  box-shadow:0 1px 4px rgba(0,0,0,.1);
+}
+.gm-chip:hover{border-color:#0a0a0a;color:#0a0a0a;}
+.gm-chip.on{background:#0a0a0a;border-color:#0a0a0a;color:#fff;}
+.gm-chip-avlb{border-color:#2d7a4f;color:#2d7a4f;}
+.gm-chip-avlb.on{background:#2d7a4f;border-color:#2d7a4f;color:#fff;}
+.gm-chip-stats{border-color:#7e22ce;color:#7e22ce;}
+.gm-chip-stats.on{background:#7e22ce;border-color:#7e22ce;color:#fff;}
+
+/* ══ BOTTOM CTA ══ */
+#bottom-cta-row{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-top:1px solid #f0f0ef;
+  z-index:800;
+}
 /* ══ GOOGLE PLACES AUTOCOMPLETE ══ */
 .pac-container{border-radius:12px !important;border:1px solid #ebebea !important;box-shadow:0 8px 24px rgba(10,10,10,.12) !important;font-family:'DM Sans',sans-serif !important;margin-top:4px !important;overflow:hidden !important;z-index:2000 !important;}
 .pac-item{padding:10px 14px !important;font-size:13px !important;color:#0a0a0a !important;cursor:pointer !important;border-top:1px solid #f5f5f4 !important;line-height:1.4 !important;}
@@ -903,6 +1054,113 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 .pac-matched{color:#2d7a4f !important;font-weight:700 !important;}
 .pac-icon{display:none !important;}
 .pac-logo::after{display:none !important;}
+
+
+/* ══ INTEREST FORM ══ */
+.interest-card{
+  background:#fff;border-radius:16px;
+  width:420px;max-width:calc(100vw - 24px);
+  padding:20px;position:relative;
+  animation:fadeUp .25s ease both;
+}
+.int-head{margin-bottom:16px;}
+.int-title{font-size:18px;font-weight:700;color:#0a0a0a;margin-bottom:4px;}
+.int-sub{font-size:12px;color:#737373;}
+.int-body{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.int-lbl{font-size:11px;font-weight:600;color:#525252;text-transform:uppercase;letter-spacing:.4px;}
+.int-opt{font-size:10px;color:#a3a3a3;font-weight:400;text-transform:none;letter-spacing:0;}
+.int-input{
+  width:100%;background:#f5f5f4;border:1px solid #e5e5e5;
+  border-radius:8px;padding:10px 12px;font-size:13px;
+  color:#0a0a0a;font-family:var(--ff);
+  transition:border-color .15s;
+}
+.int-input:focus{outline:none;border-color:#2d7a4f;}
+.int-textarea{resize:none;min-height:80px;}
+.int-foot{border-top:1px solid #f0f0ef;padding-top:14px;}
+.int-submit{
+  width:100%;padding:12px;background:#0a0a0a;color:#fff;
+  border:none;border-radius:10px;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:var(--ff);margin-bottom:8px;
+  transition:background .15s;
+}
+.int-submit:hover{background:#2d7a4f;}
+.int-note{font-size:11px;color:#a3a3a3;text-align:center;}
+.dp-interested-btn{
+  width:100%;padding:11px;background:#f0fdf4;color:#2d7a4f;
+  border:1.5px solid #2d7a4f;border-radius:10px;
+  font-size:13px;font-weight:700;cursor:pointer;
+  font-family:var(--ff);margin-top:8px;
+  transition:all .15s;
+}
+.dp-interested-btn:hover{background:#2d7a4f;color:#fff;}
+
+
+/* ══ DETAIL PANEL INTEREST CARD ══ */
+.dp-interest-card{
+  display:flex;align-items:center;gap:10px;
+  background:#f0fdf4;border:1.5px solid #2d7a4f;
+  border-radius:10px;padding:10px 12px;
+  margin:8px 14px;cursor:pointer;
+  transition:background .15s;
+}
+.dp-interest-card:hover{background:#dcfce7;}
+.dp-ic-ico{font-size:18px;flex-shrink:0;}
+.dp-ic-body{flex:1;}
+.dp-ic-title{font-size:12px;font-weight:700;color:#0a0a0a;margin-bottom:2px;}
+.dp-ic-desc{font-size:10px;color:#525252;line-height:1.4;}
+.dp-ic-arrow{font-size:14px;color:#2d7a4f;flex-shrink:0;font-weight:700;}
+
+
+/* ══ MAP TAP HINT ══ */
+#map-tap-hint{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:600;
+  pointer-events:none;
+  animation:tapHintPulse 1.5s ease infinite;
+}
+.mth-inner{
+  display:flex;flex-direction:column;align-items:center;
+  gap:6px;
+}
+.mth-crosshair{
+  font-size:40px;color:#0a0a0a;
+  filter:drop-shadow(0 2px 8px rgba(255,255,255,.8));
+  animation:crosshairPulse 1.5s ease infinite;
+}
+.mth-text{
+  background:#0a0a0a;color:#fff;
+  padding:6px 14px;border-radius:100px;
+  font-size:12px;font-weight:700;
+  font-family:var(--ff);
+  box-shadow:0 2px 12px rgba(0,0,0,.3);
+  white-space:nowrap;
+}
+.mth-sub{
+  font-size:11px;color:#fff;
+  background:rgba(10,10,10,.6);
+  padding:3px 10px;border-radius:100px;
+  font-family:var(--ff);
+  white-space:nowrap;
+}
+@keyframes crosshairPulse{
+  0%,100%{transform:scale(1);opacity:1;}
+  50%{transform:scale(1.15);opacity:.7;}
+}
+
+
+/* ══ REAL RENTS FILTER — transparent map ══ */
+#map-wrap.rents-mode .leaflet-tile-pane{
+  opacity:0.35;
+  transition:opacity .3s ease;
+}
+#map-wrap.rents-mode .leaflet-marker-pane,
+#map-wrap.rents-mode .leaflet-overlay-pane{
+  filter:none;
+}
+#map-wrap{transition:all .3s ease;}
 
 #toast{position:fixed;bottom:calc(110px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#151515;border:1px solid #252525;color:#eee;padding:9px 18px;border-radius:20px;font-size:12px;z-index:3000;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
 #toast.show{opacity:1;}
@@ -919,6 +1177,56 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 .gm-toast-dot{width:5px;height:5px;border-radius:50%;background:var(--green-mid);animation:livePulse 1.2s ease infinite;}
 
 /* ══ MODALS ══ */
+/* ══ NEW DROP PIN FORM ══ */
+.dps-handle-row{display:flex;align-items:center;justify-content:center;padding:10px 16px 0;position:relative;}
+.dps-handle{width:36px;height:4px;background:#e5e5e5;border-radius:100px;}
+.dps-x{position:absolute;right:16px;top:8px;background:none;border:none;font-size:16px;color:#a3a3a3;cursor:pointer;padding:2px 6px;}
+.dps-pin-types{display:flex;flex-direction:column;gap:8px;padding:14px 20px;border-bottom:.5px solid #f0f0ef;}
+.dps-pt{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1.5px solid #e5e5e5;cursor:pointer;transition:all .15s;}
+.dps-pt.on{border-color:#0a0a0a;background:#0a0a0a;}
+.dps-pt-ico{font-size:20px;flex-shrink:0;width:28px;text-align:center;}
+.dps-pt-body{flex:1;}
+.dps-pt-lbl{font-size:13px;font-weight:700;color:#0a0a0a;margin-bottom:2px;}
+.dps-pt.on .dps-pt-lbl{color:#fff;}
+.dps-pt-desc{font-size:11px;color:#a3a3a3;}
+.dps-pt.on .dps-pt-desc{color:rgba(255,255,255,.6);}
+.dps-pt-check{width:20px;height:20px;border-radius:50%;border:1.5px solid #e5e5e5;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;flex-shrink:0;}
+.dps-pt.on .dps-pt-check{background:#2d7a4f;border-color:#2d7a4f;color:#fff;}
+.dps-form-common{padding:12px 20px;}
+
+.dps-contact-card{
+  background:#f5f5f4;border-radius:10px;
+  padding:10px 12px;margin-bottom:12px;
+}
+.dps-contact-title{font-size:12px;font-weight:600;color:#0a0a0a;margin-bottom:2px;}
+.dps-contact-sub{font-size:11px;color:#737373;}
+.dps-privacy-note{
+  font-size:10px;color:#a3a3a3;
+  text-align:center;margin-top:4px;margin-bottom:8px;
+}
+.dps-foot{
+  padding:12px 20px calc(8px + env(safe-area-inset-bottom,0px));
+  border-top:1px solid #f0f0ef;
+}
+
+.dps-anon-row{display:flex;align-items:center;justify-content:space-between;background:#f5f5f4;border-radius:10px;padding:12px 14px;margin-bottom:8px;}
+.dps-anon-lbl{font-size:13px;font-weight:600;color:#0a0a0a;margin-bottom:2px;}
+.dps-anon-desc{font-size:11px;color:#737373;}
+.dps-toggle{width:44px;height:24px;background:#e5e5e5;border-radius:100px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.dps-toggle.on{background:#2d7a4f;}
+.dps-toggle-knob{width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.dps-toggle.on .dps-toggle-knob{transform:translateX(20px);}
+.dps-anon-note{font-size:11px;color:#2d7a4f;margin:0 20px 10px;padding:0 2px;}
+.dps-back{width:100%;padding:10px;background:transparent;border:.5px solid #e5e5e5;border-radius:10px;font-size:13px;font-weight:500;color:#525252;cursor:pointer;font-family:var(--ff);margin-top:6px;}
+/* ══ INTEREST CARD IN DETAIL ══ */
+.dp-int-card{background:#f0fdf4;border:1.5px solid #2d7a4f;border-radius:10px;padding:12px;margin:10px 0;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .15s;}
+.dp-int-card:hover{background:#dcfce7;}
+.dp-int-card-ico{font-size:20px;flex-shrink:0;}
+.dp-int-card-body{flex:1;}
+.dp-int-card-title{font-size:13px;font-weight:700;color:#0a0a0a;margin-bottom:3px;}
+.dp-int-card-desc{font-size:11px;color:#525252;line-height:1.5;}
+.dp-int-card-arrow{font-size:16px;color:#2d7a4f;flex-shrink:0;}
+
 .overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);backdrop-filter:blur(5px);align-items:center;justify-content:flex-end;padding:12px;}
 .overlay.open{display:flex;}
 .modal{background:#181818;border:1px solid #252525;border-radius:14px;width:380px;max-width:calc(100vw - 24px);padding:16px 18px 20px;max-height:88vh;overflow-y:auto;scrollbar-width:none;animation:slideFromRight .28s cubic-bezier(.22,.61,.36,1) both;position:relative;color:#eee;}
@@ -991,7 +1299,7 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 @media(max-width:768px){
   html,body{-webkit-text-size-adjust:100%;}
   #splash{padding:16px;align-items:center;justify-content:center;}
-  .sp{max-width:100%;border-radius:18px;padding:22px 18px 16px;animation:scaleIn .3s cubic-bezier(.34,1.26,.64,1) both;}
+  .sp{max-width:100%;border-radius:18px;animation:scaleIn .3s cubic-bezier(.34,1.26,.64,1) both;}
 
   /* Top controls */
   #gm-top-controls{top:8px;width:calc(100% - 16px);max-width:100%;}
@@ -1008,7 +1316,8 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
   #gm-stats-row{display:none;}
 
   /* Bottom CTA — full width, above safe area */
-  #bottom-cta-row{
+  #bottom-cta-row-old-unused{display:none;}
+#bottom-cta-row{
     bottom:calc(14px + env(safe-area-inset-bottom,0px));
     left:12px;right:12px;
     background:transparent;border-top:none;
@@ -1025,13 +1334,17 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 
   /* Drop pin button — just above bottom CTAs */
   #drop-pin-btn{
-    bottom:calc(60px + env(safe-area-inset-bottom,0px));
-    font-size:12px;padding:9px 18px;
+    bottom:calc(20px + env(safe-area-inset-bottom,0px));
+    font-size:12px;padding:10px 20px;
   }
-  #drop-pin-btn:hover{transform:translateX(-50%) translateY(-1px);}
 
-  /* Pin legend — hide on mobile, too cluttered */
+  /* Pin legend — hide on mobile */
   #pin-legend{display:none;}
+  /* Chip bar on mobile — smaller chips */
+  .gm-chip{font-size:11px;padding:5px 11px;}
+  #gm-drop-banner{padding:10px 14px;}
+  .gdb-title{font-size:12px;}
+  .gdb-sub{display:none;}
 
   /* Maker card — centred, above bottom CTA */
   #maker-card{
@@ -1174,18 +1487,17 @@ body.is-mobile .guide-step-desc{font-size:11.5px !important;}
 /* ══ DROP PIN BUTTON ══ */
 #drop-pin-btn{
   position:fixed;
-  bottom:calc(62px + env(safe-area-inset-bottom,0px));
+  bottom:calc(20px + env(safe-area-inset-bottom,0px));
   left:50%;transform:translateX(-50%);
   z-index:950;
   background:#0a0a0a;
-  color:#fff;border:none;border-radius:24px;
-  padding:9px 20px;font-size:12px;font-weight:700;
+  color:#fff;border:none;border-radius:100px;
+  padding:12px 24px;font-size:13px;font-weight:700;
   font-family:var(--ff);cursor:pointer;
-  box-shadow:0 4px 14px rgba(10,10,10,.3);
-  display:none;align-items:center;gap:7px;
+  box-shadow:0 4px 16px rgba(10,10,10,.35);
+  display:flex;align-items:center;gap:8px;
   transition:all .2s;white-space:nowrap;
 }
-#drop-pin-btn.show{display:flex;}
 #drop-pin-btn:hover{background:#262626;transform:translateX(-50%) translateY(-1px);}
 #drop-pin-btn::before{
   content:'';width:6px;height:6px;border-radius:50%;
@@ -1288,6 +1600,8 @@ body.is-mobile .guide-step-desc{font-size:11.5px !important;}
 .ty-title{font-size:20px;font-weight:700;color:#eee;margin-bottom:8px;letter-spacing:-.3px;}
 .ty-msg{font-size:13px;color:#888;line-height:1.7;margin-bottom:22px;}
 .ty-msg b{color:#2d7a4f;}
+.ty-btn-sec{width:100%;padding:11px;border-radius:12px;border:1.5px solid #ebebea;background:transparent;color:#525252;font-size:13px;cursor:pointer;font-family:var(--ff);margin-top:6px;}
+.ty-btn-sec:hover{border-color:#0a0a0a;color:#0a0a0a;}
 .ty-btn{
   width:100%;padding:12px;border-radius:12px;border:none;
   background:linear-gradient(135deg,#2d7a4f,#2d7a4f);
@@ -1307,7 +1621,7 @@ body{background:#fafafa;color:#0a0a0a;}
 *::placeholder{color:#a3a3a3;}
 
 /* ── TOP CONTROLS ── */
-.gm-search-block{background:rgba(255,255,255,.96);border:1px solid #ebebea;box-shadow:0 2px 8px rgba(10,10,10,.06),0 1px 3px rgba(10,10,10,.04);}
+.gm-search-block{background:#fff!important;border:1px solid #ebebea!important;box-shadow:0 2px 8px rgba(10,10,10,.06),0 1px 3px rgba(10,10,10,.04)!important;overflow:hidden;border-radius:14px;}
 .gm-search-row{border-bottom:1px solid #f0f0ef;height:46px;}
 .gm-search-ico{color:#a3a3a3;font-size:14px;}
 .gm-search-box input{color:#0a0a0a;font-size:14px;}
@@ -1544,6 +1858,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 }
 
 /* ── SAFE AREA ── */
+#bottom-cta-row-old-unused{display:none;}
 #bottom-cta-row{bottom:max(12px, env(safe-area-inset-bottom));}
 #gm-stats-row{bottom:max(12px, env(safe-area-inset-bottom));}
 
@@ -1750,39 +2065,40 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
       <div class="sp-logo">Ghar<span class="map">Map</span></div>
     </div>
     <div class="sp-main">
-      <div class="sp-kicker">// what your neighbour <span>actually</span> pays</div>
-      <h1 class="sp-headline">
-        <span class="sp-headline-strike">₹35K</span><br>
-        <span class="sp-huge-number">₹24K</span>
-      </h1>
-      <p class="sp-sub">Real Delhi NCR rents shared anonymously, plus flats to <b>rent or buy</b> across Delhi, Gurgaon, Noida and verified listings in Lucknow. Tap the map. See the truth.</p>
+      <div class="sp-hook">What does your neighbour actually pay?</div>
+      <div class="sp-cities">Delhi · Gurgaon · Noida · Lucknow</div>
 
-      <div class="sp-metrics">
-        <div class="sp-metric">
-          <div class="sp-metric-lbl">Real rents</div>
-          <div class="sp-metric-val" id="sp-count">—</div>
+
+      <div class="sp-proof-box">
+        <div class="sp-proof-title">Why people trust us</div>
+        <div class="sp-proof-row">
+          <span class="sp-proof-ico">↗</span>
+          <div class="sp-proof-content">
+            <div class="sp-proof-num"><span id="sp-count">—</span> prices on the map</div>
+            <div class="sp-proof-desc">Real numbers · growing daily as neighbours share</div>
+          </div>
         </div>
-        <div class="sp-metric">
-          <div class="sp-metric-lbl">Fees</div>
-          <div class="sp-metric-val"><span>₹0</span></div>
+        <div class="sp-proof-row">
+          <span class="sp-proof-ico">◈</span>
+          <div class="sp-proof-content">
+            <div class="sp-proof-num">Rent · Buy · PG</div>
+            <div class="sp-proof-desc">All three — one map · four cities</div>
+          </div>
         </div>
-        <div class="sp-metric">
-          <div class="sp-metric-lbl">Login</div>
-          <div class="sp-metric-val">none</div>
+        <div class="sp-proof-row">
+          <span class="sp-proof-ico">✦</span>
+          <div class="sp-proof-content">
+            <div class="sp-proof-num">₹0 fees · no login · always free</div>
+            <div class="sp-proof-desc">Free for renters and buyers · always</div>
+          </div>
         </div>
       </div>
 
-      <div class="sp-scope-chips">
-        <span class="sp-scope-chip">Rent</span>
-        <span class="sp-scope-chip">Buy</span>
-        <span class="sp-scope-chip">PG / Room</span>
+      <div class="sp-cta-row">
+        <button class="sp-btn-main" onclick="enterApp()">See real prices →</button>
+        <button class="sp-btn-share" onclick="shareToWhatsApp()">Share</button>
       </div>
-
-      <button class="sp-btn-main" onclick="enterApp()">
-        <span>Explore the map</span>
-        <span class="sp-btn-shortcut">↵</span>
-      </button>
-      <button class="sp-btn-how" onclick="enterApp();setTimeout(startQuickTour,800)">→ How it works</button>
+      <div class="sp-trust">By opening the map you agree to our <a onclick="event.preventDefault();openPrivacyModal()">Privacy Policy</a> · <a onclick="event.preventDefault();openTncModal()">Terms</a> · <a onclick="enterApp();setTimeout(startQuickTour,800)">How it works</a></div>
       
 
     </div>
@@ -1792,19 +2108,27 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
         <div class="sp-founders-avatar">H</div>
       </div>
       <div class="sp-founders-text">
-        Built by <b>Piyush &amp; Himanshu</b>.<br>
-        <a href="https://wa.me/919336297656" target="_blank">WhatsApp us anytime ↗</a>
+        Built by <b>Piyush &amp; Himanshu</b>
       </div>
     </div>
-    <div class="sp-footer">
-      <a onclick="event.preventDefault();openPrivacyModal()">Privacy</a> · <a onclick="event.preventDefault();openTncModal()">Terms</a>
-    </div>
+
   </div>
 </div>
 
 <!-- ══ APP ══ -->
 <div id="app">
-  <div id="map-wrap"><div id="map"></div></div>
+  <div id="map-wrap"><div id="map"></div>
+  <div id="map-tap-hint" style="display:none;"><div class="mth-inner"><div class="mth-crosshair">✛</div><div class="mth-text">Tap anywhere on the map</div><div class="mth-sub">to place your pin here</div></div></div>
+  </div>
+  <!-- EMPTY STATE — shows when city has no pins -->
+  <div id="gm-empty-state" style="display:none;">
+    <div class="ges-card">
+      <div class="ges-ico">📍</div>
+      <div class="ges-title" id="ges-title">No rents shared in Delhi yet</div>
+      <div class="ges-sub">Be the first — takes 20 seconds. Help everyone in your area negotiate better.</div>
+      <button class="ges-btn" onclick="openDropPin()">+ Drop a Pin</button>
+    </div>
+  </div>
 
   <div id="gm-top-controls">
     <div class="gm-search-block">
@@ -1822,18 +2146,23 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
           <button class="gm-mode-btn" id="gm-sale-btn" onclick="setMode('sale')">Buy</button>
         </div>
         <button class="gm-filter-btn" onclick="openGmFilter()">Filter <span id="gm-filter-count" style="background:#2d7a4f;color:#fff;border-radius:50%;font-size:9px;font-weight:700;padding:0 5px;margin-left:2px;">0</span></button>
-        <button class="gm-menu-btn" onclick="openMenuSheet()" aria-label="Menu">
-          <div class="gm-menu-line"></div>
-          <div class="gm-menu-line"></div>
-          <div class="gm-menu-line"></div>
-        </button>
+
       </div>
-      <!-- Row 2: Neighbourhood chips — populated by renderHoodChips() -->
+      <!-- Row 2: Neighbourhood chips -->
       <div id="gm-nav-row" class="gm-nav-row" style="display:none;">
         <div class="gm-nav-sep" style="display:none;"></div>
       </div>
     </div>
-    <!-- City dropdown -->
+    <!-- CHIP BAR -->
+    <div id="gm-chip-bar">
+      <button class="gm-chip gm-chip-avlb" id="chip-avlb" onclick="chipAction('avlb',this)">Available</button>
+      <button class="gm-chip gm-chip-rent" id="chip-rent" onclick="chipAction('rent',this)">Real Rents</button>
+      <button class="gm-chip gm-chip-find" id="chip-find" onclick="chipAction('find',this)">Find a Flat</button>
+      <button class="gm-chip gm-chip-list" id="chip-list" onclick="chipAction('list',this)">List My Flat</button>
+      <button class="gm-chip gm-chip-near" id="chip-near" onclick="chipAction('near',this)">Near Me</button>
+      <button class="gm-chip gm-chip-stats" id="chip-stats" onclick="chipAction('stats',this)">Live Stats</button>
+      <button class="gm-chip gm-chip-how" id="chip-how" onclick="chipAction('how',this)">How it works</button>
+    </div>
     <div id="gm-city-dropdown" class="gm-city-dropdown">
       <button class="gm-city-opt" data-city="delhi" onclick="pickCity('delhi')">
         <span class="gm-city-opt-name">Delhi</span>
@@ -1854,10 +2183,23 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
     </div>
 
   </div><!-- /gm-top-controls -->
+  
+<!-- DROP PIN BANNER -->
+  <div id="gm-drop-banner" style="display:none;">
+    <div class="gdb-left">
+      <span class="gdb-ico">👆</span>
+      <div>
+        <div class="gdb-title">Tap the map to place your pin</div>
+        <div class="gdb-sub">Anywhere in Delhi, Gurgaon, Noida or Lucknow</div>
+      </div>
+    </div>
+    <button class="gdb-cancel" onclick="closeDropPin()">Cancel</button>
+  </div>
 
   <div id="gm-right-toolbar">
     <button class="gm-rt-btn" onclick="toggleSatellite()"><span class="gm-rt-label">Satellite</span>🛰</button>
     <button class="gm-rt-btn" id="near-me-btn" onclick="nearMe()"><span class="gm-rt-label">Near Me</span>📍</button>
+    <button class="gm-rt-btn" onclick="toggleSavedDrawer()" id="saved-rt-btn"><span class="gm-rt-label">Saved</span>🔖</button>
   </div>
 
   <div id="gm-stats-row">
@@ -1866,10 +2208,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
     <div class="gm-stat-chip"><b id="gm-s-low">—</b> new</div>
   </div>
 
-  <div id="bottom-cta-row">
-    <button id="list-btn" onclick="startListMyFlat()">List my flat</button>
-    <button id="talk-btn" onclick="openMatchMe()">Find me a flat</button>
-  </div>
+
 
   <!-- COMPACT PIN CARD (mobile) -->
   <div id="pin-card">
@@ -1891,9 +2230,15 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
       <span class="maker-label">📍 From the Team</span>
       <button class="maker-close" onclick="closeMakerCard()">✕</button>
     </div>
-    <div class="maker-body">Lucknow listings are <b>personally verified</b> by our team. Delhi, Gurgaon and Noida are community-powered — real rents shared by real residents.</div>
-    <button class="maker-cta" onclick="closeMakerCard();openMatchMe()">Drop your requirements →</button>
-    <div class="maker-credit">Built with ❤️ by <b>Piyush &amp; Himanshu</b></div>
+    <div class="maker-body">
+      See what your neighbours <b>actually pay</b> — not what anyone quotes.<br>
+      Drop a pin in 20 seconds. Help everyone in your area negotiate better.
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="maker-cta" style="flex:2;" onclick="closeMakerCard();openDropPin()">+ Drop a Pin →</button>
+      <button class="maker-cta" style="flex:1;background:#f5f5f4;color:#0a0a0a;" onclick="closeMakerCard()">Later</button>
+    </div>
+    <div class="maker-credit">Built by <b>Piyush &amp; Himanshu</b></div>
   </div>
 
   
@@ -2045,7 +2390,14 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
   </div>
 
   <!-- DROP PIN BUTTON — shows on Delhi/Gurgaon -->
-  <button id="drop-pin-btn" onclick="openDropPin()">+ Drop a Pin</button>
+  <!-- CHIP FILTER BANNER -->
+  <div id="chip-banner" style="display:none;">
+    <div class="cb-text" id="cb-text"></div>
+    <button class="cb-cancel" onclick="clearChipFilter()">Cancel</button>
+  </div>
+  <button id="drop-pin-btn" class="show" onclick="openDropPin()">
+    <span class="dp-pulse"></span>+ Drop a Pin
+  </button>
 
   <!-- MATCH BANNER -->
   <div id="match-banner" onclick="dismissMatchBanner()">
@@ -2055,100 +2407,167 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
   <!-- DROP PIN MODAL -->
   <div id="drop-pin-overlay">
     <div id="drop-pin-sheet">
-      <div class="dps-head">
-        <div class="dps-title">Drop a Pin</div>
-        <div class="dps-sub">Share what you know — help others in <span id="dps-city-name">Delhi</span> find a home.</div>
-      </div>
-      <!-- Pin type selector -->
-      <div class="dps-type-row">
-        <button class="dps-type-btn on" data-ptype="rent" onclick="selectPinType('rent',this)">
-          <div class="dps-type-ico">💰</div>
-          <div class="dps-type-lbl">What I pay</div>
-          <div class="dps-type-desc">Share rent anonymously</div>
-        </button>
-        <button class="dps-type-btn" data-ptype="listing" onclick="selectPinType('listing',this)">
-          <div class="dps-type-ico">🏠</div>
-          <div class="dps-type-lbl">List a Flat</div>
-          <div class="dps-type-desc">I have a flat available</div>
-        </button>
+
+      <!-- HANDLE + CLOSE -->
+      <div class="dps-handle-row">
+        <div class="dps-handle"></div>
+        <button class="dps-x" onclick="closeDropPin()">✕</button>
       </div>
 
-      <!-- RENT DATA FORM (DEFAULT — shown first) -->
-      <div class="dps-form" id="dps-form-rent">
-        <label class="dps-lbl">BHK</label>
-        <div class="dps-chips" id="dps-rent-bhk">
-          <button class="dps-chip on" data-v="1">1 BHK</button>
-          <button class="dps-chip" data-v="2">2 BHK</button>
-          <button class="dps-chip" data-v="3">3 BHK</button>
-          <button class="dps-chip" data-v="pg">PG / Room</button>
+      <!-- STEP 1: PIN TYPE SELECTION -->
+      <div id="dps-step1">
+        <div class="dps-head">
+          <div class="dps-title">Drop a Pin</div>
+          <div class="dps-sub">What are you pinning on <span id="dps-city-name">Delhi</span>?</div>
         </div>
-        <label class="dps-lbl">What you actually pay (₹/month)</label>
-        <input class="dps-input" id="dps-actual-rent" type="number" inputmode="numeric" placeholder="e.g. 22000"/>
-        <label class="dps-lbl">Area / Colony</label>
-        <input class="dps-input" id="dps-rent-area" type="text" placeholder="e.g. Dwarka Sector 6"/>
-        <div class="dps-note">🔒 100% anonymous. No name, no phone, no contact needed. Just the number — helps everyone negotiate better.</div>
-        <button class="dps-submit" id="dps-rent-btn" onclick="submitRentPin()">Share Anonymously →</button>
+        <div class="dps-pin-types">
+          <div class="dps-pt on" data-ptype="listing" onclick="dpSelectType('listing',this)">
+            <div class="dps-pt-ico">🏠</div>
+            <div class="dps-pt-body">
+              <div class="dps-pt-lbl">I have a flat available</div>
+              <div class="dps-pt-desc">List it · goes live on map instantly</div>
+            </div>
+            <div class="dps-pt-check">✓</div>
+          </div>
+          <div class="dps-pt" data-ptype="rent" onclick="dpSelectType('rent',this)">
+            <div class="dps-pt-ico">💰</div>
+            <div class="dps-pt-body">
+              <div class="dps-pt-lbl">I pay rent here</div>
+              <div class="dps-pt-desc">Share what you pay · helps everyone negotiate</div>
+            </div>
+            <div class="dps-pt-check"></div>
+          </div>
+          <div class="dps-pt" data-ptype="seeker" onclick="dpSelectType('seeker',this)">
+            <div class="dps-pt-ico">🔍</div>
+            <div class="dps-pt-body">
+              <div class="dps-pt-lbl">Looking for a flat / flatmate</div>
+              <div class="dps-pt-desc">Show you on map · get matched to listings</div>
+            </div>
+            <div class="dps-pt-check"></div>
+          </div>
+        </div>
+
+        <!-- COMMON FIELDS — BHK + Area always shown -->
+        <div class="dps-form-common">
+          <label class="dps-lbl">BHK</label>
+          <div class="dps-chips" id="dps-bhk-main">
+            <button class="dps-chip on" data-v="1">1 BHK</button>
+            <button class="dps-chip" data-v="2">2 BHK</button>
+            <button class="dps-chip" data-v="3">3 BHK</button>
+            <button class="dps-chip" data-v="pg">PG / Room</button>
+          </div>
+
+          <!-- LISTING FIELDS -->
+          <div id="dps-fields-listing">
+            <label class="dps-lbl">Monthly Rent (₹)</label>
+            <input class="dps-input" id="dps-rent" type="number" inputmode="numeric" placeholder="e.g. 18000"/>
+            <label class="dps-lbl">Area / Colony</label>
+            <input class="dps-input" id="dps-area" type="text" placeholder="Search with Google Maps..."/>
+            <label class="dps-lbl">Furnishing</label>
+            <div class="dps-chips" id="dps-fur">
+              <button class="dps-chip on" data-v="furnished">Furnished</button>
+              <button class="dps-chip" data-v="semi">Semi</button>
+              <button class="dps-chip" data-v="unfurnished">Bare</button>
+            </div>
+            <label class="dps-lbl">Available for</label>
+            <div class="dps-chips" id="dps-avail-for">
+              <button class="dps-chip on" data-v="family">Family</button>
+              <button class="dps-chip" data-v="bachelor">Bachelor</button>
+              <button class="dps-chip" data-v="any">Any</button>
+            </div>
+          </div>
+
+          <!-- RENT FIELDS -->
+          <div id="dps-fields-rent" style="display:none;">
+            <label class="dps-lbl">What you actually pay (₹/month)</label>
+            <input class="dps-input" id="dps-actual-rent" type="number" inputmode="numeric" placeholder="e.g. 22000"/>
+            <label class="dps-lbl">Area / Colony</label>
+            <input class="dps-input" id="dps-rent-area" type="text" placeholder="Search with Google Maps..."/>
+          </div>
+
+          <!-- SEEKER FIELDS -->
+          <div id="dps-fields-seeker" style="display:none;">
+            <label class="dps-lbl">Budget (₹/month)</label>
+            <div class="dps-row">
+              <input class="dps-input" id="dps-budget-min" type="number" inputmode="numeric" placeholder="Min" oninput="updateMedianRent()"/>
+              <input class="dps-input" id="dps-budget-max" type="number" inputmode="numeric" placeholder="Max" oninput="updateMedianRent()"/>
+            </div>
+            <div id="dps-median-box" style="display:none;background:#f0fdf4;border:.5px solid #2d7a4f;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
+              <div style="font-size:9px;font-weight:600;color:#2d7a4f;margin-bottom:3px;">Median rent in 2km radius</div>
+              <div id="dps-median-text" style="font-size:10px;color:#0a0a0a;font-weight:500;"></div>
+            </div>
+            <label class="dps-lbl">Preferred Area</label>
+            <input class="dps-input" id="dps-seek-area" type="text" placeholder="Search with Google Maps..."/>
+            <label class="dps-lbl">Move-in timeline</label>
+            <div class="dps-chips" id="dps-seek-timeline">
+              <button class="dps-chip on" data-v="asap">ASAP</button>
+              <button class="dps-chip" data-v="month">Next month</button>
+              <button class="dps-chip" data-v="flexible">Flexible</button>
+            </div>
+            <label class="dps-lbl">Food preference in flatmate</label>
+            <div class="dps-chips" id="dps-food-pref">
+              <button class="dps-chip" data-v="veg">🥬 Veg</button>
+              <button class="dps-chip" data-v="nonveg">🍗 Non-veg</button>
+              <button class="dps-chip on" data-v="any">Any</button>
+            </div>
+            <label class="dps-lbl">Smoking preference</label>
+            <div class="dps-chips" id="dps-smoke-pref">
+              <button class="dps-chip on" data-v="nonsmoker">🚭 Non-smoker</button>
+              <button class="dps-chip" data-v="nopref">No preference</button>
+            </div>
+            <label class="dps-lbl">You are</label>
+            <div class="dps-chips" id="dps-gender">
+              <button class="dps-chip" data-v="male">Male</button>
+              <button class="dps-chip" data-v="female">Female</button>
+              <button class="dps-chip" data-v="other">Other</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="dps-submit" onclick="dpStep1Next()">Continue →</button>
         <button class="dps-cancel" onclick="closeDropPin()">Cancel</button>
       </div>
 
-      <!-- SEEKER FORM -->
-      <div class="dps-form" id="dps-form-seeker" style="display:none;">
-        <label class="dps-lbl">BHK needed</label>
-        <div class="dps-chips" id="dps-seek-bhk">
-          <button class="dps-chip on" data-v="1">1 BHK</button>
-          <button class="dps-chip" data-v="2">2 BHK</button>
-          <button class="dps-chip" data-v="3">3 BHK</button>
-          <button class="dps-chip" data-v="pg">PG / Room</button>
+      <!-- STEP 2: CONTACT + ANONYMOUS TOGGLE -->
+      <div id="dps-step2" style="display:none;">
+        <div class="dps-head">
+          <div class="dps-title">Almost done</div>
+          <div class="dps-sub" id="dps-step2-sub">Your listing summary</div>
         </div>
-        <label class="dps-lbl">Budget (₹/month)</label>
-        <div class="dps-row">
-          <input class="dps-input" id="dps-budget-min" type="number" inputmode="numeric" placeholder="Min e.g. 10000"/>
-          <input class="dps-input" id="dps-budget-max" type="number" inputmode="numeric" placeholder="Max e.g. 20000"/>
+
+        <!-- Anonymous toggle — only for rent data -->
+        <div id="dps-anon-section" style="display:none;" class="dps-form-common">
+          <div class="dps-anon-row">
+            <div>
+              <div class="dps-anon-lbl">Share anonymously?</div>
+              <div class="dps-anon-desc">Only rent amount shown · no contact info</div>
+            </div>
+            <button class="dps-toggle" id="dps-anon-toggle" onclick="dpToggleAnon(this)">
+              <div class="dps-toggle-knob"></div>
+            </button>
+          </div>
+          <div class="dps-anon-note" id="dps-anon-note">✓ Anonymous — helps everyone know real rents</div>
         </div>
-        <label class="dps-lbl">Move-in timeline</label>
-        <div class="dps-chips" id="dps-seek-timeline">
-          <button class="dps-chip on" data-v="asap">ASAP</button>
-          <button class="dps-chip" data-v="month">Next month</button>
-          <button class="dps-chip" data-v="flexible">Flexible</button>
+
+        <!-- Contact fields — hidden when anonymous -->
+        <div id="dps-contact-section" class="dps-form-common">
+          <div class="dps-contact-card">
+            <div class="dps-contact-title">Your contact details</div>
+            <div class="dps-contact-sub">Only shared with interested tenants · never public</div>
+          </div>
+          <label class="dps-lbl">Email *</label>
+          <input class="dps-input" id="dps-email" type="email" placeholder="you@email.com" autocomplete="email"/>
+          <label class="dps-lbl">WhatsApp <span style="font-weight:400;opacity:.5;text-transform:none;letter-spacing:0;">(optional)</span></label>
+          <input class="dps-input" id="dps-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit number"/>
+          <div class="dps-privacy-note">🔒 Your details are never shown publicly</div>
         </div>
-        <label class="dps-lbl">Preferred Area</label>
-        <input class="dps-input" id="dps-seek-area" type="text" placeholder="e.g. Dwarka, Sector 6"/>
-        <label class="dps-lbl">Your Name</label>
-        <input class="dps-input" id="dps-seek-name" type="text" placeholder="Your name"/>
-        <label class="dps-lbl">Email <span style="font-weight:400;opacity:.6;text-transform:none;letter-spacing:0;">(optional — get notified on match)</span></label>
-        <input class="dps-input" id="dps-seek-email" type="email" placeholder="you@email.com (optional)"/>
-        <div class="dps-note">We scan daily within 3km of your pin. Email-only — no calls unless you ask. Free, no spam.</div>
-        <button class="dps-submit" id="dps-seeker-btn" onclick="submitSeekerPin()">Find Me a Flat →</button>
-        <button class="dps-cancel" onclick="closeDropPin()">Cancel</button>
+
+        <div class="dps-foot">
+          <button class="dps-submit" id="dps-final-btn" onclick="dpStep2Submit()">Drop the Pin →</button>
+          <button class="dps-back" onclick="dpBack()">← Back</button>
+        </div>
       </div>
 
-      <!-- LISTING FORM -->
-      <div class="dps-form" id="dps-form-listing" style="display:none;">
-        <label class="dps-lbl">BHK</label>
-        <div class="dps-chips" id="dps-bhk">
-          <button class="dps-chip on" data-v="1">1 BHK</button>
-          <button class="dps-chip" data-v="2">2 BHK</button>
-          <button class="dps-chip" data-v="3">3 BHK</button>
-          <button class="dps-chip" data-v="pg">PG / Room</button>
-        </div>
-        <label class="dps-lbl">Monthly Rent (₹)</label>
-        <input class="dps-input" id="dps-rent" type="number" inputmode="numeric" placeholder="e.g. 18000"/>
-        <label class="dps-lbl">Area / Colony</label>
-        <input class="dps-input" id="dps-area" type="text" placeholder="e.g. Dwarka Sector 6"/>
-        <label class="dps-lbl">Furnishing</label>
-        <div class="dps-chips" id="dps-fur">
-          <button class="dps-chip on" data-v="furnished">Furnished</button>
-          <button class="dps-chip" data-v="semi">Semi</button>
-          <button class="dps-chip" data-v="unfurnished">Bare</button>
-        </div>
-        <label class="dps-lbl">Email *</label>
-        <input class="dps-input" id="dps-email" type="email" placeholder="you@email.com"/>
-        <label class="dps-lbl">WhatsApp <span style="font-weight:400;opacity:.5;text-transform:none;letter-spacing:0;">(optional)</span></label>
-        <input class="dps-input" id="dps-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit number (optional)"/>
-        <div class="dps-note">🔒 Your number is never shown publicly. Only shared when someone is interested in your listing.</div>
-        <button class="dps-submit" id="dps-listing-btn" onclick="submitCommunityListing()">Post Listing →</button>
-        <button class="dps-cancel" onclick="closeDropPin()">Cancel</button>
-      </div>
     </div>
   </div>
   <div id="dp-overlay" onclick="closeDetail()"></div>
@@ -2170,6 +2589,15 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
       <div class="dp-neg" id="dp-neg" style="display:none;">💬 <span id="dp-neg-txt">Typical: ₹—</span></div>
       <div class="price-drop" id="dp-price-drop" style="display:none;margin-bottom:6px;"></div>
       <div class="dp-tags" id="dp-tags"></div>
+      <!-- INTEREST CARD — prominent green CTA -->
+      <div class="dp-interest-card" id="dp-interest-card" onclick="openInterestForm()">
+        <div class="dp-ic-ico">✉</div>
+        <div class="dp-ic-body">
+          <div class="dp-ic-title">I'm interested in this flat</div>
+          <div class="dp-ic-desc">We'll email the owner with your details and match you against nearby flats too.</div>
+        </div>
+        <div class="dp-ic-arrow">→</div>
+      </div>
       <div class="dp-status-row">
         <span class="s-pill s-avail" id="dp-status">🟢 Available</span>
         <span class="avg-badge" id="dp-avg" style="display:none;"></span>
@@ -2215,10 +2643,19 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
           </button>
         </div>
       </div>
-      <div class="dp-sec" id="dp-sim-sec"><div class="dp-sec-lbl">Similar Properties</div><div class="sim-grid" id="dp-sim-list"></div></div>
+      <div class="dp-int-card" onclick="openInterestForm()">
+      <div class="dp-int-card-ico">✉</div>
+      <div class="dp-int-card-body">
+        <div class="dp-int-card-title">I'm interested in this flat</div>
+        <div class="dp-int-card-desc">We'll email the owner with your details and also match you against nearby flats.</div>
+      </div>
+      <div class="dp-int-card-arrow">→</div>
+    </div>
+    <div class="dp-sec" id="dp-sim-sec"><div class="dp-sec-lbl">Similar Properties</div><div class="sim-grid" id="dp-sim-list"></div></div>
     </div>
     <div class="dp-foot">
       <button class="btn-interest" onclick="scrollToVisit()">📅 Pick a visit slot below ↓</button>
+      <button class="dp-interested-btn" onclick="openInterestForm()" id="dp-interest-btn">✉ I'm interested — contact owner</button>
       <div class="dp-foot-note">🔒 Your details are only shared with our verified team</div>
     </div>
   </div>
@@ -2280,10 +2717,37 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
     <label class="m-lbl">Budget</label>
     <div class="m-chips" id="mc-budget"><button class="m-chip" data-v="under15k">Under ₹15K</button><button class="m-chip on" data-v="15-30k">₹15K–30K</button><button class="m-chip" data-v="30-50k">₹30K–50K</button><button class="m-chip" data-v="50k+">₹50K+</button></div>
     <label class="m-lbl">Preferred areas</label>
+    <div id="mc-median-box" style="background:#f0fdf4;border:.5px solid #2d7a4f;border-radius:8px;padding:8px 12px;margin-bottom:8px;display:none;">
+      <div style="font-size:10px;font-weight:600;color:#2d7a4f;margin-bottom:2px;">Median rent in 2km radius</div>
+      <div id="mc-median-text" style="font-size:12px;color:#0a0a0a;font-weight:500;"></div>
+    </div>
     <div class="m-chips" id="mc-areas"><button class="m-chip" data-v="dwarka">Dwarka</button><button class="m-chip" data-v="saket">Saket</button><button class="m-chip" data-v="cyber">Cyber City</button><button class="m-chip" data-v="noida">Noida</button><button class="m-chip" data-v="open">Open to suggestions</button></div>
     <div class="m-row" style="margin-top:4px;">
       <div class="m-group"><label class="m-lbl">Your name *</label><input class="m-input" id="mc-name" type="text" placeholder="Full name"/><div class="input-error-msg" id="mc-name-err"></div></div>
       <div class="m-group"><label class="m-lbl">Email *</label><input class="m-input" id="mc-email" type="email" placeholder="you@email.com"/><div class="input-error-msg" id="mc-email-err"></div></div></div><div class="m-row"><div class="m-group"><label class="m-lbl">WhatsApp <span style="font-weight:400;color:#a3a3a3;">(optional)</span></label><input class="m-input" id="mc-phone" type="tel" maxlength="10" placeholder="98765 43210" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"/><div class="input-error-msg" id="mc-phone-err"></div></div>
+    </div>
+    <label class="m-lbl">Move-in timeline</label>
+    <div class="m-chips" id="mc-timeline" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+      <button class="m-chip on" data-v="asap" onclick="setTimeline(this)">ASAP</button>
+      <button class="m-chip" data-v="1month" onclick="setTimeline(this)">Next month</button>
+      <button class="m-chip" data-v="flexible" onclick="setTimeline(this)">Flexible</button>
+    </div>
+    <label class="m-lbl">Food preference in flatmate</label>
+    <div class="m-chips" id="mc-food" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+      <button class="m-chip" data-v="veg" onclick="setMChip(this,'mc-food')">🥬 Veg</button>
+      <button class="m-chip" data-v="nonveg" onclick="setMChip(this,'mc-food')">🍗 Non-veg</button>
+      <button class="m-chip on" data-v="any" onclick="setMChip(this,'mc-food')">Any</button>
+    </div>
+    <label class="m-lbl">Smoking preference</label>
+    <div class="m-chips" id="mc-smoke" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+      <button class="m-chip on" data-v="nonsmoker" onclick="setMChip(this,'mc-smoke')">🚭 Non-smoker</button>
+      <button class="m-chip" data-v="nopref" onclick="setMChip(this,'mc-smoke')">No preference</button>
+    </div>
+    <label class="m-lbl">You are <span class="m-opt">(optional)</span></label>
+    <div class="m-chips" id="mc-gender" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+      <button class="m-chip" data-v="male" onclick="setMChip(this,'mc-gender')">Male</button>
+      <button class="m-chip" data-v="female" onclick="setMChip(this,'mc-gender')">Female</button>
+      <button class="m-chip" data-v="other" onclick="setMChip(this,'mc-gender')">Other</button>
     </div>
     <label class="m-lbl">Anything specific?</label>
     <input class="m-input" id="mc-note" type="text" placeholder="Parking, pet friendly, near school…"/>
@@ -2517,6 +2981,8 @@ let tileNormal,tileSat,satOn=false;
 let _hoodCircle=null;
 let _pinCardId=null;
 let _appEntered=false;
+// Reset on page load
+window.addEventListener('load',()=>{_appEntered=false;});
 let _dropPinType='listing';
 let _dropPinLatLng=null;
 
@@ -2527,7 +2993,6 @@ function fmtRent(v){return v>=100000?'₹'+(v/100000).toFixed(1)+'L':v>=1000?'�
 
 // ══ SPLASH ══
 function enterApp(){
-  if(_appEntered)return; // FIX: prevent double call on deep link
   _appEntered=true;
   const sp=document.getElementById('splash');if(!sp)return;
   sp.style.opacity='0';sp.style.transition='opacity .35s ease';
@@ -2893,7 +3358,127 @@ function buildCost(p){
 }
 
 // ══ SHARED FILTER PREDICATE — used by both draw() and buildSimilar() ══
+
+// ══ CHIP BAR ══
+let _chipFilter=null;
+
+function chipAction(type, el){
+  // Reset all chips first
+  const resetChip=()=>clearChipFilter();
+
+  switch(type){
+    case 'avlb':
+      if(_chipFilter==='avlb'){resetChip();}
+      else{
+        resetChip();
+        _chipFilter='avlb';
+        el.classList.add('on');
+        showChipBanner('Showing available flats only', '');
+        draw();
+      }
+      break;
+
+    case 'rent':
+      if(_chipFilter==='rent'){
+        resetChip();
+        document.getElementById('map-wrap').classList.remove('rents-mode');
+      } else {
+        resetChip();
+        _chipFilter='rent';
+        el.classList.add('on');
+        showChipBanner('Filtering: real rent data only', 'amber');
+        document.getElementById('map-wrap').classList.add('rents-mode');
+        draw();
+      }
+      break;
+
+    case 'find':
+      // Open drop pin with seeker type pre-selected
+      openDropPin();
+      setTimeout(()=>{
+        const seekerPt=document.querySelector('.dps-pt[data-ptype="seeker"]');
+        if(seekerPt)dpSelectType('seeker',seekerPt);
+      },300);
+      break;
+
+    case 'list':
+      // Open drop pin with listing type pre-selected
+      openDropPin();
+      setTimeout(()=>{
+        const listPt=document.querySelector('.dps-pt[data-ptype="listing"]');
+        if(listPt)dpSelectType('listing',listPt);
+      },300);
+      break;
+
+    case 'near':
+      nearMe();
+      el.classList.add('on');
+      setTimeout(()=>el.classList.remove('on'),3000);
+      break;
+
+    case 'stats':
+      showLiveStatsModal();
+      break;
+
+    case 'how':
+      startQuickTour();
+      break;
+  }
+}
+
+function clearChipFilter(){
+  _chipFilter=null;
+  document.querySelectorAll('.gm-chip').forEach(c=>c.classList.remove('on'));
+  const b=document.getElementById('chip-banner');
+  if(b)b.style.display='none';
+  document.getElementById('map-wrap').classList.remove('rents-mode');
+  draw();
+}
+
+function showChipBanner(text, type){
+  const bar=document.getElementById('gm-chip-bar');
+  const topControls=document.getElementById('gm-top-controls');
+  const banner=document.getElementById('chip-banner');
+  if(!banner)return;
+  // Position banner just below the top controls block
+  const rect=topControls.getBoundingClientRect();
+  banner.style.top=(rect.bottom+8)+'px';
+  banner.className=type||'';
+  banner.style.display='flex';
+  document.getElementById('cb-text').textContent=text;
+}
+
+function showLiveStatsModal(){
+  const total=(LISTINGS||[]).length+(COMMUNITY_LISTINGS||[]).length+(RENT_PINS||[]).length;
+  const seekers=(SEEKER_PINS||[]).length;
+  const verified=(LISTINGS||[]).length;
+  const community=(COMMUNITY_LISTINGS||[]).length;
+  const rentPins=(RENT_PINS||[]).length;
+  
+  const el=document.getElementById('chip-stats');
+  if(el)el.classList.add('on');
+  
+  // Show as a small modal
+  const msg=`📊 Live Stats\n\n`+
+    `${total} total prices on map\n`+
+    `${verified} verified listings (Lucknow)\n`+
+    `${community} community listings\n`+
+    `${rentPins} rent data points\n`+
+    `${seekers} people looking\n`+
+    `4 cities covered`;
+  
+  showToast('📊 '+total+' prices · '+seekers+' seekers · 4 cities');
+  setTimeout(()=>{if(el)el.classList.remove('on');},3000);
+}
+
 function passesFilter(p){
+  // Chip bar filter
+  if(_chipFilter==='avlb'&&p.mode==='rent'&&p.status==='rented')return false;
+  if(_chipFilter==='avlb'&&p.type==='rent_share')return false;
+  if(_chipFilter==='rent'){
+    // Only show rent_share pins — these are "what I pay" anonymous pins
+    if(p.type!=='rent_share')return false;
+  }
   if(p.city&&p.city!==activeCity)return false;
   if(flt.mode&&flt.mode!=='all'&&p.mode!==flt.mode)return false;
   if(flt.type!=='all'&&p.type!==flt.type)return false;
@@ -2979,18 +3564,6 @@ function renderSavedDrawer(){
 }
 function removeSaved(id){savedIds=savedIds.filter(x=>x!==id);localStorage.setItem('gm_saved',JSON.stringify(savedIds));renderSavedDrawer();showToast('Removed');}
 
-// ══ SHARE ══
-function shareProperty(){
-  const p=activeDetail;if(!p)return;
-  const fl={furnished:'Furnished',semi:'Semi-Furnished',unfurnished:'Unfurnished'}[p.fur]||'';
-  const price=fmtP(p.rent,p.mode)+(p.mode==='rent'?'/mo':'');
-  const neg=p.neg&&p.neg.length?'%0APast tenants negotiated it down':'';
-  const url='https://gharmap.in?p='+p.id;
-  const msg='Found this on GharMap%0A%0A'+encodeURIComponent('*'+price+' - '+p.area+'*')+'%0A'+(p.bhk?encodeURIComponent(p.bhk+' BHK'+(fl?' - '+fl:''))+'%0A':'')+encodeURIComponent('Verified: rent, water, parking checked on-ground')+neg+'%0A%0AView Map: '+encodeURIComponent(url);
-  window.open('https://wa.me/?text='+msg,'_blank');
-  showToast('Opening WhatsApp...');
-}
-
 // ══ COMPACT PIN CARD ══
 function openPinCard(p){
   _pinCardId=p.id;
@@ -3019,13 +3592,65 @@ function toggleSatellite(){
 }
 
 // ══ NEAR ME ══
+
+function showMapTapHint(){
+  const el=document.getElementById('map-tap-hint');
+  if(el){el.style.display='block';}
+  // Also add ripple effect on map
+  const mapEl=document.getElementById('map');
+  if(mapEl)mapEl.style.cursor='crosshair';
+}
+function hideMapTapHint(){
+  const el=document.getElementById('map-tap-hint');
+  if(el){el.style.display='none';}
+}
+// Hide hint when user taps map
+
 function nearMe(){
-  if(!navigator.geolocation){showToast('Location not supported');return;}
+  if(!navigator.geolocation){showToast('Location not supported on this device');return;}
+  // Use cached location if fresh (< 5 mins old)
+  const now=Date.now();
+  if(_cachedLocation&&(now-_cachedLocation.ts)<300000){
+    flyToLocation(_cachedLocation.lat,_cachedLocation.lng);
+    return;
+  }
+  // Show loading state on chip
+  const chip=document.getElementById('chip-near');
+  if(chip){chip.textContent='Locating...';chip.classList.add('on');}
+  showToast('Getting your location...');
   navigator.geolocation.getCurrentPosition(
-    pos=>{map&&map.flyTo([pos.coords.latitude,pos.coords.longitude],15,{duration:1.2});showToast('Showing properties near you!');},
-    ()=>showToast('Location unavailable'),{timeout:10000}
+    pos=>{
+      const lat=pos.coords.latitude,lng=pos.coords.longitude;
+      _cachedLocation={lat,lng,ts:Date.now()};
+      flyToLocation(lat,lng);
+      if(chip){chip.textContent='Near Me';chip.classList.remove('on');}
+    },
+    (err)=>{
+      if(chip){chip.textContent='Near Me';chip.classList.remove('on');}
+      if(err.code===1)showToast('Please allow location access and try again');
+      else showToast('Could not get your location');
+    },
+    {timeout:10000,enableHighAccuracy:true,maximumAge:0}
   );
 }
+
+let _cachedLocation=null;
+
+function flyToLocation(lat,lng){
+  if(!map)return;
+  // Remove old location marker
+  if(_locationMarker){map.removeLayer(_locationMarker);_locationMarker=null;}
+  // Add blue location dot
+  _locationMarker=L.circleMarker([lat,lng],{
+    radius:8,fillColor:'#2563eb',fillOpacity:1,
+    color:'#fff',weight:2
+  }).addTo(map);
+  _locationMarker.bindPopup('<b>You are here</b>').openPopup();
+  map.flyTo([lat,lng],15,{duration:1.2});
+  showToast('📍 Showing listings near you');
+}
+
+let _locationMarker=null;
 
 // ══ CITY SWITCHER ══
 function selectCity(cityKey,el){
@@ -3118,6 +3743,23 @@ function selectHood(el){
   const zone=el.dataset.zone,lat=parseFloat(el.dataset.lat),lng=parseFloat(el.dataset.lng);
   if(_hoodCircle){map.removeLayer(_hoodCircle);_hoodCircle=null;}
   const c=CITY_DATA[activeCity];
+  // Show/hide empty state
+  setTimeout(()=>{
+    const cityListings=(LISTINGS||[]).filter(p=>p.city===activeCity).length+
+      (COMMUNITY_LISTINGS||[]).filter(p=>p.city===activeCity).length+
+      (RENT_PINS||[]).filter(p=>p.city===activeCity).length;
+    const emptyEl=document.getElementById('gm-empty-state');
+    if(emptyEl){
+      const cityData=CITY_DATA[activeCity];
+      if(cityListings===0){
+        emptyEl.style.display='block';
+        const t=document.getElementById('ges-title');
+        if(t)t.textContent='No rents shared in '+(cityData?cityData.name:'this city')+' yet';
+      } else {
+        emptyEl.style.display='none';
+      }
+    }
+  },500);
   if(zone==='all'){map.flyTo([c.lat,c.lng],c.zoom,{duration:1});activeZones.clear();draw();return;}
   const z=c.zones[zone];
   if(z&&z.radius){
@@ -3132,13 +3774,41 @@ let _waitingForPin=false;
 function openDropPin(){
   _waitingForPin=true;
   map.getContainer().style.cursor='crosshair';
-  showToast('Tap on the map to set your location',4000);
+  document.getElementById('gm-drop-banner').style.display='flex';
+  // Show map tap hint overlay
+  showMapTapHint();
   // Wire Google Places to area fields once overlay is visible
   setTimeout(initDropPinAreaSearch,300);
 }
 
 // ══ GOOGLE PLACES ON DROP PIN AREA FIELDS ══
 function initDropPinAreaSearch(){
+  // Also wire new unified form fields
+  const newFields = ['dps-area','dps-rent-area','dps-seek-area'];
+  if(window.google&&window.google.maps&&window.google.maps.places){
+    const city=window.CITY_DATA&&window.activeCity?window.CITY_DATA[window.activeCity]:null;
+    const lat=city?city.lat:28.6139,lng=city?city.lng:77.2090;
+    const bounds=new google.maps.LatLngBounds(
+      new google.maps.LatLng(lat-0.8,lng-0.8),
+      new google.maps.LatLng(lat+0.8,lng+0.8)
+    );
+    const opts={componentRestrictions:{country:'in'},fields:['geometry','name'],bounds,strictBounds:false};
+    newFields.forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el||el._gmAC)return;
+      const ac=new google.maps.places.Autocomplete(el,opts);
+      ac.addListener('place_changed',()=>{
+        const place=ac.getPlace();
+        if(!place||!place.geometry)return;
+        _dropPinLatLng={lat:place.geometry.location.lat(),lng:place.geometry.location.lng()};
+        el.value=place.name||el.value;
+        map&&map.flyTo([_dropPinLatLng.lat,_dropPinLatLng.lng],16,{duration:.5});
+      });
+      el._gmAC=true;
+    });
+  }
+  // Original area fields:
+  
   if(!window.google||!window.google.maps||!window.google.maps.places)return;
   const city=window.CITY_DATA&&window.activeCity?window.CITY_DATA[window.activeCity]:null;
   const lat=city?city.lat:28.6139,lng=city?city.lng:77.2090;
@@ -3172,6 +3842,8 @@ function initDropPinAreaSearch(){
 }
 function closeDropPin(){
   document.getElementById('drop-pin-overlay').classList.remove('open');
+  const db=document.getElementById('gm-drop-banner');if(db)db.style.display='none';
+  hideMapTapHint();
   _waitingForPin=false;_dropPinLatLng=null;
   map.getContainer().style.cursor='';
 }
@@ -3371,12 +4043,14 @@ function openCommunityDetail(p){
     (p.bhk?`<div class="det-item"><div class="det-lbl">BHK</div><div class="det-val">${p.bhk} BHK</div></div>`:'')+
     (fl?`<div class="det-item"><div class="det-lbl">Furnishing</div><div class="det-val">${fl}</div></div>`:'')+
     `<div class="det-item"><div class="det-lbl">Area</div><div class="det-val">${p.area}</div></div>`;
-  // Replace footer CTA with WhatsApp contact
+  // Replace footer CTA with interest form button
   document.querySelector('.dp-foot').innerHTML=
-    `<button class="btn-interest" onclick="contactCommunityLister('${p.phone||''}','${p.area}',${p.rent})">
-      Contact on WhatsApp →
+    `<button class="dp-interested-btn" onclick="openInterestForm()">
+      ✉ I'm interested — contact owner
     </button>
-    <div class="dp-foot-note">Direct contact with the person who listed this</div>`;
+    <div class="dp-foot-note">Owner gets your email · You get their reply directly</div>`;
+  // Store community listing as activeDetail for interest form
+  activeDetail={id:p.id||'community-'+Date.now(),area:p.area,city:p.city||activeCity,rent:p.rent,bhk:p.bhk,mode:p.mode||'rent'};
   map&&map.flyTo([p.lat,p.lng],16,{duration:.8});
   const dpEl=document.getElementById('dp');
   dpEl.classList.add('open');
@@ -3985,7 +4659,7 @@ function gfApply(){
 }
 
 // ══ MODALS ══
-function openMatchMe(){closeAll('matchme');document.getElementById('matchme-modal').classList.add('open');}
+function openMatchMe(){closeAll('matchme');document.getElementById('matchme-modal').classList.add('open');setTimeout(calcMedianRent,300);}
 function closeMatchMe(){document.getElementById('matchme-modal').classList.remove('open');}
 function openOwnerModal(){closeAll('owner');document.getElementById('owner-modal').classList.add('open');}
 function closeOwnerModal(){document.getElementById('owner-modal').classList.remove('open');}
@@ -4245,6 +4919,12 @@ function searchPinDrop(lat,lng,area){
     if(rentArea)rentArea.value=area;
   },100);
 }
+function showLiveStats(){
+  const total=(LISTINGS||[]).length+(COMMUNITY_LISTINGS||[]).length+(RENT_PINS||[]).length;
+  const seekers=(SEEKER_PINS||[]).length;
+  showToast('📊 '+total+' prices · '+seekers+' seekers · 4 cities');
+  setTimeout(()=>{const el=document.getElementById('chip-stats');if(el)el.classList.remove('on');},2000);
+}
 function startQuickTour(){
   localStorage.setItem('gm_guide_seen','1');
   _spotlightSteps=[
@@ -4459,12 +5139,18 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('.gm-city-opt').forEach(b=>b.classList.toggle('active',b.dataset.city==='delhi'));
   renderHoodChips('delhi');
   // Show drop-pin button immediately — Delhi is community city
-  const dpBtn=document.getElementById('drop-pin-btn');
-  if(dpBtn&&!CITY_DATA[activeCity].verified)dpBtn.classList.add('show');
+  // drop-pin-btn replaced by drop-pin-main-btn in bottom bar
   // Load all data
   loadSheet().then(()=>{draw();buildSearchIndex();checkDeepLink();updateSavedCount();});
   loadCommunityData();
-  ['mc-purpose','mc-bhk','mc-budget','mc-areas','ow-type','ow-purpose'].forEach(setupChips);
+  ['mc-purpose','mc-bhk','mc-budget','mc-areas','mc-timeline','ow-type','ow-purpose'].forEach(setupChips);
+  // Wire drop pin chip groups
+  ['dps-bhk-main','dps-fur','dps-avail-for','dps-seek-timeline','dps-food-pref','dps-smoke-pref','dps-gender'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.querySelectorAll('.dps-chip').forEach(c=>c.addEventListener('click',()=>{
+      el.querySelectorAll('.dps-chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
+    }));
+  });
   gfRange(null);
   const hasDeepLink=new URLSearchParams(location.search).get('p');
   if(hasDeepLink){enterApp();}
@@ -4540,18 +5226,318 @@ function initGoogleAutocomplete(){
   });
   window._gmAC=ac;
 }
+
+// ══ INTEREST FORM ══
+let _interestListingId = null;
+
+function openInterestForm(){
+  if(!activeDetail){return;}
+  _interestListingId = activeDetail.id;
+  const info = (activeDetail.bhk||'') + ' BHK in ' + (activeDetail.area||'') + ' · ' + (activeDetail.rent?'₹'+activeDetail.rent.toLocaleString('en-IN')+'/mo':'');
+  document.getElementById('int-listing-info').textContent = info;
+  document.getElementById('int-name').value = '';
+  document.getElementById('int-email').value = '';
+  document.getElementById('int-msg').value = '';
+  document.getElementById('interest-modal').classList.add('open');
+}
+
+function closeInterestForm(){
+  document.getElementById('interest-modal').classList.remove('open');
+  _interestListingId = null;
+}
+
+async function submitInterest(){
+  const name = document.getElementById('int-name').value.trim();
+  const email = document.getElementById('int-email').value.trim();
+  const msg = document.getElementById('int-msg').value.trim();
+  
+  if(!name){showToast('Please enter your name');return;}
+  if(!email||!email.includes('@')){showToast('Please enter a valid email');return;}
+  
+  const btn = document.querySelector('.int-submit');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  
+  try{
+    const payload = {
+      listing_id: _interestListingId,
+      listing_area: activeDetail?.area||'',
+      listing_city: activeDetail?.city||activeCity,
+      tenant_name: name,
+      tenant_email: email,
+      message: msg||null,
+      status: 'pending',
+      created_at: new Date().toISOString()
+    };
+    
+    const r = await fetch(SUPABASE_URL+'/rest/v1/enquiries', {
+      method:'POST',
+      headers:{...sbH(),'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    
+    if(r.ok||r.status===201){
+      closeInterestForm();
+      showToast('✓ Interest sent! Owner will reply to your email.');
+      // Show thank you
+      setTimeout(()=>showThankYou('lead'), 500);
+    } else {
+      throw new Error('Failed');
+    }
+  } catch(e){
+    showToast('Something went wrong. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send interest →';
+  }
+}
+
+
+// ══ NEW UNIFIED DROP PIN FLOW ══
+let _dpCurrentType = 'listing';
+let _dpIsAnon = false;
+
+function dpSelectType(type, el){
+  _dpCurrentType = type;
+  // Update UI
+  document.querySelectorAll('.dps-pt').forEach(p=>p.classList.remove('on'));
+  el.classList.add('on');
+  el.querySelector('.dps-pt-check').textContent = '✓';
+  document.querySelectorAll('.dps-pt:not(.on) .dps-pt-check').forEach(c=>c.textContent='');
+  // Show/hide fields
+  document.getElementById('dps-fields-listing').style.display = type==='listing'?'':'none';
+  document.getElementById('dps-fields-rent').style.display = type==='rent'?'':'none';
+  document.getElementById('dps-fields-seeker').style.display = type==='seeker'?'':'none';
+}
+
+
+// ══ MEDIAN RENT IN SEEKER FORM ══
+function updateMedianRent(){
+  const box = document.getElementById('dps-median-box');
+  const txt = document.getElementById('dps-median-text');
+  if(!box||!txt)return;
+  
+  // Get all rent pins + community listings for current city
+  const allRents = [
+    ...(LISTINGS||[]).filter(p=>p.city===activeCity&&p.rent),
+    ...(COMMUNITY_LISTINGS||[]).filter(p=>p.city===activeCity&&p.rent),
+    ...(RENT_PINS||[]).filter(p=>p.city===activeCity&&p.rent)
+  ];
+  
+  if(allRents.length < 3){box.style.display='none';return;}
+  
+  // Calculate median by BHK
+  const byBhk = {};
+  allRents.forEach(p=>{
+    const b = p.bhk||'any';
+    if(!byBhk[b])byBhk[b]=[];
+    byBhk[b].push(p.rent);
+  });
+  
+  const medians = [];
+  ['1','2','3'].forEach(bhk=>{
+    const arr = byBhk[bhk];
+    if(!arr||arr.length<2)return;
+    arr.sort((a,b)=>a-b);
+    const med = arr[Math.floor(arr.length/2)];
+    medians.push(bhk+'BHK ₹'+Math.round(med/1000)+'K ('+arr.length+' pins)');
+  });
+  
+  if(medians.length){
+    box.style.display='block';
+    txt.textContent = medians.join(' · ');
+  } else {
+    box.style.display='none';
+  }
+}
+
+function dpStep1Next(){
+  const type = _dpCurrentType;
+  // Validate based on type
+  if(type==='listing'){
+    const rent = document.getElementById('dps-rent').value;
+    const area = document.getElementById('dps-area').value.trim();
+    if(!rent||parseInt(rent)<1000){showToast('Please enter a valid monthly rent');return;}
+    if(!area){showToast('Please enter the area / colony');return;}
+  } else if(type==='rent'){
+    const rent = document.getElementById('dps-actual-rent').value;
+    const area = document.getElementById('dps-rent-area').value.trim();
+    if(!rent||parseInt(rent)<1000){showToast('Please enter the rent you pay');return;}
+    if(!area){showToast('Please enter the area');return;}
+  } else if(type==='seeker'){
+    const area = document.getElementById('dps-seek-area').value.trim();
+    if(!area){showToast('Please enter your preferred area');return;}
+  }
+
+  // Build summary
+  const bhk = document.querySelector('#dps-bhk-main .dps-chip.on')?.dataset.v||'';
+  let summary = '';
+  if(type==='listing'){
+    const rent = parseInt(document.getElementById('dps-rent').value)||0;
+    const area = document.getElementById('dps-area').value.trim();
+    summary = (bhk?bhk.toUpperCase()+' BHK in ':'')+area+(rent?' · ₹'+rent.toLocaleString('en-IN')+'/mo':'');
+  } else if(type==='rent'){
+    const rent = parseInt(document.getElementById('dps-actual-rent').value)||0;
+    const area = document.getElementById('dps-rent-area').value.trim();
+    summary = 'Rent data'+(bhk?' · '+bhk+' BHK':'')+' in '+area+(rent?' · ₹'+rent.toLocaleString('en-IN')+'/mo':'');
+  } else {
+    const area = document.getElementById('dps-seek-area').value.trim();
+    summary = 'Looking for '+(bhk?bhk+' BHK ':'')+'in '+area;
+  }
+  document.getElementById('dps-step2-sub').textContent = summary;
+
+  // Show anon toggle only for rent data
+  const anonSection = document.getElementById('dps-anon-section');
+  const contactSection = document.getElementById('dps-contact-section');
+  if(type==='rent'){
+    anonSection.style.display = '';
+    // Default to anonymous for rent data
+    dpToggleAnon(document.getElementById('dps-anon-toggle'), true);
+  } else {
+    anonSection.style.display = 'none';
+    contactSection.style.display = '';
+    _dpIsAnon = false;
+  }
+
+  // Update submit button label
+  const labels = {listing:'List my Flat → Goes live instantly', rent:'Share →', seeker:'Find me a Flat →'};
+  document.getElementById('dps-final-btn').textContent = labels[type]||'Drop the Pin →';
+
+  // Show step 2 — scroll to top for speed feel
+  document.getElementById('dps-step1').style.display = 'none';
+  document.getElementById('dps-step2').style.display = '';
+  const sheet=document.getElementById('drop-pin-sheet');
+  if(sheet)sheet.scrollTop=0;
+}
+
+function dpBack(){
+  document.getElementById('dps-step1').style.display = '';
+  document.getElementById('dps-step2').style.display = 'none';
+  const sheet=document.getElementById('drop-pin-sheet');
+  if(sheet)sheet.scrollTop=0;
+}
+
+function dpToggleAnon(btn, forceOn){
+  if(forceOn===true){
+    btn.classList.add('on');
+    _dpIsAnon = true;
+  } else {
+    btn.classList.toggle('on');
+    _dpIsAnon = btn.classList.contains('on');
+  }
+  const note = document.getElementById('dps-anon-note');
+  const contact = document.getElementById('dps-contact-section');
+  if(_dpIsAnon){
+    note.textContent = '✓ Anonymous — only rent amount shown, no contact info';
+    contact.style.display = 'none';
+  } else {
+    note.textContent = 'Not anonymous — listing shows as available, people can contact you';
+    contact.style.display = '';
+  }
+}
+
+async function dpStep2Submit(){
+  const type = _dpCurrentType;
+  const btn = document.getElementById('dps-final-btn');
+
+  if(type==='listing'||(!_dpIsAnon&&type==='rent')){
+    const email = document.getElementById('dps-email').value.trim();
+    if(!email||!email.includes('@')){showToast('Please enter a valid email');return;}
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  try{
+    if(type==='listing') await submitCommunityListing();
+    else if(type==='rent') await submitRentPin();
+    else if(type==='seeker') await submitSeekerPin();
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Helper for single-select chip groups in matchme
+function setMChip(el, groupId){
+  const group = document.getElementById(groupId);
+  if(!group) return;
+  group.querySelectorAll('.m-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// Median rent calculator for Find a Flat form
+function calcMedianRent(){
+  if(!_dropPinLatLng && !map) return;
+  const center = _dropPinLatLng || (map ? {lat:map.getCenter().lat,lng:map.getCenter().lng} : null);
+  if(!center) return;
+  const radius = 2; // km
+  const allRents = [...LISTINGS,...COMMUNITY_LISTINGS,...RENT_PINS].filter(p=>{
+    if(!p.lat||!p.lng) return false;
+    const dy = (p.lat-center.lat)*111;
+    const dx = (p.lng-center.lng)*111*Math.cos(center.lat*Math.PI/180);
+    return Math.sqrt(dy*dy+dx*dx) <= radius;
+  });
+  if(allRents.length < 3) return;
+  const byBhk = {};
+  allRents.forEach(p=>{
+    const k = p.bhk||'any';
+    if(!byBhk[k]) byBhk[k] = [];
+    byBhk[k].push(p.rent||p.actual_rent||0);
+  });
+  const parts = [];
+  ['1','2','3'].forEach(k=>{
+    if(byBhk[k]&&byBhk[k].length>=2){
+      const sorted = byBhk[k].sort((a,b)=>a-b);
+      const med = sorted[Math.floor(sorted.length/2)];
+      parts.push(k+'BHK ₹'+Math.round(med/1000)+'K ('+sorted.length+' pins)');
+    }
+  });
+  if(parts.length>0){
+    const box = document.getElementById('mc-median-box');
+    const txt = document.getElementById('mc-median-text');
+    if(box&&txt){
+      txt.textContent = parts.join(' · ');
+      box.style.display = '';
+    }
+  }
+}
+
 </script>
 <!-- THANK YOU POPUP -->
 <div id="thankyou-overlay">
   <div id="thankyou-card">
-    <div class="ty-icon">🎉</div>
-    <div class="ty-title" id="ty-title">Thanks!</div>
-    <div class="ty-msg" id="ty-msg">Our <b>GharMap team</b> will contact you soon.<br>We typically respond within 24 hours.</div>
-    <button class="ty-btn" onclick="shareThankyou()" id="ty-share-btn" style="margin-bottom:8px;">Share this map on WhatsApp</button>
-    <button onclick="closeThankYou()" style="width:100%;padding:10px;border-radius:12px;border:1.5px solid #ebebea;background:transparent;color:#525252;font-size:13px;cursor:pointer;font-family:var(--ff);">Back to Map</button>
+    <div class="ty-icon" id="ty-icon">🎉</div>
+    <div class="ty-title" id="ty-title">Pin dropped!</div>
+    <div class="ty-msg" id="ty-msg">You just helped someone in Delhi find a home. Share this map so others can see real rents too.</div>
+    <button class="ty-btn" onclick="shareThankyou()" id="ty-share-btn">Share GharMap on WhatsApp</button>
+    <button class="ty-btn-sec" onclick="closeThankYou()">Back to map</button>
   </div>
 </div>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgnmt05eNkoJ2LA7fZphd7yuusIB-ZfZs&libraries=places&callback=initGoogleAutocomplete&loading=async"></script>
+
+<!-- INTEREST FORM MODAL -->
+<div class="dark-overlay" id="interest-modal">
+  <div class="interest-card">
+    <button class="dm-close" onclick="closeInterestForm()">✕</button>
+    <div class="int-head">
+      <div class="int-title">I'm interested</div>
+      <div class="int-sub" id="int-listing-info">Send your details to the owner</div>
+    </div>
+    <div class="int-body">
+      <label class="int-lbl">Your name *</label>
+      <input class="int-input" id="int-name" type="text" placeholder="Full name"/>
+      <label class="int-lbl">Your email *</label>
+      <input class="int-input" id="int-email" type="email" placeholder="you@email.com"/>
+      <label class="int-lbl">Message <span class="int-opt">(optional)</span></label>
+      <textarea class="int-input int-textarea" id="int-msg" rows="3" placeholder="Is this still available? When can I visit?"></textarea>
+    </div>
+    <div class="int-foot">
+      <button class="int-submit" onclick="submitInterest()">Send interest →</button>
+      <div class="int-note">Owner gets your email · You get their reply directly</div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
