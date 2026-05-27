@@ -1978,13 +1978,13 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 
 /* ── COMMUNITY — amber with house icon ── */
 .gm-pin-community{
-  background:#fff7ed;
-  border-color:#d97706;
-  color:#92400e;
+  background:#f0fdf4;
+  border-color:#2d7a4f;
+  color:#166534;
   font-size:10px;
   padding:4px 8px;
   font-weight:700;
-  box-shadow:0 2px 6px rgba(217,119,6,.25);
+  box-shadow:0 2px 6px rgba(45,122,79,.2);
 }
 .gm-pin-community::before{content:'🏠';font-size:9px;}
 
@@ -2046,7 +2046,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
   opacity:.85;
 }
 .gm-cluster-verified{border-color:#2d7a4f;color:#245f42;background:#f0fdf4;}
-.gm-cluster-community{border-color:#d97706;color:#92400e;background:#fff7ed;}
+.gm-cluster-community{border-color:#2d7a4f;color:#166534;background:#f0fdf4;}
 .gm-cluster-seeker{border-color:#2563eb;color:#1e40af;background:#eff6ff;}
 .gm-cluster-rent{border-color:#a3a3a3;color:#525252;background:#fafafa;}
 
@@ -5023,7 +5023,8 @@ async function submitMatchMe(){
   if(phone&&phone.length!==10){markError('mc-phone','Enter valid 10-digit number or leave blank');return;}
   _setBtnLoading('mc-submit-btn',true,'🔍 Find My Match');
   const getSel=id=>Array.from(document.querySelectorAll('#'+id+' .m-chip.on')).map(c=>c.dataset.v).join(', ')||'Not specified';
-  const payload={name,phone:'91'+phone,purpose:getSel('mc-purpose'),bhk:getSel('mc-bhk'),budget:getSel('mc-budget'),areas:getSel('mc-areas'),note:document.getElementById('mc-note').value.trim()||null,status:'pending',created_at:new Date().toISOString()};
+  const timeline=Array.from(document.querySelectorAll('#mc-timeline .m-chip.on')).map(c=>c.dataset.v).join(', ')||'flexible';
+  const payload={name,email,phone:'91'+phone,purpose:getSel('mc-purpose'),bhk:getSel('mc-bhk'),budget:getSel('mc-budget'),areas:getSel('mc-areas'),timeline,note:document.getElementById('mc-note').value.trim()||null,status:'pending',created_at:new Date().toISOString()};
   fetch(SUPABASE_URL+'/rest/v1/seeker_leads',{method:'POST',headers:sbH({'Content-Type':'application/json','Prefer':'return=minimal'}),body:JSON.stringify(payload)}).catch(()=>{});
   _setBtnLoading('mc-submit-btn',false,'🔍 Find My Match');
   closeMatchMe();
