@@ -3165,25 +3165,32 @@ function draw(){
   });
 
   // ── Community listings (current city only) ──
-  COMMUNITY_LISTINGS.filter(p=>p.city===activeCity).forEach(p=>{
-    const m=L.marker([p.lat,p.lng],{icon:mkCommunityIcon(fmtRent(p.rent),p.area,p.bhk),_rent:p.rent});
-    m.on('click',()=>{closeAll(null);openCommunityDetail(p);});
-    communityCluster.addLayer(m);
-  });
+  // Community listings — show when: no chip active OR 'avlb' chip active
+  if(!_chipFilter||_chipFilter==='avlb'){
+    COMMUNITY_LISTINGS.filter(p=>p.city===activeCity&&p.status!=='rented').forEach(p=>{
+      const m=L.marker([p.lat,p.lng],{icon:mkCommunityIcon(fmtRent(p.rent),p.area,p.bhk),_rent:p.rent});
+      m.on('click',()=>{closeAll(null);openCommunityDetail(p);});
+      communityCluster.addLayer(m);
+    });
+  }
 
-  // ── Seeker pins (current city only) ──
-  SEEKER_PINS.filter(p=>p.city===activeCity).forEach(p=>{
-    const m=L.marker([p.lat,p.lng],{icon:mkSeekerIcon(p.bhk,p.budget_max)});
-    m.on('click',()=>showToast('Looking for '+p.bhk+' · Budget: '+fmtRent(p.budget_min)+'-'+fmtRent(p.budget_max)));
-    seekerLayer.addLayer(m);
-  });
+  // Seeker pins — show when: no chip active
+  if(!_chipFilter){
+    SEEKER_PINS.filter(p=>p.city===activeCity).forEach(p=>{
+      const m=L.marker([p.lat,p.lng],{icon:mkSeekerIcon(p.bhk,p.budget_max)});
+      m.on('click',()=>showToast('Looking for '+p.bhk+' · Budget: '+fmtRent(p.budget_min)+'-'+fmtRent(p.budget_max)));
+      seekerLayer.addLayer(m);
+    });
+  }
 
-  // ── Rent data pins (current city only) ──
-  RENT_PINS.filter(p=>p.city===activeCity).forEach(p=>{
-    const m=L.marker([p.lat,p.lng],{icon:mkRentDotIcon(p.rent,p.bhk),_rent:p.rent});
-    m.on('click',()=>showToast('Actual rent here: '+fmtRent(p.rent)+(p.bhk?' · '+p.bhk:'')));
-    rentLayer.addLayer(m);
-  });
+  // Rent data pins — show when: no chip active OR 'rent' chip active
+  if(!_chipFilter||_chipFilter==='rent'){
+    RENT_PINS.filter(p=>p.city===activeCity).forEach(p=>{
+      const m=L.marker([p.lat,p.lng],{icon:mkRentDotIcon(p.rent,p.bhk),_rent:p.rent});
+      m.on('click',()=>showToast('Actual rent here: '+fmtRent(p.rent)+(p.bhk?' · '+p.bhk:'')));
+      rentLayer.addLayer(m);
+    });
+  }
 
   // Stats
   const total=vis.length+COMMUNITY_LISTINGS.filter(p=>p.city===activeCity).length;
@@ -3385,12 +3392,8 @@ function chipAction(type, el){
       break;
 
     case 'find':
-      // Open drop pin with seeker type pre-selected
-      openDropPin();
-      setTimeout(()=>{
-        const seekerPt=document.querySelector('.dps-pt[data-ptype="seeker"]');
-        if(seekerPt)dpSelectType('seeker',seekerPt);
-      },300);
+      // Spotlight search bar + show what-are-you-looking-for overlay
+      openFindAFlatMode();
       break;
 
     case 'list':
@@ -3440,6 +3443,54 @@ function showChipBanner(text, type){
   document.getElementById('cb-text').textContent=text;
 }
 
+
+// ══ FIND A FLAT MODE ══
+let _findFlatMode = false;
+
+function openFindAFlatMode(){
+  _findFlatMode = true;
+  // Spotlight the search bar
+  const input = document.getElementById('gm-search-input');
+  if(input){
+    input.focus();
+    input.placeholder = 'Search area, colony or landmark...';
+  }
+  // Show the find-flat overlay
+  document.getElementById('find-flat-overlay').style.display='flex';
+}
+
+function closeFindFlatMode(){
+  _findFlatMode = false;
+  document.getElementById('find-flat-overlay').style.display='none';
+  const chip=document.getElementById('chip-find');
+  if(chip)chip.classList.remove('on');
+  const input=document.getElementById('gm-search-input');
+  if(input)input.placeholder='Search area, colony or landmark…';
+}
+
+function selectFindType(type){
+  closeFindFlatMode();
+  // Open drop pin with correct type
+  openDropPin();
+  setTimeout(()=>{
+    if(type==='seeker'){
+      const pt=document.querySelector('.dps-pt[data-ptype="seeker"]');
+      if(pt)dpSelectType('seeker',pt);
+    } else if(type==='buy'){
+      const pt=document.querySelector('.dps-pt[data-ptype="listing"]');
+      if(pt)dpSelectType('listing',pt);
+      // Pre-select buy mode
+      setTimeout(()=>{
+        const buyChip=document.querySelector('#dps-mode-chips .dps-chip[data-v="sale"]');
+        if(buyChip){buyChip.click();}
+      },200);
+    } else {
+      const pt=document.querySelector('.dps-pt[data-ptype="seeker"]');
+      if(pt)dpSelectType('seeker',pt);
+    }
+  },300);
+}
+
 function showLiveStatsModal(){
   const total=(LISTINGS||[]).length+(COMMUNITY_LISTINGS||[]).length+(RENT_PINS||[]).length;
   const seekers=(SEEKER_PINS||[]).length;
@@ -3465,11 +3516,13 @@ function showLiveStatsModal(){
 
 function passesFilter(p){
   // Chip bar filter
-  if(_chipFilter==='avlb'&&p.mode==='rent'&&p.status==='rented')return false;
-  if(_chipFilter==='avlb'&&p.type==='rent_share')return false;
+  if(_chipFilter==='avlb'){
+    // Available: only show available listings, hide rented
+    if(p.status==='rented')return false;
+  }
   if(_chipFilter==='rent'){
-    // Only show rent_share pins — these are "what I pay" anonymous pins
-    if(p.type!=='rent_share')return false;
+    // Real Rents: hide all verified listings (they show separately in draw)
+    return false;
   }
   if(p.city&&p.city!==activeCity)return false;
   if(flt.mode&&flt.mode!=='all'&&p.mode!==flt.mode)return false;
@@ -5540,6 +5593,30 @@ function calcMedianRent(){
       <button class="int-submit" onclick="submitInterest()">Send interest →</button>
       <div class="int-note">Owner gets your email · You get their reply directly</div>
     </div>
+  </div>
+</div>
+
+
+<!-- FIND A FLAT OVERLAY -->
+<div id="find-flat-overlay" style="display:none;position:fixed;inset:0;z-index:1050;background:rgba(10,10,10,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;padding:0 0 100px;">
+  <div style="background:#fff;border-radius:16px;padding:20px;width:calc(100% - 32px);max-width:420px;">
+    <div style="font-size:16px;font-weight:700;color:#0a0a0a;margin-bottom:4px;">What are you looking for?</div>
+    <div style="font-size:12px;color:#737373;margin-bottom:16px;">We'll help you find the right match</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+      <button onclick="selectFindType('rent')" style="padding:14px;border-radius:10px;border:1.5px solid #e5e5e5;background:#fff;text-align:left;cursor:pointer;font-family:var(--ff);">
+        <div style="font-size:13px;font-weight:700;color:#0a0a0a;">🏠 Rent a flat</div>
+        <div style="font-size:11px;color:#737373;margin-top:2px;">Looking for a flat to rent</div>
+      </button>
+      <button onclick="selectFindType('buy')" style="padding:14px;border-radius:10px;border:1.5px solid #e5e5e5;background:#fff;text-align:left;cursor:pointer;font-family:var(--ff);">
+        <div style="font-size:13px;font-weight:700;color:#0a0a0a;">🏡 Buy a property</div>
+        <div style="font-size:11px;color:#737373;margin-top:2px;">Looking to buy in this area</div>
+      </button>
+      <button onclick="selectFindType('flatmate')" style="padding:14px;border-radius:10px;border:1.5px solid #e5e5e5;background:#fff;text-align:left;cursor:pointer;font-family:var(--ff);">
+        <div style="font-size:13px;font-weight:700;color:#0a0a0a;">👥 Find a flatmate</div>
+        <div style="font-size:11px;color:#737373;margin-top:2px;">Looking for someone to share with</div>
+      </button>
+    </div>
+    <button onclick="closeFindFlatMode()" style="width:100%;padding:11px;border-radius:10px;border:1px solid #e5e5e5;background:transparent;color:#525252;font-size:13px;cursor:pointer;font-family:var(--ff);">Cancel</button>
   </div>
 </div>
 
