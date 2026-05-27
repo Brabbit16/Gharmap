@@ -2589,15 +2589,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
       <div class="dp-neg" id="dp-neg" style="display:none;">💬 <span id="dp-neg-txt">Typical: ₹—</span></div>
       <div class="price-drop" id="dp-price-drop" style="display:none;margin-bottom:6px;"></div>
       <div class="dp-tags" id="dp-tags"></div>
-      <!-- INTEREST CARD — prominent green CTA -->
-      <div class="dp-interest-card" id="dp-interest-card" onclick="openInterestForm()">
-        <div class="dp-ic-ico">✉</div>
-        <div class="dp-ic-body">
-          <div class="dp-ic-title">I'm interested in this flat</div>
-          <div class="dp-ic-desc">We'll email the owner with your details and match you against nearby flats too.</div>
-        </div>
-        <div class="dp-ic-arrow">→</div>
-      </div>
+
       <div class="dp-status-row">
         <span class="s-pill s-avail" id="dp-status">🟢 Available</span>
         <span class="avg-badge" id="dp-avg" style="display:none;"></span>
@@ -2643,20 +2635,13 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
           </button>
         </div>
       </div>
-      <div class="dp-int-card" onclick="openInterestForm()">
-      <div class="dp-int-card-ico">✉</div>
-      <div class="dp-int-card-body">
-        <div class="dp-int-card-title">I'm interested in this flat</div>
-        <div class="dp-int-card-desc">We'll email the owner with your details and also match you against nearby flats.</div>
-      </div>
-      <div class="dp-int-card-arrow">→</div>
-    </div>
+
     <div class="dp-sec" id="dp-sim-sec"><div class="dp-sec-lbl">Similar Properties</div><div class="sim-grid" id="dp-sim-list"></div></div>
     </div>
     <div class="dp-foot">
-      <button class="btn-interest" onclick="scrollToVisit()">📅 Pick a visit slot below ↓</button>
-      <button class="dp-interested-btn" onclick="openInterestForm()" id="dp-interest-btn">✉ I'm interested — contact owner</button>
-      <div class="dp-foot-note">🔒 Your details are only shared with our verified team</div>
+      <button class="btn-interest" id="dp-visit-btn" onclick="scrollToVisit()">📅 Book a visit</button>
+      <button class="dp-interested-btn" onclick="openInterestForm()" id="dp-interest-btn" style="display:none;">✉ I'm interested — contact owner</button>
+      <div class="dp-foot-note" id="dp-foot-note">🔒 Your details are only shared with our verified team</div>
     </div>
   </div>
 
@@ -3278,6 +3263,13 @@ function openDetail(id){
     document.getElementById('dp-scores').innerHTML=[['Safety','safety','#2d7a4f'],['Connectivity','connectivity','#1e4fa0'],['Water','water','#2d7a4f'],['Noise','noise','#c0472a']].map(([l,k,c])=>'<div class="score-card"><div class="score-lbl">'+l+'</div><div class="score-bar"><div class="score-fill" style="width:'+(sc[k]||0)+'%;background:'+c+';"></div></div><div class="score-val">'+(sc[k]||'—')+'/100</div></div>').join('');
   }
   buildSlots(p);buildCost(p);buildSimilar(p);
+  // Show visit button, hide interest button for verified listings
+  const visitBtn=document.getElementById('dp-visit-btn');
+  const intBtn=document.getElementById('dp-interest-btn');
+  const footNote=document.getElementById('dp-foot-note');
+  if(visitBtn)visitBtn.style.display='block';
+  if(intBtn)intBtn.style.display='none';
+  if(footNote)footNote.textContent='🔒 Your details are only shared with our verified team';
   map&&map.flyTo([p.lat,p.lng],16,{duration:.8});
   const dpEl=document.getElementById('dp');
   dpEl.classList.add('open');
@@ -4043,12 +4035,13 @@ function openCommunityDetail(p){
     (p.bhk?`<div class="det-item"><div class="det-lbl">BHK</div><div class="det-val">${p.bhk} BHK</div></div>`:'')+
     (fl?`<div class="det-item"><div class="det-lbl">Furnishing</div><div class="det-val">${fl}</div></div>`:'')+
     `<div class="det-item"><div class="det-lbl">Area</div><div class="det-val">${p.area}</div></div>`;
-  // Replace footer CTA with interest form button
-  document.querySelector('.dp-foot').innerHTML=
-    `<button class="dp-interested-btn" onclick="openInterestForm()">
-      ✉ I'm interested — contact owner
-    </button>
-    <div class="dp-foot-note">Owner gets your email · You get their reply directly</div>`;
+  // Show interest button, hide visit button for community listings
+  const visitBtn=document.getElementById('dp-visit-btn');
+  const intBtn=document.getElementById('dp-interest-btn');
+  const footNote=document.getElementById('dp-foot-note');
+  if(visitBtn)visitBtn.style.display='none';
+  if(intBtn)intBtn.style.display='block';
+  if(footNote)footNote.textContent='Owner gets your email · You get their reply directly';
   // Store community listing as activeDetail for interest form
   activeDetail={id:p.id||'community-'+Date.now(),area:p.area,city:p.city||activeCity,rent:p.rent,bhk:p.bhk,mode:p.mode||'rent'};
   map&&map.flyTo([p.lat,p.lng],16,{duration:.8});
