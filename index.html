@@ -2102,15 +2102,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
       
 
     </div>
-    <div class="sp-founders">
-      <div class="sp-founders-avatars">
-        <div class="sp-founders-avatar">P</div>
-        <div class="sp-founders-avatar">H</div>
-      </div>
-      <div class="sp-founders-text">
-        Built by <b>Piyush &amp; Himanshu</b>
-      </div>
-    </div>
+
 
   </div>
 </div>
@@ -2383,10 +2375,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
   </div>
 
   <!-- PIN LEGEND -->
-  <div id="pin-legend">
-    <div class="pl-item"><span class="pl-dot" style="background:#2d7a4f;"></span>Verified listing</div>
-    <div class="pl-item"><span class="pl-dot" style="background:#2563eb;"></span>Looking for flat</div>
-  </div>
+  
   </div>
 
   <!-- DROP PIN BUTTON — shows on Delhi/Gurgaon -->
@@ -3093,6 +3082,8 @@ function initMap(){
     // If in drop-pin mode, capture the click location
     if(_waitingForPin){
       _dropPinLatLng={lat:e.latlng.lat,lng:e.latlng.lng};
+      // Auto-fill area from map location
+      reverseGeocodePin(_dropPinLatLng.lat,_dropPinLatLng.lng);
       _waitingForPin=false;
       map.getContainer().style.cursor='';
       showToast('Location set! Fill in the details.');
@@ -3470,25 +3461,37 @@ function closeFindFlatMode(){
 
 function selectFindType(type){
   closeFindFlatMode();
-  // Open drop pin with correct type
-  openDropPin();
-  setTimeout(()=>{
-    if(type==='seeker'){
-      const pt=document.querySelector('.dps-pt[data-ptype="seeker"]');
-      if(pt)dpSelectType('seeker',pt);
-    } else if(type==='buy'){
-      const pt=document.querySelector('.dps-pt[data-ptype="listing"]');
-      if(pt)dpSelectType('listing',pt);
-      // Pre-select buy mode
-      setTimeout(()=>{
-        const buyChip=document.querySelector('#dps-mode-chips .dps-chip[data-v="sale"]');
-        if(buyChip){buyChip.click();}
-      },200);
-    } else {
-      const pt=document.querySelector('.dps-pt[data-ptype="seeker"]');
-      if(pt)dpSelectType('seeker',pt);
-    }
-  },300);
+
+  if(type==='flatmate'){
+    // Show only seeker pins on the map
+    _chipFilter='seeker';
+    draw();
+    showToast('Showing people looking for flatmates');
+    return;
+  }
+
+  if(type==='rent'||type==='buy'){
+    // Switch mode if needed
+    if(type==='buy') setMode('sale');
+    else setMode('rent');
+    // Spotlight the search bar
+    setTimeout(()=>{
+      const input=document.getElementById('gm-search-input');
+      if(input){
+        input.focus();
+        input.placeholder='Search area or colony...';
+        // Highlight the search block
+        const block=document.querySelector('.gm-search-block');
+        if(block){
+          block.style.boxShadow='0 0 0 3px #2d7a4f, 0 4px 16px rgba(45,122,79,.3)';
+          block.style.transition='box-shadow .3s ease';
+          setTimeout(()=>{block.style.boxShadow='';},2500);
+        }
+      }
+      showToast(type==='buy'?'Search for an area to see buy prices →':'Search for an area to see available flats →');
+    },200);
+    return;
+  }
 }
 
 function showLiveStatsModal(){
@@ -3637,6 +3640,37 @@ function toggleSatellite(){
 }
 
 // ══ NEAR ME ══
+
+
+// ══ REVERSE GEOCODE — auto-fill area when pin dropped ══
+function reverseGeocodePin(lat,lng){
+  if(!window.google||!window.google.maps)return;
+  const geocoder=new google.maps.Geocoder();
+  geocoder.geocode({location:{lat,lng}},(results,status)=>{
+    if(status!=='OK'||!results[0])return;
+    // Get neighbourhood/sublocality
+    let area='';
+    const r=results[0];
+    for(const comp of r.address_components){
+      if(comp.types.includes('sublocality_level_1')||comp.types.includes('sublocality')){
+        area=comp.long_name;break;
+      }
+      if(comp.types.includes('neighborhood')){
+        area=comp.long_name;break;
+      }
+    }
+    if(!area){
+      // Fallback to formatted address first part
+      area=r.formatted_address.split(',')[0];
+    }
+    if(!area)return;
+    // Fill all area inputs
+    ['dps-area','dps-rent-area','dps-seek-area'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el&&!el.value)el.value=area;
+    });
+  });
+}
 
 function showMapTapHint(){
   const el=document.getElementById('map-tap-hint');
