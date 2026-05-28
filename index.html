@@ -561,7 +561,7 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
 .menu-sep{height:1px;background:#1e1e1e;margin:3px 0;}
 
 /* ══ SEARCH DROPDOWN ══ */
-#s-dd{display:none;position:fixed;top:108px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:580px;z-index:2000;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.4);max-height:50vh;overflow-y:auto;}
+#s-dd{display:none!important;position:fixed;top:108px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:580px;z-index:2000;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.4);max-height:50vh;overflow-y:auto;}
 #s-dd.open{display:block;}
 .dd-sec{padding:6px 0;}
 .dd-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#555;padding:0 14px 5px;font-weight:500;}
@@ -1047,10 +1047,21 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
   z-index:800;
 }
 /* ══ GOOGLE PLACES AUTOCOMPLETE ══ */
-.pac-container{border-radius:12px !important;border:1px solid #ebebea !important;box-shadow:0 8px 24px rgba(10,10,10,.12) !important;font-family:'DM Sans',sans-serif !important;margin-top:4px !important;overflow:hidden !important;z-index:2000 !important;}
-.pac-item{padding:10px 14px !important;font-size:13px !important;color:#0a0a0a !important;cursor:pointer !important;border-top:1px solid #f5f5f4 !important;line-height:1.4 !important;}
-.pac-item:hover,.pac-item-selected{background:#f5f5f4 !important;}
-.pac-item-query{font-size:14px !important;font-weight:600 !important;color:#0a0a0a !important;}
+/* Google Places pac-container — clean styling */
+.pac-container{
+  border-radius:12px!important;
+  border:1px solid #ebebea!important;
+  box-shadow:0 8px 24px rgba(10,10,10,.12)!important;
+  font-family:'DM Sans',sans-serif!important;
+  margin-top:6px!important;
+  overflow:hidden!important;
+  z-index:9999!important;
+}
+.pac-item{padding:10px 14px!important;font-size:13px!important;color:#0a0a0a!important;cursor:pointer!important;border-top:1px solid #f5f5f4!important;line-height:1.4!important;}
+.pac-item:hover,.pac-item-selected{background:#f5f5f4!important;}
+.pac-item-query{font-size:14px!important;font-weight:600!important;color:#2d7a4f!important;}
+.pac-icon{display:none!important;}
+.pac-logo::after{display:none!important;}
 .pac-matched{color:#2d7a4f !important;font-weight:700 !important;}
 .pac-icon{display:none !important;}
 .pac-logo::after{display:none !important;}
@@ -2139,8 +2150,6 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
         </button>
         <div class="gm-search-box">
           <input type="text" id="gm-search-input" placeholder="Search area, colony or landmark…" autocomplete="off"
-            oninput="onSearch(this.value)"
-            onfocus="onSearchFocus()"
             onkeydown="onSearchKey(event)"/>
         </div>
         <div class="gm-mode-toggle" style="display:none;">
@@ -5287,9 +5296,8 @@ function initGoogleAutocomplete(){
   if(!window.google||!window.google.maps||!window.google.maps.places){
     setTimeout(initGoogleAutocomplete,500);return;
   }
-  // CITY_DATA may not be defined yet if called before main script runs
   const city=window.CITY_DATA&&window.activeCity?window.CITY_DATA[window.activeCity]:null;
-  const lat=city?city.lat:28.6139, lng=city?city.lng:77.2090;
+  const lat=city?city.lat:28.6139,lng=city?city.lng:77.2090;
 
   const ac=new google.maps.places.Autocomplete(input,{
     componentRestrictions:{country:'in'},
@@ -5299,20 +5307,20 @@ function initGoogleAutocomplete(){
       new google.maps.LatLng(lat+0.8,lng+0.8)
     ),
     strictBounds:false,
+    types:['geocode','establishment']
   });
+
   ac.addListener('place_changed',()=>{
     const place=ac.getPlace();
-    if(!place||!place.geometry){
-      if(window.onSearch)onSearch(input.value);
-      return;
-    }
+    if(!place||!place.geometry)return;
     const plat=place.geometry.location.lat();
     const plng=place.geometry.location.lng();
-    input.value=place.name||input.value;
-    if(window.closeDd)closeDd();
-    if(window.map)map.flyTo([plat,plng],16,{duration:.6,easeLinearity:.4});
-    if(window.showSearchPin)showSearchPin(plat,plng,place.name||input.value);
+    input.value=place.name||place.formatted_address||input.value;
+    input.blur();
+    if(window.map)map.flyTo([plat,plng],16,{duration:.6});
+    if(window.showSearchPin)showSearchPin(plat,plng,input.value);
   });
+
   window._gmAC=ac;
 }
 
