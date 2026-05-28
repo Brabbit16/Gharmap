@@ -1309,8 +1309,16 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
   /* Detail panel */
   #dp .dp-foot{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));}
 
-  /* Right toolbar — hide on mobile, zoom moved to bottom-right */
-  #gm-right-toolbar{display:none;}
+  /* Right toolbar — show on mobile, bottom-right */
+  #gm-right-toolbar{
+    display:flex!important;
+    top:auto!important;
+    bottom:calc(80px + env(safe-area-inset-bottom,0px))!important;
+    right:10px!important;
+    transform:none!important;
+  }
+  .gm-rt-btn{width:38px;height:38px;}
+  .gm-rt-label{display:none;}
 
   /* Stats row — hide on mobile, shown in filter instead */
   #gm-stats-row{display:none;}
@@ -4398,7 +4406,8 @@ const _landmarkIndex=LANDMARKS.map(l=>{
 
 // Returns up to `limit` LANDMARK results, ranked: exact > prefix > substring.
 // Boosts entries in the active city.
-function searchLandmarks(q,limit){
+function searchLandmarks(q,limit){return [];// Google Places handles search
+
   const ql=q.toLowerCase().trim();
   if(!ql)return [];
   limit=limit||5;
@@ -4462,10 +4471,7 @@ function onSearch(q){
   clearTimeout(_sTimer);
   if(_searchAbort){try{_searchAbort.abort();}catch(e){}_searchAbort=null;}
 
-  // ─── LAYER 1: Hand-curated LANDMARKS (instant, 0ms) ───
-  const landmarks=searchLandmarks(v,5);
-
-  // Pincode fast-path: if user types 6 digits, only show landmarks (no need to API)
+  const landmarks=[];
   const isPincode=/^\d{6}$/.test(v);
 
   // ─── LAYER 2: Existing listings via Fuse (in-memory, ~5ms) ───
@@ -4482,8 +4488,8 @@ function onSearch(q){
     }
   }
 
-  // Render immediately with Layer 1 + Layer 2 results
-  renderDd(landmarks,local,[]);
+  // Render immediately with Layer 2 results (local listings only)
+  if(local.length)renderDd([],local,[]);
 
   // Skip Layer 3 for short queries or pincodes
   if(isPincode||v.length<2)return;
