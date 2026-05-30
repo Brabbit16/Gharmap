@@ -3135,8 +3135,22 @@ function initMap(){
   map.on('zoomend',updateRentLayerVisibility);
   updateRentLayerVisibility();
 
+  // Track if map was dragged — only close UIs on clean tap not drag
+  let _mapDragged=false;
+  map.on('dragstart',()=>{_mapDragged=true;});
+  map.on('dragend',()=>setTimeout(()=>{_mapDragged=false;},100));
+
   map.on('click',e=>{
-    closeAll(null);closePinCard();
+    if(_mapDragged)return;
+    closeAll(null);
+    closePinCard();
+    // Close passive overlays on map tap — no friction
+    closeFindFlatMode();
+    // Close chip banner only if no active filter (just browsing)
+    if(!_waitingForPin&&!_waitingForListPin){
+      const banner=document.getElementById('chip-banner');
+      if(banner)banner.style.display='none';
+    }
     // If in list-my-flat pick mode, capture location and open the owner modal
     if(_waitingForListPin){
       _onListPinPicked(e.latlng);
