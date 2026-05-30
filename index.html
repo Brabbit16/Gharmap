@@ -1141,38 +1141,40 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
   pointer-events:all;
 }
 .mth-crosshair{
-  font-size:40px;color:#0a0a0a;
+  font-size:28px;color:#0a0a0a;
   filter:drop-shadow(0 2px 8px rgba(255,255,255,.8));
   animation:crosshairPulse 1.5s ease infinite;
 }
 .mth-text{
   background:#0a0a0a;color:#fff;
-  padding:6px 14px;border-radius:100px;
-  font-size:12px;font-weight:700;
+  padding:5px 12px;border-radius:100px;
+  font-size:11px;font-weight:600;
   font-family:var(--ff);
   box-shadow:0 2px 12px rgba(0,0,0,.3);
   white-space:nowrap;
 }
 .mth-sub{
-  font-size:11px;color:#fff;
-  background:rgba(10,10,10,.6);
+  font-size:10px;color:#fff;
+  background:rgba(10,10,10,.55);
   padding:3px 10px;border-radius:100px;
   font-family:var(--ff);
   white-space:nowrap;
 }
 .mth-cancel{
-  margin-top:10px;
-  background:rgba(10,10,10,.7);
-  color:#fff;border:none;
-  padding:8px 20px;
+  margin-top:6px;
+  background:rgba(255,255,255,.15);
+  color:rgba(255,255,255,.6);
+  border:1px solid rgba(255,255,255,.2);
+  padding:4px 14px;
   border-radius:100px;
-  font-size:12px;font-weight:600;
+  font-size:11px;font-weight:500;
   cursor:pointer;
   font-family:var(--ff);
   pointer-events:all!important;
   backdrop-filter:blur(4px);
+  letter-spacing:.2px;
 }
-.mth-cancel:hover{background:rgba(10,10,10,.9);}
+.mth-cancel:hover{background:rgba(255,255,255,.25);color:#fff;}
 @keyframes crosshairPulse{
   0%,100%{transform:scale(1);opacity:1;}
   50%{transform:scale(1.15);opacity:.7;}
