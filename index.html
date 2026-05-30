@@ -1156,6 +1156,19 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
   font-family:var(--ff);
   white-space:nowrap;
 }
+.mth-cancel{
+  margin-top:10px;
+  background:rgba(10,10,10,.7);
+  color:#fff;border:none;
+  padding:8px 20px;
+  border-radius:100px;
+  font-size:12px;font-weight:600;
+  cursor:pointer;
+  font-family:var(--ff);
+  pointer-events:all!important;
+  backdrop-filter:blur(4px);
+}
+.mth-cancel:hover{background:rgba(10,10,10,.9);}
 @keyframes crosshairPulse{
   0%,100%{transform:scale(1);opacity:1;}
   50%{transform:scale(1.15);opacity:.7;}
@@ -2129,7 +2142,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 <!-- ══ APP ══ -->
 <div id="app">
   <div id="map-wrap"><div id="map"></div>
-  <div id="map-tap-hint" style="display:none;"><div class="mth-inner"><div class="mth-crosshair">✛</div><div class="mth-text">Tap anywhere on the map</div><div class="mth-sub">to place your pin here</div></div></div>
+  <div id="map-tap-hint" style="display:none;"><div class="mth-inner"><div class="mth-crosshair">✛</div><div class="mth-text">Tap anywhere on the map</div><div class="mth-sub">to place your pin here</div><button class="mth-cancel" onclick="closeDropPin()">Cancel</button></div></div>
   </div>
   <!-- EMPTY STATE — shows when city has no pins -->
   <div id="gm-empty-state" style="display:none;">
@@ -4150,6 +4163,11 @@ function openCommunityDetail(p){
   if(footNote)footNote.textContent='Owner gets your email · You get their reply directly';
   // Store community listing as activeDetail for interest form
   activeDetail={id:p.id||'community-'+Date.now(),area:p.area,city:p.city||activeCity,rent:p.rent,bhk:p.bhk,mode:p.mode||'rent'};
+  const dpEl2=document.getElementById('dp');
+  dpEl2.classList.add('open');
+  if(document.body.classList.contains('is-mobile')){
+    document.getElementById('dp-overlay').classList.add('open');
+  }
   map&&map.flyTo([p.lat,p.lng],16,{duration:.8});
   const dpEl=document.getElementById('dp');
   dpEl.classList.add('open');
@@ -5230,8 +5248,10 @@ async function loadSheet(){
 
 // ══ BOOT ══
 document.addEventListener('DOMContentLoaded',()=>{
-  if(window.innerWidth<=768)document.body.classList.add('is-mobile');
-  window.addEventListener('resize',()=>document.body.classList.toggle('is-mobile',window.innerWidth<=768));
+  // Use pointer type to detect mobile — more reliable than width
+  const isTouchDevice=()=>window.matchMedia("(pointer:coarse)").matches||'ontouchstart' in window;
+  if(isTouchDevice()||window.innerWidth<=960)document.body.classList.add('is-mobile');
+  window.addEventListener('resize',()=>document.body.classList.toggle('is-mobile',isTouchDevice()||window.innerWidth<=960));
   initMap();
   // Mark default city (Delhi) as active and show drop-pin button
   document.querySelectorAll('.gm-city-opt').forEach(b=>b.classList.toggle('active',b.dataset.city==='delhi'));
