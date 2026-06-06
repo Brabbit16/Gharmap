@@ -2327,7 +2327,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
       <button class="maker-cta" style="flex:2;" onclick="closeMakerCard();openDropPin()">+ Drop a Pin →</button>
       <button class="maker-cta" style="flex:1;background:#f5f5f4;color:#0a0a0a;" onclick="closeMakerCard()">Later</button>
     </div>
-    <div class="maker-credit">Built by <b>Piyush &amp; Himanshu</b></div>
+
   </div>
 
   
@@ -2976,7 +2976,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 const SUPABASE_URL = 'https://nefyaqjolvglodomshcx.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lZnlhcWpvbHZnbG9kb21zaGN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMTQ1MDcsImV4cCI6MjA5MjY5MDUwN30.N2oNOSvUGa0oDELrMYn4ib5541zxz58F7NXTiuYCaxk';
 const AGENT_WA = '919336297656';
-const SHEET_API = 'https://script.google.com/macros/s/AKfycbyfZ9bnxTVcJZR_NbxlFcM1GYSzKI8CpsWUN6c80qUfmWFWp0hXZt_qkbdRSKvkZv_u/exec';
+const SHEET_API = null; // Disabled — fresh start, no demo listings
 function sbH(x={}){return{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,...x};}
 
 // FIX: Wire up the WA button in visit confirm using JS (was a broken string literal before)
@@ -3194,11 +3194,10 @@ function initMap(){
       _waitingForPin=false;
       map.getContainer().style.cursor='';
       hideMapTapHint();
-      // Check if public place before opening form
-      checkNotPublicPlace(_dropPinLatLng.lat,_dropPinLatLng.lng,()=>{
-        reverseGeocodePin(_dropPinLatLng.lat,_dropPinLatLng.lng);
-        document.getElementById('drop-pin-overlay').classList.add('open');
-      });
+      // Open form instantly — no API delay
+      document.getElementById('drop-pin-overlay').classList.add('open');
+      // Reverse geocode in background — fills area field when ready
+      reverseGeocodePin(_dropPinLatLng.lat,_dropPinLatLng.lng);
     }
   });
 
