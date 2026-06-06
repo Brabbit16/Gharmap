@@ -2324,7 +2324,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 
   
   <div id="menu-overlay" onclick="closeMenuSheet()"></div>
-  <div id="menu-sheet">
+  <div id="menu-sheet" onclick="if(event.target===this)closeMenuSheet()">
     <div class="menu-close-row">
       <div class="menu-logo">Ghar<span>Map</span></div>
       <div class="menu-x" onclick="closeMenuSheet()">✕</div>
@@ -2364,7 +2364,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
   </div>
 
   <!-- FILTER MODAL -->
-  <div id="gm-filter-overlay">
+  <div id="gm-filter-overlay" onclick="if(event.target===this)closeGmFilter()">
     <div class="gm-filter-modal">
       <div class="gf-head">
         <div class="gf-title">Filter <span>Properties</span></div>
@@ -2483,7 +2483,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
   </div>
 
   <!-- DROP PIN MODAL -->
-  <div id="drop-pin-overlay">
+  <div id="drop-pin-overlay" onclick="if(event.target===this)closeDropPin()">
     <div id="drop-pin-sheet">
 
       <!-- HANDLE + CLOSE -->
@@ -2765,7 +2765,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 </div>
 
 <!-- MATCH ME -->
-<div class="overlay" id="matchme-modal">
+<div class="overlay" id="matchme-modal" onclick="if(event.target===this)closeMatchMe()">
   <div class="modal">
     <div style="width:36px;height:4px;background:#2a2a2a;border-radius:4px;margin:0 auto 14px;"></div>
     <button class="m-close" onclick="closeMatchMe()">✕</button>
@@ -2846,7 +2846,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 </div>
 
 <!-- LIST PROPERTY -->
-<div class="overlay" id="owner-modal">
+<div class="overlay" id="owner-modal" onclick="if(event.target===this)closeOwnerModal()">
   <div class="modal">
     <div style="width:36px;height:4px;background:#2a2a2a;border-radius:4px;margin:0 auto 14px;"></div>
     <button class="m-close" onclick="closeOwnerModal()">✕</button>
@@ -2871,7 +2871,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 </div>
 
 <!-- SHARE -->
-<div id="share-modal">
+<div id="share-modal" onclick="if(event.target===this)closeShareModal()">
   <div class="share-card">
     <div style="width:36px;height:4px;background:#2a2a2a;border-radius:4px;margin:0 auto 14px;"></div>
     <button onclick="closeShareModal()" style="position:absolute;top:18px;right:18px;background:none;border:none;font-size:17px;cursor:pointer;color:#666;">✕</button>
@@ -2886,7 +2886,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 </div>
 
 <!-- HOW IT WORKS -->
-<div class="dark-overlay" id="how-modal">
+<div class="dark-overlay" id="how-modal" onclick="if(event.target===this)closeHowModal()">
   <div class="guide-modal">
     <button class="dm-close" onclick="closeHowModal()">✕</button>
     <div class="guide-header">
@@ -2932,7 +2932,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 </div>
 
 <!-- PRIVACY -->
-<div class="dark-overlay" id="privacy-modal">
+<div class="dark-overlay" id="privacy-modal" onclick="if(event.target===this)closePrivacyModal()">
   <div class="dark-modal">
     <button class="dm-close" onclick="closePrivacyModal()">✕</button>
     <div class="dm-title">Privacy Policy</div>
@@ -2948,7 +2948,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 </div>
 
 <!-- T&C -->
-<div class="dark-overlay" id="tnc-modal">
+<div class="dark-overlay" id="tnc-modal" onclick="if(event.target===this)closeTncModal()">
   <div class="dark-modal">
     <button class="dm-close" onclick="closeTncModal()">✕</button>
     <div class="dm-title">Terms of Use</div>
@@ -3551,6 +3551,9 @@ function openFindAFlatMode(){
   // Show the find-flat overlay
   document.getElementById('find-flat-overlay').style.display='flex';
 }
+
+
+// ══ CLOSE FUNCTIONS — click outside to dismiss ══
 
 function closeFindFlatMode(){
   _findFlatMode = false;
@@ -6029,7 +6032,7 @@ function calcMedianRent(){
 
 </script>
 <!-- THANK YOU POPUP -->
-<div id="thankyou-overlay">
+<div id="thankyou-overlay" onclick="if(event.target===this)closeThankYou()">
   <div id="thankyou-card">
     <div class="ty-icon" id="ty-icon">🎉</div>
     <div class="ty-title" id="ty-title">Pin dropped!</div>
@@ -6042,7 +6045,7 @@ function calcMedianRent(){
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgnmt05eNkoJ2LA7fZphd7yuusIB-ZfZs&libraries=places&callback=initGoogleAutocomplete&loading=async"></script>
 
 <!-- INTEREST FORM MODAL -->
-<div class="dark-overlay" id="interest-modal">
+<div class="dark-overlay" id="interest-modal" onclick="if(event.target===this)closeInterestForm()">
   <div class="interest-card">
     <button class="dm-close" onclick="closeInterestForm()">✕</button>
     <div class="int-head">
@@ -6066,7 +6069,7 @@ function calcMedianRent(){
 
 
 <!-- FIND A FLAT OVERLAY -->
-<div id="find-flat-overlay" style="display:none;position:fixed;inset:0;z-index:1050;background:rgba(10,10,10,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;padding:0 0 100px;">
+<div id="find-flat-overlay" onclick="if(event.target===this)closeFindFlatMode()" style="display:none;position:fixed;inset:0;z-index:1050;background:rgba(10,10,10,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;padding:0 0 100px;">
   <div style="background:#fff;border-radius:16px;padding:20px;width:calc(100% - 32px);max-width:420px;">
     <div style="font-size:16px;font-weight:700;color:#0a0a0a;margin-bottom:4px;">What are you looking for?</div>
     <div style="font-size:12px;color:#737373;margin-bottom:16px;">We'll help you find the right match</div>
