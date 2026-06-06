@@ -1380,7 +1380,7 @@ body{font-family:var(--ff);background:#fafafa;color:var(--ink);-webkit-font-smoo
   .gm-rt-label{display:none;}
 
   /* Stats row — hide on mobile, shown in filter instead */
-  #gm-stats-row{display:none;}
+  #gm-stats-row{display:flex;bottom:calc(70px + env(safe-area-inset-bottom,0px));}
 
   /* Bottom CTA — full width, above safe area */
   #bottom-cta-row-old-unused{display:none;}
@@ -1925,6 +1925,7 @@ body{background:#fafafa;color:#0a0a0a;}
 #saved-drawer{background:#ffffff!important;border-left:1px solid #ebebea!important;color:#0a0a0a!important;}
 
 /* ── EMPTY STATE ── */
+#empty-state{display:none!important;pointer-events:none!important;}
 .es-t,#empty-state{color:#525252!important;}
 
 /* Zoom control — bottom-right on mobile, doesn't clash with search bar */
@@ -2763,12 +2764,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
   </div>
 
   <div id="toast">✅ Done!</div>
-  <div id="empty-state">
-    <div class="es-ico" id="es-ico">🔨</div>
-    <div class="es-t" id="es-t">New listings being verified — back soon.</div>
-    <div class="es-s" id="es-s">Tell us what you need and we'll reach out personally.</div>
-    <button onclick="openMatchMe()" style="margin-top:12px;padding:8px 18px;border-radius:20px;border:none;background:var(--green);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ff);pointer-events:all;">Tell us what you need →</button>
-  </div>
+  <div id="empty-state" style="display:none!important;"></div>
   <div id="s-dd"></div>
 </div>
 
@@ -3293,31 +3289,26 @@ function draw(){
     });
   }
 
-  // Stats
-  const total=vis.length+COMMUNITY_LISTINGS.filter(p=>p.city===activeCity).length;
-  // Update bottom stats bar
-  const statEl=document.getElementById('stat-listings');
-  if(statEl)statEl.textContent=total+' listing'+(total!==1?'s':'');
-  document.getElementById('gm-s-total').textContent=total;
-  if(vis.length){
-    const avg=Math.round(vis.reduce((s,p)=>s+p.rent,0)/vis.length);
-    document.getElementById('gm-s-avg').textContent=fmtRent(avg);
-    document.getElementById('gm-s-low').textContent=fmtRent(Math.min(...vis.map(p=>p.rent)));
-  }else{document.getElementById('gm-s-avg').textContent='₹—';document.getElementById('gm-s-low').textContent='₹—';}
+  // ── STATS — all pins in current city ──
+  const allCityPins=[
+    ...vis,
+    ...COMMUNITY_LISTINGS.filter(p=>p.city===activeCity),
+    ...RENT_PINS.filter(p=>p.city===activeCity)
+  ];
+  const totalCity=allCityPins.length;
+  const rentsAll=allCityPins.filter(p=>p.rent>0).map(p=>p.rent).sort((a,b)=>a-b);
+  const medianRent=rentsAll.length?rentsAll[Math.floor(rentsAll.length/2)]:0;
+  const newThisWeek=allCityPins.filter(p=>{
+    try{return Date.now()-new Date(p.created_at)<7*24*60*60*1000;}catch(e){return false;}
+  }).length;
 
-  const es=document.getElementById('empty-state');
-  if(total===0){
-    es.style.display='block';
-    if(CITY_DATA[activeCity]&&!CITY_DATA[activeCity].verified){
-      document.getElementById('es-ico').textContent='📍';
-      document.getElementById('es-t').textContent='No listings here yet — be the first.';
-      document.getElementById('es-s').textContent='Tap + Drop a Pin to share what you pay. Help others in '+CITY_DATA[activeCity].name+' find a home.';
-    }else{
-      document.getElementById('es-ico').textContent='🔨';
-      document.getElementById('es-t').textContent='New listings being verified — back soon.';
-      document.getElementById('es-s').textContent='Tell us what you need and we\'ll reach out personally.';
-    }
-  }else es.style.display='none';
+  // Update stats bar
+  const sTot=document.getElementById('gm-s-total');
+  const sAvg=document.getElementById('gm-s-avg');
+  const sNew=document.getElementById('gm-s-low');
+  if(sTot)sTot.textContent=totalCity||'0';
+  if(sAvg)sAvg.textContent=medianRent?'₹'+Math.round(medianRent/1000)+'K':'₹—';
+  if(sNew)sNew.textContent=newThisWeek||'0';
 }
 
 // ══ DETAIL ══
@@ -4142,6 +4133,14 @@ function selectHood(el){
 let _waitingForPin=false;
 function openDropPin(){
   _waitingForPin=true;
+  _dpCurrentType='listing'; // always reset to listing on open
+  // Reset UI to listing type
+  document.querySelectorAll('.dps-pt').forEach(p=>p.classList.remove('on'));
+  const listingPt=document.querySelector('.dps-pt[data-ptype="listing"]');
+  if(listingPt)listingPt.classList.add('on');
+  if(document.getElementById('dps-fields-listing'))document.getElementById('dps-fields-listing').style.display='';
+  if(document.getElementById('dps-fields-rent'))document.getElementById('dps-fields-rent').style.display='none';
+  if(document.getElementById('dps-fields-seeker'))document.getElementById('dps-fields-seeker').style.display='none';
   map.getContainer().style.cursor='crosshair';
   document.getElementById('gm-drop-banner').style.display='flex';
   // Show map tap hint overlay
@@ -4442,6 +4441,7 @@ async function submitCommunityListing(){
       const saved = data[0]||{...payload, id:'cl_'+Date.now()};
       COMMUNITY_LISTINGS.push(saved);
       draw();
+      updateSplashCount();
       showToast('✓ Pin live on map!');
     } else {
       console.error('Save failed:', data);
@@ -6002,44 +6002,32 @@ function dpToggleAnon(btn, forceOn){
 }
 
 async function dpStep2Submit(){
-  // Read type directly from selected DOM element — don't trust variable
   const selectedPt = document.querySelector('.dps-pt.on');
-  const type = selectedPt?.dataset.ptype || _dpCurrentType || 'listing';
-  console.log('dpStep2Submit - type:', type, '_dpCurrentType:', _dpCurrentType);
+  const type = selectedPt ? selectedPt.dataset.ptype : _dpCurrentType;
+  
+  console.log('=== SUBMIT ===');
+  console.log('type from DOM:', selectedPt?.dataset.ptype);
+  console.log('_dpCurrentType:', _dpCurrentType);
+  console.log('final type:', type);
+  console.log('_dropPinLatLng:', _dropPinLatLng);
 
   const btn = document.getElementById('dps-final-btn');
-  const email = document.getElementById('dps-email')?.value.trim();
-
-  if(type==='listing'||type==='rent'){
-    if(!email||!email.includes('@')){showToast('Please enter your email');return;}
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Saving...';
-
-  const timeout = new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),8000));
+  if(btn){btn.disabled=true; btn.textContent='Saving...';}
 
   try{
-    let action;
-    if(type==='listing') action = submitCommunityListing();
-    else if(type==='rent') action = submitRentPin();
-    else action = submitSeekerPin();
-    await Promise.race([action, timeout]);
-  } catch(e){
-    console.error('Submit error:', e);
-    if(e.message==='timeout'){
-      closeDropPin();
-      showThankYou('pin');
+    if(type==='listing'){
+      await submitCommunityListing();
+    } else if(type==='rent'){
+      await submitRentPin();
     } else {
-      showToast('Something went wrong — try again');
+      await submitSeekerPin();
     }
-  } finally {
-    if(btn){
-      btn.disabled = false;
-      const labels = {listing:'Drop the Pin →', rent:'Share →', seeker:'Find me a Flat →'};
-      btn.textContent = labels[type]||'Drop the Pin →';
-    }
+  } catch(e){
+    console.error('Submit failed:', e);
+    showToast('Error: '+e.message);
   }
+
+  if(btn){btn.disabled=false; btn.textContent='Drop the Pin →';}
 }
 
 // Helper for single-select chip groups in matchme
