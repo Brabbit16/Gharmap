@@ -4401,47 +4401,61 @@ async function validatePin(type, fields){
 
 async function submitCommunityListing(){
   if(!_dropPinLatLng){showToast('Please tap on the map first');return;}
-  const rent=document.getElementById('dps-rent').value.trim();
-  const area=document.getElementById('dps-area').value.trim();
-  const phone=(document.getElementById('dps-phone')?.value||'').trim().replace(/[^0-9]/g,'');
-  const email=(document.getElementById('dps-email')?.value||'').trim();
-  const bhk=getDpsChip('dps-bhk');
-  const fur=getDpsChip('dps-fur');
-  // ── SANITY CHECKS ──
-  const valid = await validatePin('listing',{
-    rent,area,email,phone,
-    lat:_dropPinLatLng?.lat,lng:_dropPinLatLng?.lng,
-    mode:'rent'
-  });
-  if(!valid)return;
+  const rent = document.getElementById('dps-rent')?.value.trim();
+  const area = document.getElementById('dps-area')?.value.trim();
+  const phone = (document.getElementById('dps-phone')?.value||'').trim().replace(/[^0-9]/g,'');
+  const email = (document.getElementById('dps-email')?.value||'').trim();
+  const bhk = document.querySelector('#dps-bhk-main .dps-chip.on')?.dataset.v||'';
+  const fur = document.querySelector('#dps-fur .dps-chip.on')?.dataset.v||'';
+
+  if(!rent||parseInt(rent)<500){showToast('Please enter rent amount');return;}
+  if(!email||!email.includes('@')){showToast('Please enter your email');return;}
+
   const btn=document.getElementById('dps-final-btn');
-  if(btn){btn.disabled=true;btn.textContent='Dropping pin...';}
+  if(btn){btn.disabled=true;btn.textContent='Saving...';}
+
   const payload={
-    city:activeCity,lat:_dropPinLatLng.lat,lng:_dropPinLatLng.lng,
-    bhk,rent:parseInt(rent),fur,area,phone,email,
-    mode:'rent',type:'flat',status:'available',
-    verified:false,created_at:new Date().toISOString()
+    city: activeCity,
+    lat: _dropPinLatLng.lat,
+    lng: _dropPinLatLng.lng,
+    bhk, rent: parseInt(rent), fur,
+    area: area||'Delhi NCR',
+    phone, email,
+    mode: 'rent',
+    type: 'flat',
+    status: 'available',
+    verified: false,
+    created_at: new Date().toISOString()
   };
+
+  console.log('Saving to community_listings:', payload);
+
   try{
-    console.log('GharMap: Saving listing...', payload);
-    const res=await fetch(SUPABASE_URL+'/rest/v1/community_listings',{
-      method:'POST',headers:sbH({'Content-Type':'application/json','Prefer':'return=representation'}),
-      body:JSON.stringify(payload)
+    const res = await fetch(SUPABASE_URL+'/rest/v1/community_listings',{
+      method: 'POST',
+      headers: sbH({'Content-Type':'application/json','Prefer':'return=representation'}),
+      body: JSON.stringify(payload)
     });
-    const data=await res.json();
-    console.log('GharMap: Supabase response:', res.status, data);
-    if(res.ok||res.status===201){
-      // Add to local array and redraw instantly
-      const newListing={...data[0]||{...payload,id:'cl_'+Date.now()}};
-      COMMUNITY_LISTINGS.push(newListing);
+    const data = await res.json();
+    console.log('Supabase response:', res.status, data);
+    if(res.ok || res.status===201){
+      const saved = data[0]||{...payload, id:'cl_'+Date.now()};
+      COMMUNITY_LISTINGS.push(saved);
       draw();
-      // Reload all data in background to sync
-      setTimeout(()=>loadCommunityData(),2000);
+      showToast('✓ Pin live on map!');
     } else {
-      console.error('GharMap: Save failed:', data);
-      showToast('Could not save — please try again');
+      console.error('Save failed:', data);
+      showToast('Save failed: '+JSON.stringify(data));
+      if(btn){btn.disabled=false;btn.textContent='Drop the Pin →';}
+      return;
     }
-  }catch(e){console.error('GharMap: Submit error:',e);}
+  } catch(e){
+    console.error('Network error:', e);
+    showToast('Network error — check connection');
+    if(btn){btn.disabled=false;btn.textContent='Drop the Pin →';}
+    return;
+  }
+
   if(btn){btn.disabled=false;}
   closeDropPin();
   showThankYou('pin');
@@ -5671,9 +5685,21 @@ document.addEventListener('DOMContentLoaded',()=>{
   renderHoodChips('delhi');
   // Show drop-pin button immediately — Delhi is community city
   // drop-pin-btn replaced by drop-pin-main-btn in bottom bar
-  // Load all data
-  loadSheet().then(()=>{draw();buildSearchIndex();checkDeepLink();updateSavedCount();});
-  loadCommunityData();
+  // Load all data — community data must finish before drawing
+  loadSheet().then(()=>{
+    buildSearchIndex();
+    checkDeepLink();
+    updateSavedCount();
+  });
+  loadCommunityData().then(()=>{
+    console.log('GharMap: Community data loaded',
+      'listings:', COMMUNITY_LISTINGS.length,
+      'rent pins:', RENT_PINS.length,
+      'seekers:', SEEKER_PINS.length
+    );
+    draw();
+    updateSplashCount();
+  });
   ['mc-purpose','mc-bhk','mc-budget','mc-areas','mc-timeline','ow-type','ow-purpose'].forEach(setupChips);
   // Wire drop pin chip groups
   ['dps-bhk-main','dps-fur','dps-avail-for','dps-seek-timeline','dps-food-pref','dps-smoke-pref','dps-gender'].forEach(id=>{
@@ -5691,10 +5717,14 @@ window.addEventListener('resize',()=>map&&map.invalidateSize());
 // Load community listings + seeker pins + rent pins from Supabase
 async function loadCommunityData(){
   try{
+    console.log('GharMap: Fetching from Supabase...');
     // Community listings
     const r1=await fetch(SUPABASE_URL+'/rest/v1/community_listings?select=*&status=eq.available&order=created_at.desc',{headers:sbH()});
     const d1=await r1.json();
-    if(Array.isArray(d1))d1.forEach(p=>COMMUNITY_LISTINGS.push(p));
+    console.log('GharMap: community_listings response:', r1.status, d1);
+    if(Array.isArray(d1)){
+      d1.forEach(p=>COMMUNITY_LISTINGS.push(p));
+    }
     // Seeker pins
     const thirtyDaysAgo=new Date(Date.now()-30*24*60*60*1000).toISOString();
     const r2=await fetch(SUPABASE_URL+'/rest/v1/seeker_pins?select=*&status=eq.active&created_at=gte.'+thirtyDaysAgo,{headers:sbH()});
