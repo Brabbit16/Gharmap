@@ -2174,7 +2174,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
           <span class="sp-proof-ico">◈</span>
           <div class="sp-proof-content">
             <div class="sp-proof-num">Rent · Buy · PG</div>
-            <div class="sp-proof-desc">All three — one map · four cities</div>
+            <div class="sp-proof-desc">All three — one map · three cities</div>
           </div>
         </div>
         <div class="sp-proof-row">
@@ -2223,8 +2223,6 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
         </button>
         <div class="gm-search-box">
           <input type="text" id="gm-search-input" placeholder="Search area, colony or landmark…" autocomplete="off"
-            oninput="onSearch(this.value)"
-            onfocus="onSearchFocus()"
             onkeydown="onSearchKey(event)"/>
         </div>
         <div class="gm-mode-toggle" style="display:none;">
@@ -3170,14 +3168,11 @@ function initMap(){
 
   map.on('click',e=>{
     if(_mapDragged)return;
-    closeAll(null);
-    closePinCard();
-    // Close passive overlays on map tap — no friction
-    closeFindFlatMode();
-    // Close chip banner only if no active filter (just browsing)
-    if(!_waitingForPin&&!_waitingForListPin){
-      const banner=document.getElementById('chip-banner');
-      if(banner)banner.style.display='none';
+    if(!_waitingForPin){
+      closeAll(null);
+      closePinCard();
+      closeFindFlatMode();
+      document.getElementById('find-flat-overlay').style.display='none';
     }
     // If in list-my-flat pick mode, capture location and open the owner modal
     if(_waitingForListPin){
@@ -3618,9 +3613,9 @@ function showLiveStatsModal(){
     `${community} community listings\n`+
     `${rentPins} rent data points\n`+
     `${seekers} people looking\n`+
-    `4 cities covered`;
+    `3 cities covered`;
   
-  showToast('📊 '+total+' prices · '+seekers+' seekers · 4 cities');
+  showToast('📊 '+total+' prices · '+seekers+' seekers · 3 cities');
   setTimeout(()=>{if(el)el.classList.remove('on');},3000);
 }
 
@@ -5436,7 +5431,7 @@ function searchPinDrop(lat,lng,area){
 function showLiveStats(){
   const total=(LISTINGS||[]).length+(COMMUNITY_LISTINGS||[]).length+(RENT_PINS||[]).length;
   const seekers=(SEEKER_PINS||[]).length;
-  showToast('📊 '+total+' prices · '+seekers+' seekers · 4 cities');
+  showToast('📊 '+total+' prices · '+seekers+' seekers · 3 cities');
   setTimeout(()=>{const el=document.getElementById('chip-stats');if(el)el.classList.remove('on');},2000);
 }
 function startQuickTour(){
@@ -5750,6 +5745,7 @@ let _interestListingId = null;
 
 function openInterestForm(){
   if(!activeDetail){return;}
+  closeAll('interest-modal');
   _interestListingId = activeDetail.id;
   const info = (activeDetail.bhk||'') + ' BHK in ' + (activeDetail.area||'') + ' · ' + (activeDetail.rent?'₹'+activeDetail.rent.toLocaleString('en-IN')+'/mo':'');
   document.getElementById('int-listing-info').textContent = info;
