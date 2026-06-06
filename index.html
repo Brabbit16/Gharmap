@@ -2648,6 +2648,13 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
           <div class="dps-privacy-note">🔒 Your details are never shown publicly</div>
         </div>
 
+        <!-- Blank space filler — friendly message -->
+        <div style="text-align:center;padding:24px 20px 8px;opacity:.5;">
+          <div style="font-size:40px;margin-bottom:8px;">🏠</div>
+          <div style="font-size:11px;color:#888;line-height:1.6;">
+            Every pin helps someone<br>find a home at the right price
+          </div>
+        </div>
         <div class="dps-foot">
           <button class="dps-submit" id="dps-final-btn" onclick="dpStep2Submit()">Drop the Pin →</button>
           <button class="dps-back" onclick="dpBack()">← Back</button>
@@ -3597,9 +3604,10 @@ function selectFindType(type){
         // Highlight the search block
         const block=document.querySelector('.gm-search-block');
         if(block){
-          block.style.boxShadow='0 0 0 3px #2d7a4f, 0 4px 16px rgba(45,122,79,.3)';
+          block.style.boxShadow='0 0 0 3px #2d7a4f, 0 0 0 6px rgba(45,122,79,.15), 0 4px 16px rgba(45,122,79,.25)';
+          block.style.borderColor='#2d7a4f';
           block.style.transition='box-shadow .3s ease';
-          setTimeout(()=>{block.style.boxShadow='';},2500);
+          setTimeout(()=>{block.style.boxShadow='';block.style.borderColor='';},2500);
         }
       }
       showToast(type==='buy'?'Search for an area to see buy prices →':'Search for an area to see available flats →');
@@ -4480,8 +4488,8 @@ async function submitRentPin(){
   const area=document.getElementById('dps-rent-area').value.trim();
   const bhk=getDpsChip('dps-rent-bhk');
   if(!rent){showToast('Please enter the rent you pay');return;}
-  const btn=document.getElementById('dps-rent-btn');
-  btn.disabled=true;btn.textContent='Sharing…';
+  const btn=document.getElementById('dps-final-btn');
+  if(btn){btn.disabled=true;btn.textContent='Sharing...';}
   const payload={
     city:activeCity,lat:_dropPinLatLng.lat,lng:_dropPinLatLng.lng,
     rent,bhk,area,created_at:new Date().toISOString()
@@ -4494,8 +4502,7 @@ async function submitRentPin(){
     RENT_PINS.push({...payload,id:'rp_'+Date.now()});
     draw();
   }catch(e){}
-  btn.disabled=false;btn.textContent='Share Anonymously →';
-  closeDropPin();
+  if(btn){btn.disabled=false;}
   closeDropPin();
   showThankYou('pin');
 }
