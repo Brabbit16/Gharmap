@@ -7,7 +7,7 @@
 
 <!-- SEO -->
 <meta name="description" content="Real Delhi NCR rents shared anonymously by your neighbours. See what people actually pay in Dwarka, Gurgaon, Noida and across Delhi. No signup. Free forever."/>
-<meta name="keywords" content="Delhi rent, Gurgaon rent, Noida rent, flats in Delhi NCR, real rents, rent map, anonymous rent, Lucknow flats, GharMap"/>
+<meta name="keywords" content="Delhi rent, Gurgaon rent, Noida rent, flats in Delhi NCR, real rents, rent map, anonymous rent, GharMap"/>
 <meta name="robots" content="index, follow"/>
 
 <!-- Open Graph -->
@@ -2021,7 +2021,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
 
 /* ════════════════════════════════════════════
    MAP PIN SYSTEM — Distinct color coding
-   Green   = Verified listing (Lucknow)
+   Green   = Available listing
    Amber   = Community listing (someone listed)
    Blue    = Seeker (someone looking)
    Purple  = Rent share (anonymous data)
@@ -2158,7 +2158,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
     </div>
     <div class="sp-main">
       <div class="sp-hook">What does your neighbour actually pay?</div>
-      <div class="sp-cities">Delhi · Gurgaon · Noida · Lucknow</div>
+      <div class="sp-cities">Delhi · Gurgaon · Noida</div>
 
 
       <div class="sp-proof-box">
@@ -2223,6 +2223,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
         </button>
         <div class="gm-search-box">
           <input type="text" id="gm-search-input" placeholder="Search area, colony or landmark…" autocomplete="off"
+            oninput="onSearch(this.value)"
+            onfocus="onSearchFocus()"
             onkeydown="onSearchKey(event)"/>
         </div>
         <div class="gm-mode-toggle" style="display:none;">
@@ -2260,10 +2262,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
         <span class="gm-city-opt-name">Noida</span>
         <span class="gm-city-opt-sub">Real rents · Community</span>
       </button>
-      <button class="gm-city-opt" data-city="lucknow" onclick="pickCity('lucknow')">
-        <span class="gm-city-opt-name">Lucknow <span class="gm-city-opt-badge">Verified</span></span>
-        <span class="gm-city-opt-sub">Listings checked by our team</span>
-      </button>
+      
     </div>
 
   </div><!-- /gm-top-controls -->
@@ -2274,7 +2273,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
       <span class="gdb-ico">👆</span>
       <div>
         <div class="gdb-title">Tap the map to place your pin</div>
-        <div class="gdb-sub">Anywhere in Delhi, Gurgaon, Noida or Lucknow</div>
+        <div class="gdb-sub">Anywhere in Delhi, Gurgaon or Noida</div>
       </div>
     </div>
     <button class="gdb-cancel" onclick="closeDropPin()">Cancel</button>
@@ -2941,7 +2940,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0a0a
     <div class="dm-title">Privacy Policy</div>
     <div class="dm-date">Last updated: May 2026</div>
     <div class="dm-body">
-      <div class="dm-sec"><div class="dm-sec-title">About GharMap</div>GharMap is operated by Piyush &amp; Himanshu, Lucknow, Uttar Pradesh, India. Contact: +91 93362 97656.</div><div class="dm-sec"><div class="dm-sec-title">What we collect</div>When you book a visit or submit a listing, we collect your name and phone number. This is used only to confirm your visit or listing request.</div>
+      <div class="dm-sec"><div class="dm-sec-title">About GharMap</div>GharMap is operated by Piyush &amp; Himanshu, Delhi NCR, India. Contact: +91 93362 97656.</div><div class="dm-sec"><div class="dm-sec-title">What we collect</div>When you book a visit or submit a listing, we collect your name and phone number. This is used only to confirm your visit or listing request.</div>
       <div class="dm-sec"><div class="dm-sec-title">How we use your contact</div>Your phone number is shared only with our GharMap team to confirm your visit or listing. It is never shown on the map, never shared with third parties.</div>
       <div class="dm-sec"><div class="dm-sec-title">Third-party services</div>We use Leaflet and CartoCDN for map tiles, Supabase for data storage, and Google Sheets for listing management.</div>
       <div class="dm-sec"><div class="dm-sec-title">Your rights</div>Request deletion of your data by contacting us on WhatsApp at <b>+91 93362 97656</b> or messaging us directly from the app.</div>
@@ -2983,7 +2982,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 // ══ CITY DATA ══
 const CITY_DATA={
   lucknow:{
-    name:'Lucknow',lat:26.8467,lng:80.9462,zoom:15,verified:true,
+    name:'Lucknow',lat:26.8467,lng:80.9462,zoom:15,verified:false,hidden:true,
     zones:{
       all:{name:'All areas',lat:26.8467,lng:80.9462,zoom:15},
       gomti:{name:'Gomti Nagar',lat:26.8650,lng:80.9962,zoom:14,radius:4000,color:'#2d7a4f'},
@@ -3093,7 +3092,7 @@ function initMap(){
     navigator.geolocation.getCurrentPosition(
       pos=>{
         const{latitude:lat,longitude:lng}=pos.coords;
-        // Only use location if within NCR / Lucknow bounds
+        // Only use location if within NCR bounds
         const inRange=(lat>26.5&&lat<29.5&&lng>76.5&&lng<78.5);
         if(inRange&&map)map.setView([lat,lng],15,{animate:false});
       },
@@ -3188,12 +3187,14 @@ function initMap(){
     // If in drop-pin mode, capture the click location
     if(_waitingForPin){
       _dropPinLatLng={lat:e.latlng.lat,lng:e.latlng.lng};
-      // Auto-fill area from map location
-      reverseGeocodePin(_dropPinLatLng.lat,_dropPinLatLng.lng);
       _waitingForPin=false;
       map.getContainer().style.cursor='';
-      showToast('Location set! Fill in the details.');
-      document.getElementById('drop-pin-overlay').classList.add('open');
+      hideMapTapHint();
+      // Check if public place before opening form
+      checkNotPublicPlace(_dropPinLatLng.lat,_dropPinLatLng.lng,()=>{
+        reverseGeocodePin(_dropPinLatLng.lat,_dropPinLatLng.lng);
+        document.getElementById('drop-pin-overlay').classList.add('open');
+      });
     }
   });
 
@@ -3290,7 +3291,7 @@ function draw(){
   }
 
   // Stats
-  const total=vis.length+COMMUNITY_LISTINGS.filter(p=>p.city===activeCity).length;
+  const total=vis.length+COMMUNITY_LISTINGS.filter(p=>p.city===activeCity&&p.city!=='lucknow').length;
   document.getElementById('gm-s-total').textContent=total;
   if(vis.length){
     const avg=Math.round(vis.reduce((s,p)=>s+p.rent,0)/vis.length);
@@ -3613,7 +3614,7 @@ function showLiveStatsModal(){
   // Show as a small modal
   const msg=`📊 Live Stats\n\n`+
     `${total} total prices on map\n`+
-    `${verified} verified listings (Lucknow)\n`+
+    `${verified} verified listings\n`+
     `${community} community listings\n`+
     `${rentPins} rent data points\n`+
     `${seekers} people looking\n`+
@@ -3749,6 +3750,45 @@ function toggleSatellite(){
 
 
 // ══ REVERSE GEOCODE — auto-fill area when pin dropped ══
+// ══ PUBLIC PLACE CHECK ══
+const PUBLIC_TYPES = [
+  'airport','bus_station','train_station','subway_station','transit_station',
+  'hospital','school','university','church','mosque','temple','place_of_worship',
+  'shopping_mall','supermarket','store','restaurant','cafe','bar','night_club',
+  'park','stadium','museum','art_gallery','zoo','amusement_park',
+  'government_office','police','fire_station','embassy',
+  'tourist_attraction','point_of_interest'
+];
+
+function checkNotPublicPlace(lat, lng, onPass){
+  if(!window.google||!window.google.maps||!window.google.maps.places){
+    onPass(); return; // if Google not loaded, let it through
+  }
+  const service = new google.maps.places.PlacesService(document.createElement('div'));
+  service.nearbySearch({
+    location: new google.maps.LatLng(lat,lng),
+    radius: 30, // very tight — 30 metres
+  },(results, status)=>{
+    if(status !== 'OK' || !results || results.length === 0){
+      onPass(); return; // nothing found nearby — safe to proceed
+    }
+    const nearest = results[0];
+    const types = nearest.types || [];
+    const isPublic = PUBLIC_TYPES.some(t => types.includes(t));
+    if(isPublic){
+      const name = nearest.name || 'a public place';
+      showToast('📍 This looks like '+name+' — please pin a residential address');
+      // Reset so user can try again
+      _dropPinLatLng = null;
+      _waitingForPin = true;
+      map.getContainer().style.cursor = 'crosshair';
+      showMapTapHint();
+      return;
+    }
+    onPass();
+  });
+}
+
 function reverseGeocodePin(lat,lng){
   if(!window.google||!window.google.maps)return;
   const geocoder=new google.maps.Geocoder();
@@ -3883,6 +3923,30 @@ function showPgDetail(place){
     .setLatLng([lat,lng])
     .setContent(html)
     .openOn(map);
+}
+
+
+// ══ ADMIN NOTIFICATION ══
+async function notifyAdmin(type, payload){
+  // Saves to a notifications table — you check Supabase dashboard
+  // or set up a Supabase webhook to email you
+  try{
+    await fetch(SUPABASE_URL+'/rest/v1/admin_notifications',{
+      method:'POST',
+      headers:sbH({'Content-Type':'application/json','Prefer':'return=minimal'}),
+      body:JSON.stringify({
+        type,
+        city: payload.city||activeCity,
+        area: payload.area||'',
+        rent: payload.rent||payload.budget_max||null,
+        bhk: payload.bhk||'',
+        email: payload.email||'',
+        status:'new',
+        data: JSON.stringify(payload),
+        created_at: new Date().toISOString()
+      })
+    });
+  }catch(e){}
 }
 
 function showMapTapHint(){
@@ -4162,31 +4226,193 @@ function getDpsChip(id){const el=document.querySelector('#'+id+' .dps-chip.on');
 
 // ══ SUBMIT COMMUNITY LISTING ══
 const _communitySubmitCooldown={};
+
+// ══════════════════════════════════════════
+// SANITY CHECKS — 90% spam/quality coverage
+// ══════════════════════════════════════════
+
+// ── Rate limiting ──
+const _rateLimits = {
+  pins: JSON.parse(localStorage.getItem('gm_pin_times')||'[]'),
+};
+function _saveRateLimits(){
+  localStorage.setItem('gm_pin_times', JSON.stringify(_rateLimits.pins.slice(-20)));
+}
+function checkRateLimit(){
+  const now = Date.now();
+  // Keep only last hour
+  _rateLimits.pins = _rateLimits.pins.filter(t => now-t < 3600000);
+  if(_rateLimits.pins.length >= 3){
+    showToast('You have shared a lot today. Come back in an hour!');
+    return false;
+  }
+  _rateLimits.pins.push(now);
+  _saveRateLimits();
+  return true;
+}
+
+// ── Price validation ──
+function validatePrice(rent, mode){
+  const r = parseInt(rent);
+  if(isNaN(r)||r<=0){
+    showToast('Please enter a valid price');return false;
+  }
+  if(mode==='rent'||!mode){
+    if(r < 1000){showToast('Rent seems too low — minimum ₹1,000');return false;}
+    if(r > 500000){showToast('Rent seems too high — maximum ₹5,00,000');return false;}
+    // Warn but allow unusual prices
+    if(r < 3000){
+      return confirm('₹'+r.toLocaleString('en-IN')+'/mo seems very low. Is this correct?');
+    }
+    if(r > 150000){
+      return confirm('₹'+r.toLocaleString('en-IN')+'/mo seems very high. Is this correct?');
+    }
+  }
+  if(mode==='sale'){
+    if(r < 500000){showToast('Sale price seems too low — minimum ₹5 Lakh');return false;}
+    if(r > 500000000){showToast('Sale price seems too high');return false;}
+  }
+  return true;
+}
+
+// ── Phone validation ──
+function validatePhone(phone){
+  if(!phone) return true; // optional
+  const p = phone.replace(/[^0-9]/g,'');
+  if(p.length !== 10){
+    showToast('Phone number must be exactly 10 digits');return false;
+  }
+  if(!/^[6-9]/.test(p)){
+    showToast('Please enter a valid Indian mobile number');return false;
+  }
+  if(/^(.){9}$/.test(p)){
+    showToast('Please enter a real phone number');return false;
+  }
+  return true;
+}
+
+// ── Email validation ──
+function validateEmail(email, required=true){
+  if(!email && !required) return true;
+  if(!email){showToast('Email is required');return false;}
+  if(!email.includes('@')||!email.includes('.')){
+    showToast('Please enter a valid email address');return false;
+  }
+  // Block obvious fakes
+  const fake = ['test@','fake@','abc@','xxx@','temp@','dummy@','asdf@'];
+  if(fake.some(f=>email.toLowerCase().startsWith(f))){
+    showToast('Please enter your real email address');return false;
+  }
+  return true;
+}
+
+// ── Area validation ──
+function validateArea(area){
+  if(!area||area.trim().length < 3){
+    showToast('Please enter a valid area or colony name');return false;
+  }
+  // Block gibberish (all same chars or random letters)
+  const clean = area.trim().toLowerCase();
+  if(/^[a-z]{1,3}$/.test(clean)){
+    showToast('Please enter a real area name');return false;
+  }
+  // Block public places keywords
+  const publicPlaces = [
+    'india gate','red fort','connaught','cp','airport','station',
+    'railway','hospital','mall','metro','school','college','temple',
+    'mosque','church','gurudwara','park','garden'
+  ];
+  if(publicPlaces.some(p=>clean.includes(p))){
+    showToast('Please enter a residential address, not a public place');return false;
+  }
+  return true;
+}
+
+// ── Location validation ──
+function validateLocation(lat, lng){
+  if(!lat||!lng){
+    showToast('Please tap on the map to set location');return false;
+  }
+  // Delhi NCR bounds check
+  const inDelhiBounds = lat>28.3&&lat<29.0&&lng>76.7&&lng<77.7;
+  if(!inDelhiBounds){
+    showToast('Please drop a pin within Delhi NCR');return false;
+  }
+  return true;
+}
+
+// ── Duplicate check against Supabase ──
+async function checkDuplicate(email, area, city, table){
+  try{
+    const since = new Date(Date.now()-86400000).toISOString(); // 24hrs ago
+    const url = SUPABASE_URL+'/rest/v1/'+table+
+      '?email=eq.'+encodeURIComponent(email)+
+      '&city=eq.'+city+
+      '&created_at=gte.'+since+
+      '&select=id&limit=1';
+    const r = await fetch(url, {headers:sbH()});
+    const data = await r.json();
+    if(data&&data.length>0){
+      showToast('You already dropped a pin in this city today. Try again tomorrow!');
+      return true; // is duplicate
+    }
+  } catch(e){}
+  return false; // not duplicate
+}
+
+// ── Master validate function ──
+async function validatePin(type, fields){
+  const {rent, area, email, phone, lat, lng, mode} = fields;
+
+  // 1. Rate limit
+  if(!checkRateLimit()) return false;
+
+  // 2. Location
+  if(!validateLocation(lat, lng)) return false;
+
+  // 3. Area
+  if(type !== 'seeker' && !validateArea(area)) return false;
+
+  // 4. Price
+  if(type !== 'seeker'){
+    if(!validatePrice(rent, mode)) return false;
+  }
+
+  // 5. Email
+  if(!validateEmail(email, true)) return false;
+
+  // 6. Phone
+  if(!validatePhone(phone)) return false;
+
+  // 7. Duplicate check (async)
+  const table = type==='listing'?'community_listings':type==='rent'?'rent_pins':'seeker_pins';
+  const isDup = await checkDuplicate(email, area, activeCity, table);
+  if(isDup) return false;
+
+  return true;
+}
+
 async function submitCommunityListing(){
-  if(!_dropPinLatLng){showToast('Please tap on the map first');closeDropPin();return;}
+  if(!_dropPinLatLng){showToast('Please tap on the map first');return;}
   const rent=document.getElementById('dps-rent').value.trim();
   const area=document.getElementById('dps-area').value.trim();
-  const phone=document.getElementById('dps-phone').value.trim().replace(/[^0-9]/g,'');
-  const email=document.getElementById('dps-email')?document.getElementById('dps-email').value.trim():'';
+  const phone=(document.getElementById('dps-phone')?.value||'').trim().replace(/[^0-9]/g,'');
+  const email=(document.getElementById('dps-email')?.value||'').trim();
   const bhk=getDpsChip('dps-bhk');
   const fur=getDpsChip('dps-fur');
-  if(!rent){showToast('Please enter the rent');return;}
-  if(!area){showToast('Please enter the area');return;}
-  if(!email||!email.includes('@')){showToast('Please enter a valid email');return;}
-  if(phone&&(phone.length<10||!/^[6-9]/.test(phone))){showToast('Enter a valid WhatsApp number or leave blank');return;}
-  // Cooldown
-  const last=_communitySubmitCooldown.listing||0;
-  if(Date.now()-last<60000){showToast('Please wait before submitting again');return;}
-  _communitySubmitCooldown.listing=Date.now();
-  // Duplicate check — same phone + same area
-  const dup=COMMUNITY_LISTINGS.find(x=>x.phone===phone&&x.area.toLowerCase()===area.toLowerCase()&&x.city===activeCity);
-  if(dup){showToast('You already have a listing in this area');return;}
+  // ── SANITY CHECKS ──
+  const valid = await validatePin('listing',{
+    rent,area,email,phone,
+    lat:_dropPinLatLng?.lat,lng:_dropPinLatLng?.lng,
+    mode:'rent'
+  });
+  if(!valid)return;
   const btn=document.getElementById('dps-final-btn');
   if(btn){btn.disabled=true;btn.textContent='Dropping pin...';}
   const payload={
     city:activeCity,lat:_dropPinLatLng.lat,lng:_dropPinLatLng.lng,
-    bhk,rent:parseInt(rent),fur,area,phone,
-    mode:'rent',type:'flat',status:'available',
+    bhk,rent:parseInt(rent),fur,area,phone,email,
+    mode:'rent',type:'flat',status:'pending',
     verified:false,created_at:new Date().toISOString()
   };
   try{
@@ -4196,12 +4422,9 @@ async function submitCommunityListing(){
     });
     const data=await res.json();
     if(res.ok||res.status===201){
-      // Add to local array and redraw instantly
-      const newListing={...payload,id:'cl_'+Date.now()};
-      COMMUNITY_LISTINGS.push(newListing);
-      draw();
-      // Match seekers in background — don't await
-      matchSeekersToCommunityListing(newListing).catch(()=>{});
+      // Show on map only after approval — don't add to local array
+      // Notify admin in background
+      notifyAdmin('New listing', payload).catch(()=>{});
     }
   }catch(e){console.warn('Submit error:',e);}
   if(btn){btn.disabled=false;}
@@ -4245,7 +4468,7 @@ async function submitSeekerPin(){
 
 // ══ SUBMIT ANONYMOUS RENT PIN ══
 async function submitRentPin(){
-  if(!_dropPinLatLng){showToast('Please tap on the map first');closeDropPin();return;}
+  if(!_dropPinLatLng){showToast('Please tap on the map first');return;}
   const rent=parseInt(document.getElementById('dps-actual-rent').value)||0;
   const area=document.getElementById('dps-rent-area').value.trim();
   const bhk=getDpsChip('dps-rent-bhk');
@@ -4391,7 +4614,7 @@ function closeMenuSheet(){document.getElementById('menu-overlay').classList.remo
 // Schema:
 //   name     — display name (what user sees)
 //   lat,lng  — exact coordinates
-//   city     — 'delhi' | 'gurgaon' | 'noida' | 'lucknow'
+//   city     — 'delhi' | 'gurgaon' | 'noida'
 //   type     — 'sector' | 'society' | 'pincode' | 'metro' | 'landmark' | 'area'
 //   aliases  — optional array of alternative search strings
 //   zoom     — optional override (default 15)
@@ -4444,13 +4667,6 @@ const LANDMARKS=[
   {name:'Laxmi Nagar',lat:28.6317,lng:77.2769,city:'delhi',type:'area',aliases:['laxmi nagar delhi']},
   {name:'Connaught Place',lat:28.6315,lng:77.2167,city:'delhi',type:'landmark',aliases:['cp delhi','rajiv chowk']},
   {name:'Karol Bagh',lat:28.6520,lng:77.1909,city:'delhi',type:'area'},
-
-  // ── LUCKNOW AREAS ──
-  {name:'Gomti Nagar',lat:26.8650,lng:80.9962,city:'lucknow',type:'area'},
-  {name:'Hazratganj',lat:26.8530,lng:80.9400,city:'lucknow',type:'area'},
-  {name:'Indira Nagar, Lucknow',lat:26.8820,lng:80.9600,city:'lucknow',type:'area'},
-  {name:'Alambagh',lat:26.8280,lng:80.9100,city:'lucknow',type:'area'},
-  {name:'Aliganj',lat:26.8910,lng:80.9290,city:'lucknow',type:'area'},
 
   // ── DELHI METRO STATIONS (examples) ──
   {name:'Hauz Khas Metro',lat:28.5439,lng:77.2066,city:'delhi',type:'metro',aliases:['hauz khas']},
@@ -5232,7 +5448,7 @@ function startQuickTour(){
     {ico:'🏠', title:'Find me a flat — tell us what you need, we call you',  highlight:'#talk-btn'},
     {ico:'📋', title:'List my flat — your flat goes live in 30 seconds',     highlight:'#list-btn'},
     {ico:'📡', title:'Near Me — see listings closest to your location',      highlight:'#near-me-btn'},
-    {ico:'🏙️', title:'Switch cities — Delhi, Gurgaon, Noida, Lucknow',      highlight:'#gm-city-chip'},
+    {ico:'🏙️', title:'Switch cities — Delhi, Gurgaon, Noida',      highlight:'#gm-city-chip'},
   ];
   _spotlightStep=0;
   document.getElementById('tour-spotlight').classList.add('active');
@@ -5308,7 +5524,7 @@ function showListConfirm(){document.getElementById('list-confirm-modal').classLi
 function shareToWhatsApp(){
   const msg =
     'GharMap — Real rents, on a map.\n\n'
-   +'See what your neighbours actually pay in Delhi, Gurgaon, Noida and Lucknow.\n'
+   +'See what your neighbours actually pay in Delhi, Gurgaon and Noida.\n'
    +'No login. No fees. Free forever.\n\n'
    +'https://gharmap.in';
   window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
