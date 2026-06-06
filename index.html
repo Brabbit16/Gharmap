@@ -3169,10 +3169,11 @@ function initMap(){
   map.on('click',e=>{
     if(_mapDragged)return;
     if(!_waitingForPin){
+      // One call clears everything — no friction
+      clearChipFilter();
       closeAll(null);
       closePinCard();
       closeFindFlatMode();
-      document.getElementById('find-flat-overlay').style.display='none';
     }
     // If in list-my-flat pick mode, capture location and open the owner modal
     if(_waitingForListPin){
@@ -3485,12 +3486,12 @@ function chipAction(type, el){
       break;
 
     case 'find':
-      // Spotlight search bar + show what-are-you-looking-for overlay
+      clearChipFilter();
       openFindAFlatMode();
       break;
 
     case 'list':
-      // Open drop pin with listing type pre-selected
+      clearChipFilter();
       openDropPin();
       setTimeout(()=>{
         const listPt=document.querySelector('.dps-pt[data-ptype="listing"]');
@@ -3516,10 +3517,11 @@ function chipAction(type, el){
 
 function clearChipFilter(){
   _chipFilter=null;
-  document.querySelectorAll('.gm-chip').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.gm-chip').forEach(ch=>ch.classList.remove('on'));
   const b=document.getElementById('chip-banner');
-  if(b)b.style.display='none';
-  document.getElementById('map-wrap').classList.remove('rents-mode');
+  if(b){b.style.display='none';b.className='';}
+  const mw=document.getElementById('map-wrap');
+  if(mw)mw.classList.remove('rents-mode');
   draw();
 }
 
@@ -4104,7 +4106,7 @@ function selectHood(el){
     const cityListings=(LISTINGS||[]).filter(p=>p.city===activeCity).length+
       (COMMUNITY_LISTINGS||[]).filter(p=>p.city===activeCity).length+
       (RENT_PINS||[]).filter(p=>p.city===activeCity).length;
-    const emptyEl=document.getElementById('gm-empty-state');
+    const emptyEl=document.getElementById('gm-empty-state');if(emptyEl)emptyEl.style.display='none'; // permanently hidden
     if(emptyEl){
       const cityData=CITY_DATA[activeCity];
       if(cityListings===0){
