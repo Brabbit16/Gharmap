@@ -5863,6 +5863,7 @@ let _dpIsAnon = false;
 
 function dpSelectType(type, el){
   _dpCurrentType = type;
+  console.log('Pin type selected:', type);
   // Update UI
   document.querySelectorAll('.dps-pt').forEach(p=>p.classList.remove('on'));
   el.classList.add('on');
@@ -6001,34 +6002,43 @@ function dpToggleAnon(btn, forceOn){
 }
 
 async function dpStep2Submit(){
-  const type = _dpCurrentType;
-  const btn = document.getElementById('dps-final-btn');
+  // Read type directly from selected DOM element — don't trust variable
+  const selectedPt = document.querySelector('.dps-pt.on');
+  const type = selectedPt?.dataset.ptype || _dpCurrentType || 'listing';
+  console.log('dpStep2Submit - type:', type, '_dpCurrentType:', _dpCurrentType);
 
-  if(type==='listing'||(!_dpIsAnon&&type==='rent')){
-    const email = document.getElementById('dps-email').value.trim();
-    if(!email||!email.includes('@')){showToast('Please enter a valid email');return;}
+  const btn = document.getElementById('dps-final-btn');
+  const email = document.getElementById('dps-email')?.value.trim();
+
+  if(type==='listing'||type==='rent'){
+    if(!email||!email.includes('@')){showToast('Please enter your email');return;}
   }
 
   btn.disabled = true;
-  btn.textContent = 'Dropping pin...';
+  btn.textContent = 'Saving...';
 
-  // 8 second timeout — never hang forever
   const timeout = new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),8000));
 
   try{
-    const action = type==='listing' ? submitCommunityListing()
-      : type==='rent' ? submitRentPin()
-      : submitSeekerPin();
+    let action;
+    if(type==='listing') action = submitCommunityListing();
+    else if(type==='rent') action = submitRentPin();
+    else action = submitSeekerPin();
     await Promise.race([action, timeout]);
   } catch(e){
+    console.error('Submit error:', e);
     if(e.message==='timeout'){
-      // Still show success — pin likely saved, just slow response
       closeDropPin();
       showThankYou('pin');
+    } else {
+      showToast('Something went wrong — try again');
     }
   } finally {
-    btn.disabled = false;
-    btn.textContent = ({listing:'List my Flat → Goes live instantly',rent:'Share →',seeker:'Find me a Flat →'})[type]||'Drop the Pin →';
+    if(btn){
+      btn.disabled = false;
+      const labels = {listing:'Drop the Pin →', rent:'Share →', seeker:'Find me a Flat →'};
+      btn.textContent = labels[type]||'Drop the Pin →';
+    }
   }
 }
 
