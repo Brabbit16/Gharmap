@@ -3668,10 +3668,13 @@ function initGoogleAutocomplete(){
 let _interestListingId = null;
 
 function openInterestForm(){
-  if(!activeDetail){return;}
+  if(!activeDetail){showToast('Please tap a listing first');return;}
+  // Save detail before closeAll resets it
+  const detail = {...activeDetail};
   closeAll('interest-modal');
-  _interestListingId = activeDetail.id;
-  const info = (activeDetail.bhk||'') + ' BHK in ' + (activeDetail.area||'') + ' · ' + (activeDetail.rent?'₹'+activeDetail.rent.toLocaleString('en-IN')+'/mo':'');
+  activeDetail = detail; // restore after closeAll
+  _interestListingId = detail.id;
+  const info = (detail.bhk||'') + ' BHK in ' + (detail.area||'') + ' · ' + (detail.rent?'₹'+detail.rent.toLocaleString('en-IN')+'/mo':'');
   document.getElementById('int-listing-info').textContent = info;
   document.getElementById('int-name').value = '';
   document.getElementById('int-email').value = '';
