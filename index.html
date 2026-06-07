@@ -3470,18 +3470,19 @@ function shareProperty(){
 function checkDeepLink(){
   const params=new URLSearchParams(location.search);
   const id=params.get('p');if(!id)return;
-  // enterApp() already called for deep links — now wait for listings then open panel
   const tryOpen=()=>{
-    const p=LISTINGS.find(x=>x.id===id);
+    // Search verified listings first, then community listings
+    const p=LISTINGS.find(x=>x.id===id)||COMMUNITY_LISTINGS.find(x=>x.id===id);
     if(!p)return false;
-    // Set correct mode first
     if(p.mode&&p.mode!==listingMode)setMode(p.mode);
-    // Fly map to property
     map&&map.flyTo([p.lat,p.lng],16,{duration:.8});
-    // Pulse the pin
     setTimeout(()=>pulsePin(p.lat,p.lng),900);
-    // Open detail panel automatically
-    setTimeout(()=>openDetail(id),600);
+    // Open correct detail panel
+    if(COMMUNITY_LISTINGS.find(x=>x.id===id)){
+      setTimeout(()=>openCommunityDetail(p),600);
+    } else {
+      setTimeout(()=>openDetail(id),600);
+    }
     return true;
   };
   if(!tryOpen()){
@@ -3594,10 +3595,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   gfRange(null);
   const hasDeepLink=new URLSearchParams(location.search).get('p');
   if(hasDeepLink){
-    // Show splash first, then auto-enter and open property
+    // Show splash briefly then auto-enter and open property
     setTimeout(()=>{
       enterApp();
-    },1500); // slight delay so splash is visible briefly
+      setTimeout(()=>checkDeepLink(),800);
+    },800);
   }
 });
 window.addEventListener('resize',()=>map&&map.invalidateSize());
