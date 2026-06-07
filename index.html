@@ -1151,9 +1151,21 @@ function draw(){
   });
 
   // ── Community listings (current city only) ──
-  // Community listings — show when: no chip active OR 'avlb' chip active
+  // Community listings — apply full filter
   if(!_chipFilter||_chipFilter==='avlb'){
-    COMMUNITY_LISTINGS.filter(p=>p.city===activeCity&&p.status!=='rented').forEach(p=>{
+    COMMUNITY_LISTINGS.filter(p=>{
+      if(p.city!==activeCity)return false;
+      if(p.status==='rented')return false;
+      // Apply mode filter
+      if(flt.mode&&flt.mode!=='all'&&p.mode&&p.mode!==flt.mode)return false;
+      // Apply BHK filter
+      if(flt.bhk&&flt.bhk!=='all'&&p.bhk&&p.bhk!==flt.bhk)return false;
+      // Apply furnished filter
+      if(flt.fur&&flt.fur!=='all'&&p.fur&&p.fur!==flt.fur)return false;
+      // Apply budget filter
+      if(p.rent&&(p.rent<flt.minP||p.rent>flt.maxP))return false;
+      return true;
+    }).forEach(p=>{
       const m=L.marker([p.lat,p.lng],{icon:mkCommunityIcon(fmtRent(p.rent),p.area,p.bhk),_rent:p.rent});
       m.on('click',()=>{closeAll(null);openCommunityDetail(p);});
       communityCluster.addLayer(m);
@@ -3078,6 +3090,14 @@ function gfReset(){
   activeZones.clear();draw();closeGmFilter();showToast('Filters reset');
 }
 function gfApply(){
+  // Will check results after draw and notify user
+  setTimeout(()=>{
+    const total=communityCluster.getLayers().length+cluster.getLayers().length;
+    if(total===0){
+      showToast('No listings match your filters — try adjusting');
+      // Update filter count badge to show active filters
+    }
+  },300);
   const getVal=id=>{const on=document.querySelector('#'+id+' .gf-chip.on');return on?on.dataset.v:'all';};
   flt.mode=getVal('gf-mode');
   flt.bhk=getVal('gf-bhk');flt.fur=getVal('gf-fur');flt.type=getVal('gf-type');flt.posted=getVal('gf-posted');flt.society=getVal('gf-society');
@@ -3085,6 +3105,15 @@ function gfApply(){
   activeZones.clear();const allZone=document.querySelector('#gf-zone .gf-chip[data-v="all"]');
   if(!allZone||!allZone.classList.contains('on')){document.querySelectorAll('#gf-zone .gf-chip.on').forEach(c=>{if(c.dataset.v!=='all')activeZones.add(c.dataset.v);});}
   draw();closeGmFilter();
+  // Update filter count badge
+  let count=0;
+  if(flt.mode!=='all')count++;
+  if(flt.bhk!=='all')count++;
+  if(flt.fur!=='all')count++;
+  if(flt.type!=='all')count++;
+  if(flt.posted!=='all')count++;
+  const badge=document.getElementById('gm-filter-count');
+  if(badge){badge.textContent=count;badge.style.display=count>0?'inline':'none';}
   let n=0;if(flt.mode!=='all')n++;if(flt.bhk!=='all')n++;if(flt.fur!=='all')n++;if(flt.type!=='all')n++;if(flt.posted!=='all')n++;if(flt.society!=='all')n++;if(activeZones.size>0)n++;
   document.getElementById('gm-filter-count').textContent=n;showToast('✅ Filters applied');
 }
